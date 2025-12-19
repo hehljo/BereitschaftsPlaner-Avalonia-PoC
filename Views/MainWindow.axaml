@@ -65,167 +65,274 @@
 
         <!-- Main Content -->
         <TabControl Margin="10" DockPanel.Dock="Top">
-        <!-- Tab 1: Ressourcen Import -->
-        <TabItem Header="  1. Ressourcen Import  ">
-            <Grid Margin="10">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+        <!-- Tab 1: Setup & Import -->
+        <TabItem Header="  1. Setup & Import  ">
+            <ScrollViewer>
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>  <!-- Info Banner -->
+                        <RowDefinition Height="*"/>     <!-- 2-Column Content -->
+                        <RowDefinition Height="Auto"/>  <!-- Footer -->
+                    </Grid.RowDefinitions>
 
-                <!-- Info Banner -->
-                <Border Grid.Row="0"
-                        Background="{StaticResource YunexOrange}"
-                        Padding="{StaticResource SpacingMd}"
-                        CornerRadius="{StaticResource RadiusMedium}"
-                        Margin="0,0,0,15"
-                        >
-                    <TextBlock Text="Bereitschafts-Planer | Yunex Traffic"
-                               Foreground="White"
-                               FontSize="{StaticResource FontSizeH3}"
-                               FontFamily="{StaticResource HeadlineFont}"/>
-                </Border>
+                    <!-- Info Banner -->
+                    <Border Grid.Row="0"
+                            Background="{StaticResource YunexOrange}"
+                            Padding="{StaticResource SpacingMd}"
+                            CornerRadius="{StaticResource RadiusMedium}"
+                            Margin="0,0,0,15">
+                        <TextBlock Text="Setup: Ressourcen & Bereitschaftsgruppen importieren"
+                                   Foreground="White"
+                                   FontSize="{StaticResource FontSizeH3}"
+                                   FontFamily="{StaticResource HeadlineFont}"/>
+                    </Border>
 
-                <!-- File Selection -->
-                <Border Grid.Row="1"
-                        BorderBrush="{StaticResource YunexSteel}"
-                        BorderThickness="1"
-                        CornerRadius="{StaticResource RadiusMedium}"
-                        Padding="{StaticResource SpacingMd}"
-                        Margin="0,0,0,10"
-                        >
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                    <!-- 2-Column Layout: Ressourcen + Gruppen -->
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>  <!-- Spacer -->
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                        <TextBlock Grid.Row="0" Text="Excel-Datei auswählen:" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <!-- LEFT: Ressourcen -->
+                        <StackPanel Grid.Column="0" Spacing="10">
+                            <TextBlock Text="📋 Ressourcen (Mitarbeiter)"
+                                       FontFamily="{StaticResource HeadlineFont}"
+                                       FontSize="{StaticResource FontSizeH4}"
+                                       Foreground="{StaticResource YunexRoyalBlue}"/>
 
-                        <Grid Grid.Row="1" Margin="0,0,0,10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
+                            <!-- File Selection Ressourcen -->
+                            <Border BorderBrush="{StaticResource YunexSteel}"
+                                    BorderThickness="1"
+                                    CornerRadius="{StaticResource RadiusMedium}"
+                                    Padding="{StaticResource SpacingMd}"
+                                    Margin="0,0,0,10">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
 
-                            <TextBox Grid.Column="0"
-                                     Text="{Binding ExcelFilePath}"
-                                     IsReadOnly="True"
-                                     Watermark="Keine Datei ausgewählt..."
-                                     Margin="0,0,10,0"/>
+                                    <TextBlock Grid.Row="0" Text="Excel-Datei auswählen:" FontWeight="Bold" Margin="0,0,0,5"/>
 
-                            <Button Grid.Column="1"
-                                    Content="Durchsuchen"
-                                    Command="{Binding BrowseFileCommand}"
-                                    Width="120"
-                                    Background="{StaticResource YunexRoyalBlue}"
-                                    Foreground="White"
-                                    CornerRadius="{StaticResource RadiusSmall}"/>
-                        </Grid>
+                                    <Grid Grid.Row="1" Margin="0,0,0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
 
-                        <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10">
-                            <Button Content="Excel importieren"
-                                    Command="{Binding ImportExcelCommand}"
-                                    Background="{StaticResource YunexGreen}"
-                                    Foreground="White"
-                                    Width="150"
-                                    Height="35"
-                                    FontFamily="{StaticResource HeadlineFont}"
-                                    CornerRadius="{StaticResource RadiusSmall}"/>
+                                        <TextBox Grid.Column="0"
+                                                 Text="{Binding ExcelFilePath}"
+                                                 IsReadOnly="True"
+                                                 Watermark="Keine Datei ausgewählt..."
+                                                 Margin="0,0,10,0"/>
 
-                            <Button Content="JSON speichern"
-                                    Command="{Binding SaveJsonCommand}"
-                                    Background="{StaticResource YunexPurple}"
-                                    Foreground="White"
-                                    Width="150"
-                                    Height="35"
-                                    FontFamily="{StaticResource HeadlineFont}"
-                                    CornerRadius="{StaticResource RadiusSmall}"
-                                    IsEnabled="{Binding HasData}"/>
+                                        <Button Grid.Column="1"
+                                                Content="Durchsuchen"
+                                                Command="{Binding BrowseFileCommand}"
+                                                Width="120"
+                                                Background="{StaticResource YunexRoyalBlue}"
+                                                Foreground="White"
+                                                CornerRadius="{StaticResource RadiusSmall}"/>
+                                    </Grid>
 
-                            <TextBlock Text="{Binding StatusMessage}"
-                                       VerticalAlignment="Center"
-                                       Foreground="{Binding StatusColor}"
-                                       FontWeight="Bold"/>
+                                    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10">
+                                        <Button Content="Excel importieren"
+                                                Command="{Binding ImportExcelCommand}"
+                                                Background="{StaticResource YunexGreen}"
+                                                Foreground="White"
+                                                Width="150"
+                                                Height="35"
+                                                FontFamily="{StaticResource HeadlineFont}"
+                                                CornerRadius="{StaticResource RadiusSmall}"/>
+
+                                        <Button Content="JSON speichern"
+                                                Command="{Binding SaveJsonCommand}"
+                                                Background="{StaticResource YunexPurple}"
+                                                Foreground="White"
+                                                Width="150"
+                                                Height="35"
+                                                FontFamily="{StaticResource HeadlineFont}"
+                                                CornerRadius="{StaticResource RadiusSmall}"
+                                                IsEnabled="{Binding HasData}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <!-- Ressourcen Data Grid -->
+                            <Border BorderBrush="{StaticResource YunexSteel}"
+                                    BorderThickness="1"
+                                    CornerRadius="{StaticResource RadiusMedium}"
+                                    Padding="{StaticResource SpacingSm}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="250"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0"
+                                               Text="{Binding DataGridTitle}"
+                                               FontFamily="{StaticResource HeadlineFont}"
+                                               FontSize="{StaticResource FontSizeH4}"
+                                               Margin="0,0,0,10"/>
+
+                                    <DataGrid Grid.Row="1"
+                                              ItemsSource="{Binding Ressourcen}"
+                                              AutoGenerateColumns="False"
+                                              IsReadOnly="True"
+                                              GridLinesVisibility="All"
+                                              BorderThickness="1"
+                                              BorderBrush="{StaticResource YunexSteel}">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Ressourcenname" Binding="{Binding Name}" Width="*"/>
+                                            <DataGridTextColumn Header="Bezirk" Binding="{Binding Bezirk}" Width="*"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+
+                                    <!-- Placeholder when no data -->
+                                    <TextBlock Grid.Row="1"
+                                               Text="Keine Daten vorhanden. Bitte Excel-Datei importieren."
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Foreground="#999999"
+                                               FontStyle="Italic"
+                                               IsVisible="{Binding !HasData}"/>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- RIGHT: Bereitschaftsgruppen -->
+                        <StackPanel Grid.Column="2" Spacing="10">
+                            <TextBlock Text="👥 Bereitschaftsgruppen"
+                                       FontFamily="{StaticResource HeadlineFont}"
+                                       FontSize="{StaticResource FontSizeH4}"
+                                       Foreground="{StaticResource YunexPurple}"/>
+
+                            <!-- File Selection Gruppen -->
+                            <Border BorderBrush="{StaticResource YunexSteel}"
+                                    BorderThickness="1"
+                                    CornerRadius="{StaticResource RadiusMedium}"
+                                    Padding="{StaticResource SpacingMd}"
+                                    Margin="0,0,0,10">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0" Text="Excel-Datei auswählen:" FontWeight="Bold" Margin="0,0,0,5"/>
+
+                                    <Grid Grid.Row="1" Margin="0,0,0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBox Grid.Column="0"
+                                                 Text="{Binding GruppenFilePath}"
+                                                 IsReadOnly="True"
+                                                 Watermark="Keine Datei ausgewählt..."
+                                                 Margin="0,0,10,0"/>
+
+                                        <Button Grid.Column="1"
+                                                Content="Durchsuchen"
+                                                Command="{Binding BrowseGruppenFileCommand}"
+                                                Width="120"
+                                                Background="{StaticResource YunexRoyalBlue}"
+                                                Foreground="White"
+                                                CornerRadius="{StaticResource RadiusSmall}"/>
+                                    </Grid>
+
+                                    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10">
+                                        <Button Content="Excel importieren"
+                                                Command="{Binding ImportGruppenCommand}"
+                                                Background="{StaticResource YunexGreen}"
+                                                Foreground="White"
+                                                Width="150"
+                                                Height="35"
+                                                FontFamily="{StaticResource HeadlineFont}"
+                                                CornerRadius="{StaticResource RadiusSmall}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <!-- Gruppen Data Grid -->
+                            <Border BorderBrush="{StaticResource YunexSteel}"
+                                    BorderThickness="1"
+                                    CornerRadius="{StaticResource RadiusMedium}"
+                                    Padding="{StaticResource SpacingSm}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="250"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0"
+                                               Text="Importierte Bereitschaftsgruppen"
+                                               FontFamily="{StaticResource HeadlineFont}"
+                                               FontSize="{StaticResource FontSizeH4}"
+                                               Margin="0,0,0,10"/>
+
+                                    <DataGrid Grid.Row="1"
+                                              ItemsSource="{Binding BereitschaftsGruppen}"
+                                              AutoGenerateColumns="False"
+                                              IsReadOnly="True"
+                                              GridLinesVisibility="All"
+                                              BorderThickness="1"
+                                              BorderBrush="{StaticResource YunexSteel}">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                                            <DataGridTextColumn Header="Bezirk" Binding="{Binding Bezirk}" Width="*"/>
+                                            <DataGridTextColumn Header="Verantwortlich" Binding="{Binding VerantwortlichePerson}" Width="*"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+
+                                    <!-- Placeholder when no data -->
+                                    <TextBlock Grid.Row="1"
+                                               Text="Keine Daten vorhanden. Bitte Excel-Datei importieren."
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Foreground="#999999"
+                                               FontStyle="Italic"
+                                               IsVisible="{Binding !HasGruppenData}"/>
+                                </Grid>
+                            </Border>
                         </StackPanel>
                     </Grid>
-                </Border>
 
-                <!-- Data Grid -->
-                <Border Grid.Row="2"
-                        BorderBrush="{StaticResource YunexSteel}"
-                        BorderThickness="1"
-                        CornerRadius="{StaticResource RadiusMedium}"
-                        Padding="{StaticResource SpacingSm}"
-                        >
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-
-                        <TextBlock Grid.Row="0"
-                                   Text="{Binding DataGridTitle}"
-                                   FontFamily="{StaticResource HeadlineFont}"
-                                   FontSize="{StaticResource FontSizeH4}"
-                                   Margin="0,0,0,10"/>
-
-                        <DataGrid Grid.Row="1"
-                                  ItemsSource="{Binding Ressourcen}"
-                                  AutoGenerateColumns="False"
-                                  IsReadOnly="True"
-                                  GridLinesVisibility="All"
-                                  BorderThickness="1"
-                                  BorderBrush="{StaticResource YunexSteel}">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Ressourcenname" Binding="{Binding Name}" Width="*"/>
-                                <DataGridTextColumn Header="Bezirk" Binding="{Binding Bezirk}" Width="*"/>
-                            </DataGrid.Columns>
-                        </DataGrid>
-
-                        <!-- Placeholder when no data -->
-                        <TextBlock Grid.Row="1"
-                                   Text="Keine Daten vorhanden. Bitte Excel-Datei importieren."
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   Foreground="#999999"
-                                   FontStyle="Italic"
-                                   IsVisible="{Binding !HasData}"/>
-                    </Grid>
-                </Border>
-
-                <!-- Info Footer -->
-                <Border Grid.Row="3"
-                        Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
-                        BorderBrush="{StaticResource YunexSteel}"
-                        BorderThickness="1"
-                        Padding="{StaticResource SpacingSm}"
-                        CornerRadius="{StaticResource RadiusSmall}"
-                        Margin="0,10,0,0">
-                    <StackPanel>
-                        <TextBlock FontFamily="{StaticResource HeadlineFont}"
-                                   FontSize="{StaticResource FontSizeBody}"
-                                   Margin="0,0,0,5">
-                            <Run Text="Technologie-Stack:"/>
-                        </TextBlock>
-                        <TextBlock TextWrapping="Wrap"
-                                   FontSize="{StaticResource FontSizeSmall}">
-                            <Run Text="• Avalonia 11.3.10 (Cross-Platform UI)"/>
-                            <LineBreak/>
-                            <Run Text="• LiteDB 5.0.21 (NoSQL Database)"/>
-                            <LineBreak/>
-                            <Run Text="• ExcelDataReader (Plattformunabhängig)"/>
-                            <LineBreak/>
-                            <Run Text="• .NET 9.0 + MVVM Pattern"/>
-                            <LineBreak/>
-                            <Run Text="• Yunex Traffic Branding" Foreground="{StaticResource YunexOrange}"/>
-                        </TextBlock>
-                    </StackPanel>
-                </Border>
-            </Grid>
+                    <!-- Info Footer -->
+                    <Border Grid.Row="2"
+                            Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                            BorderBrush="{StaticResource YunexSteel}"
+                            BorderThickness="1"
+                            Padding="{StaticResource SpacingSm}"
+                            CornerRadius="{StaticResource RadiusSmall}"
+                            Margin="0,10,0,0">
+                        <StackPanel>
+                            <TextBlock FontFamily="{StaticResource HeadlineFont}"
+                                       FontSize="{StaticResource FontSizeBody}"
+                                       Margin="0,0,0,5">
+                                <Run Text="Technologie-Stack:"/>
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap"
+                                       FontSize="{StaticResource FontSizeSmall}">
+                                <Run Text="• Avalonia 11.3.10 (Cross-Platform UI)"/>
+                                <LineBreak/>
+                                <Run Text="• LiteDB 5.0.21 (NoSQL Database)"/>
+                                <LineBreak/>
+                                <Run Text="• ExcelDataReader (Plattformunabhängig)"/>
+                                <LineBreak/>
+                                <Run Text="• .NET 9.0 + MVVM Pattern"/>
+                                <LineBreak/>
+                                <Run Text="• Yunex Traffic Branding" Foreground="{StaticResource YunexOrange}"/>
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </ScrollViewer>
         </TabItem>
 
         <!-- Tab 2: Vergleich (Info) -->
