@@ -30,6 +30,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
         // Initialize sub-ViewModels
         GeneratorVM = new GeneratorViewModel();
+        EditorVM = new EditorViewModel();
 
         // Load settings and apply theme
         LoadSettings();
@@ -40,6 +41,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     // Sub-ViewModels for complex views
     public GeneratorViewModel GeneratorVM { get; }
+    public EditorViewModel EditorVM { get; }
 
     [ObservableProperty]
     private string _excelFilePath = string.Empty;

@@ -1182,28 +1182,327 @@
                 <!-- ============================================================================ -->
                 <!-- VIEW 4: EDITOR (SelectedNavIndex == 3) -->
                 <!-- ============================================================================ -->
-                <ScrollViewer IsVisible="{Binding SelectedNavIndex, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=3}">
-                    <Grid Margin="20">
-                        <Border Background="{StaticResource YunexPurple}"
+                <ScrollViewer IsVisible="{Binding SelectedNavIndex, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=3}"
+                              DataContext="{Binding EditorVM}">
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>  <!-- Info Banner -->
+                            <RowDefinition Height="Auto"/>  <!-- File Selection -->
+                            <RowDefinition Height="Auto"/>  <!-- Filter Options -->
+                            <RowDefinition Height="*"/>     <!-- Data Grid -->
+                            <RowDefinition Height="Auto"/>  <!-- Actions & Status -->
+                        </Grid.RowDefinitions>
+
+                        <!-- Info Banner -->
+                        <Border Grid.Row="0"
+                                Background="{StaticResource YunexPurple}"
                                 Padding="{StaticResource SpacingMd}"
-                                CornerRadius="{StaticResource RadiusMedium}">
-                            <StackPanel Spacing="10">
-                                <TextBlock Text="✏️ Bereitschafts-Editor"
-                                           Foreground="White"
-                                           FontSize="{StaticResource FontSizeH2}"
-                                           FontFamily="{StaticResource HeadlineFont}"/>
-                                <TextBlock Text="Hier können bestehende Bereitschaftsdienste bearbeitet werden."
-                                           Foreground="White"
-                                           FontSize="{StaticResource FontSizeBody}"/>
-                                <TextBlock Text="✅ Backend: BereitschaftsEditor.ps1 Logik"
-                                           Foreground="White"
-                                           FontSize="{StaticResource FontSizeSmall}"
-                                           FontStyle="Italic"/>
-                                <TextBlock Text="⏳ UI wird in Phase 4 implementiert"
-                                           Foreground="White"
-                                           FontSize="{StaticResource FontSizeSmall}"
-                                           FontStyle="Italic"/>
-                            </StackPanel>
+                                CornerRadius="{StaticResource RadiusMedium}"
+                                Margin="0,0,0,15">
+                            <TextBlock Text="✏️ Bereitschafts-Editor: Bestehende Dienste bearbeiten"
+                                       Foreground="White"
+                                       FontSize="{StaticResource FontSizeH3}"
+                                       FontFamily="{StaticResource HeadlineFont}"/>
+                        </Border>
+
+                        <!-- File Selection -->
+                        <Border Grid.Row="1"
+                                BorderBrush="{StaticResource YunexSteel}"
+                                BorderThickness="1"
+                                CornerRadius="{StaticResource RadiusMedium}"
+                                Padding="{StaticResource SpacingMd}"
+                                Margin="0,0,0,10">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Title -->
+                                <TextBlock Grid.Row="0"
+                                           Text="📂 Excel-Datei laden"
+                                           FontFamily="{StaticResource HeadlineFont}"
+                                           FontSize="{StaticResource FontSizeH4}"
+                                           Foreground="{StaticResource YunexRoyalBlue}"
+                                           Margin="0,0,0,10"/>
+
+                                <!-- File Selection Row -->
+                                <Grid Grid.Row="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0"
+                                             Text="{Binding ExcelFilePath}"
+                                             IsReadOnly="True"
+                                             Watermark="Keine Datei ausgewählt..."
+                                             Margin="0,0,10,0"/>
+
+                                    <Button Grid.Column="1"
+                                            Content="📁 Durchsuchen"
+                                            Command="{Binding BrowseFileCommand}"
+                                            Background="{StaticResource YunexRoyalBlue}"
+                                            Foreground="White"
+                                            Width="140"
+                                            Height="35"
+                                            Margin="0,0,10,0"
+                                            CornerRadius="{StaticResource RadiusSmall}"/>
+
+                                    <Button Grid.Column="2"
+                                            Content="📥 Laden"
+                                            Command="{Binding LoadExcelCommand}"
+                                            Background="{StaticResource YunexGreen}"
+                                            Foreground="White"
+                                            FontFamily="{StaticResource HeadlineFont}"
+                                            Width="140"
+                                            Height="35"
+                                            CornerRadius="{StaticResource RadiusSmall}"/>
+                                </Grid>
+                            </Grid>
+                        </Border>
+
+                        <!-- Filter Options -->
+                        <Border Grid.Row="2"
+                                BorderBrush="{StaticResource YunexSteel}"
+                                BorderThickness="1"
+                                CornerRadius="{StaticResource RadiusMedium}"
+                                Padding="{StaticResource SpacingMd}"
+                                Margin="0,0,0,10"
+                                IsVisible="{Binding HasLoadedData}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Title -->
+                                <TextBlock Grid.Row="0"
+                                           Text="🔍 Filter-Optionen"
+                                           FontFamily="{StaticResource HeadlineFont}"
+                                           FontSize="{StaticResource FontSizeH4}"
+                                           Foreground="{StaticResource YunexRoyalBlue}"
+                                           Margin="0,0,0,10"/>
+
+                                <!-- Date Range & Dropdowns -->
+                                <Grid Grid.Row="1" Margin="0,0,0,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="180"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="180"/>
+                                        <ColumnDefinition Width="30"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="200"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Column="0"
+                                               Text="Von:"
+                                               VerticalAlignment="Center"
+                                               FontWeight="Bold"
+                                               Margin="0,0,10,0"/>
+                                    <DatePicker Grid.Column="1"
+                                                SelectedDate="{Binding FilterStartDate}"/>
+
+                                    <TextBlock Grid.Column="3"
+                                               Text="Bis:"
+                                               VerticalAlignment="Center"
+                                               FontWeight="Bold"
+                                               Margin="0,0,10,0"/>
+                                    <DatePicker Grid.Column="4"
+                                                SelectedDate="{Binding FilterEndDate}"/>
+
+                                    <TextBlock Grid.Column="6"
+                                               Text="Gruppe:"
+                                               VerticalAlignment="Center"
+                                               FontWeight="Bold"
+                                               Margin="0,0,10,0"/>
+                                    <ComboBox Grid.Column="7"
+                                              ItemsSource="{Binding Gruppen}"
+                                              SelectedItem="{Binding SelectedGruppeFilter}"/>
+
+                                    <TextBlock Grid.Column="9"
+                                               Text="Ressource:"
+                                               VerticalAlignment="Center"
+                                               FontWeight="Bold"
+                                               Margin="0,0,10,0"/>
+                                    <ComboBox Grid.Column="10"
+                                              ItemsSource="{Binding Ressourcen}"
+                                              SelectedItem="{Binding SelectedRessourceFilter}"/>
+                                </Grid>
+
+                                <!-- Search & Quick Actions -->
+                                <Grid Grid.Row="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0"
+                                             Text="{Binding SearchText}"
+                                             Watermark="🔍 Suche nach Gruppe, Ressource, Typ..."
+                                             Margin="0,0,10,0"/>
+
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="5">
+                                        <Button Content="Aktueller Monat"
+                                                Command="{Binding SetFilterCurrentMonthCommand}"
+                                                Background="{StaticResource YunexPurple}"
+                                                Foreground="White"
+                                                Height="28"
+                                                Padding="10,5"
+                                                FontSize="{StaticResource FontSizeSmall}"
+                                                CornerRadius="{StaticResource RadiusSmall}"/>
+                                        <Button Content="Nächster Monat"
+                                                Command="{Binding SetFilterNextMonthCommand}"
+                                                Background="{StaticResource YunexPurple}"
+                                                Foreground="White"
+                                                Height="28"
+                                                Padding="10,5"
+                                                FontSize="{StaticResource FontSizeSmall}"
+                                                CornerRadius="{StaticResource RadiusSmall}"/>
+                                        <Button Content="Filter zurücksetzen"
+                                                Command="{Binding ClearAllFiltersCommand}"
+                                                Background="{StaticResource YunexOrange}"
+                                                Foreground="White"
+                                                Height="28"
+                                                Padding="10,5"
+                                                FontSize="{StaticResource FontSizeSmall}"
+                                                CornerRadius="{StaticResource RadiusSmall}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>
+                        </Border>
+
+                        <!-- Data Grid -->
+                        <Border Grid.Row="3"
+                                BorderBrush="{StaticResource YunexSteel}"
+                                BorderThickness="1"
+                                CornerRadius="{StaticResource RadiusMedium}"
+                                Padding="{StaticResource SpacingSm}"
+                                Margin="0,0,0,10">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Title -->
+                                <TextBlock Grid.Row="0"
+                                           Text="{Binding FilteredCount, StringFormat='📋 Bereitschaftsdienste ({0} Einträge)'}"
+                                           FontFamily="{StaticResource HeadlineFont}"
+                                           FontSize="{StaticResource FontSizeH4}"
+                                           Foreground="{StaticResource YunexRoyalBlue}"
+                                           Margin="0,0,0,10"/>
+
+                                <!-- DataGrid -->
+                                <DataGrid Grid.Row="1"
+                                          ItemsSource="{Binding FilteredBereitschaften}"
+                                          SelectedItem="{Binding SelectedBereitschaft}"
+                                          AutoGenerateColumns="False"
+                                          IsReadOnly="False"
+                                          GridLinesVisibility="All"
+                                          BorderThickness="1"
+                                          BorderBrush="{StaticResource YunexSteel}"
+                                          MinHeight="300">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" IsReadOnly="True"/>
+                                        <DataGridTextColumn Header="Datum" Binding="{Binding Datum, StringFormat='dd.MM.yyyy'}" Width="120"/>
+                                        <DataGridTextColumn Header="Gruppe" Binding="{Binding GruppeName}" Width="*"/>
+                                        <DataGridTextColumn Header="Ressource" Binding="{Binding RessourceName}" Width="*"/>
+                                        <DataGridTextColumn Header="Von" Binding="{Binding StartZeit}" Width="80"/>
+                                        <DataGridTextColumn Header="Bis" Binding="{Binding EndZeit}" Width="80"/>
+                                        <DataGridTextColumn Header="Typ" Binding="{Binding Typ}" Width="60"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+
+                                <!-- Placeholder when no data -->
+                                <StackPanel Grid.Row="1"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Spacing="10"
+                                            IsVisible="{Binding !HasLoadedData}">
+                                    <TextBlock Text="📂"
+                                               FontSize="48"
+                                               HorizontalAlignment="Center"
+                                               Opacity="0.3"/>
+                                    <TextBlock Text="Keine Datei geladen"
+                                               FontSize="18"
+                                               FontFamily="{StaticResource HeadlineFont}"
+                                               Foreground="{StaticResource YunexGray}"
+                                               HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Bitte wähle eine Excel-Datei aus und lade sie"
+                                               FontSize="{StaticResource FontSizeSmall}"
+                                               Foreground="{StaticResource YunexGray}"
+                                               HorizontalAlignment="Center"
+                                               FontStyle="Italic"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <!-- Actions & Status -->
+                        <Border Grid.Row="4"
+                                BorderBrush="{StaticResource YunexSteel}"
+                                BorderThickness="1"
+                                CornerRadius="{StaticResource RadiusMedium}"
+                                Padding="{StaticResource SpacingMd}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Status -->
+                                <StackPanel Grid.Column="0" Spacing="5">
+                                    <TextBlock Text="{Binding StatusMessage}"
+                                               FontFamily="{StaticResource HeadlineFont}"
+                                               FontSize="{StaticResource FontSizeH4}"
+                                               Foreground="{Binding StatusColor}"/>
+                                    <TextBlock Text="⚠️ Änderungen nicht gespeichert!"
+                                               FontSize="{StaticResource FontSizeSmall}"
+                                               Foreground="{StaticResource YunexOrange}"
+                                               IsVisible="{Binding HasUnsavedChanges}"/>
+                                </StackPanel>
+
+                                <!-- Action Buttons -->
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+                                    <Button Content="🗑️ Löschen"
+                                            Command="{Binding DeleteSelectedCommand}"
+                                            Background="{StaticResource YunexOrange}"
+                                            Foreground="White"
+                                            Width="140"
+                                            Height="40"
+                                            FontFamily="{StaticResource HeadlineFont}"
+                                            CornerRadius="{StaticResource RadiusSmall}"
+                                            IsEnabled="{Binding HasLoadedData}"/>
+
+                                    <Button Content="📋 Duplizieren"
+                                            Command="{Binding DuplicateSelectedCommand}"
+                                            Background="{StaticResource YunexCyan}"
+                                            Foreground="White"
+                                            Width="140"
+                                            Height="40"
+                                            FontFamily="{StaticResource HeadlineFont}"
+                                            CornerRadius="{StaticResource RadiusSmall}"
+                                            IsEnabled="{Binding HasLoadedData}"/>
+
+                                    <Button Content="💾 Speichern"
+                                            Command="{Binding SaveExcelCommand}"
+                                            Background="{StaticResource YunexGreen}"
+                                            Foreground="White"
+                                            Width="160"
+                                            Height="40"
+                                            FontSize="16"
+                                            FontFamily="{StaticResource HeadlineFont}"
+                                            CornerRadius="{StaticResource RadiusPill}"
+                                            IsEnabled="{Binding HasUnsavedChanges}"/>
+                                </StackPanel>
+                            </Grid>
                         </Border>
                     </Grid>
                 </ScrollViewer>
