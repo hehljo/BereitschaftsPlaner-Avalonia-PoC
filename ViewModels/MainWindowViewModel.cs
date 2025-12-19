@@ -7,6 +7,7 @@ using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using BereitschaftsPlaner.Avalonia.Models;
 using BereitschaftsPlaner.Avalonia.Services;
+using BereitschaftsPlaner.Avalonia.Services.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -15,6 +16,17 @@ namespace BereitschaftsPlaner.Avalonia.ViewModels;
 public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly ExcelImportService _excelService = new();
+    private readonly DatabaseService _dbService;
+    private readonly SettingsService _settingsService;
+
+    public MainWindowViewModel()
+    {
+        _dbService = App.DatabaseService;
+        _settingsService = App.SettingsService;
+
+        // Load existing data from database
+        LoadDataFromDatabase();
+    }
 
     [ObservableProperty]
     private string _excelFilePath = string.Empty;
@@ -88,6 +100,10 @@ public partial class MainWindowViewModel : ViewModelBase
 
             if (result.Success)
             {
+                // Save to database
+                _dbService.SaveRessourcen(result.Ressourcen);
+
+                // Update UI
                 Ressourcen.Clear();
                 foreach (var ressource in result.Ressourcen)
                 {
@@ -97,7 +113,15 @@ public partial class MainWindowViewModel : ViewModelBase
                 HasData = Ressourcen.Count > 0;
                 OnPropertyChanged(nameof(DataGridTitle));
 
-                SetStatus(result.Message, Brushes.Green);
+                // Update settings with last import path
+                _settingsService.UpdateSetting<Models.AppSettings>(s =>
+                    s.LastImportPath = ExcelFilePath
+                );
+
+                // Clear file path after successful import
+                ExcelFilePath = string.Empty;
+
+                SetStatus($"{result.Message} (in Datenbank gespeichert)", Brushes.Green);
             }
             else
             {
@@ -148,7 +172,9 @@ public partial class MainWindowViewModel : ViewModelBase
                 var jsonPath = file.Path.LocalPath;
                 SetStatus("Speichere JSON...", Brushes.Blue);
 
-                var result = _excelService.SaveToJson(Ressourcen.ToList(), jsonPath);
+                // Save from database (always current data)
+                var ressourcenFromDb = _dbService.GetAllRessourcen();
+                var result = _excelService.SaveToJson(ressourcenFromDb, jsonPath);
 
                 if (result.Success)
                 {
@@ -163,6 +189,38 @@ public partial class MainWindowViewModel : ViewModelBase
         catch (Exception ex)
         {
             SetStatus($"Fehler beim Speichern: {ex.Message}", Brushes.Red);
+        }
+    }
+
+    /// <summary>
+    /// Load existing data from database on startup
+    /// </summary>
+    private void LoadDataFromDatabase()
+    {
+        try
+        {
+            var ressourcenFromDb = _dbService.GetAllRessourcen();
+
+            if (ressourcenFromDb.Count > 0)
+            {
+                Ressourcen.Clear();
+                foreach (var ressource in ressourcenFromDb)
+                {
+                    Ressourcen.Add(ressource);
+                }
+
+                HasData = true;
+                OnPropertyChanged(nameof(DataGridTitle));
+                SetStatus($"{ressourcenFromDb.Count} Ressourcen aus Datenbank geladen", Brushes.Green);
+            }
+            else
+            {
+                SetStatus("Bereit - Keine Daten in Datenbank", Brushes.Gray);
+            }
+        }
+        catch (Exception ex)
+        {
+            SetStatus($"Fehler beim Laden der Daten: {ex.Message}", Brushes.Red);
         }
     }
 

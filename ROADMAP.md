@@ -148,20 +148,22 @@ new BackupService().CreateBackupBeforeUpdate();
 - [x] Dark Mode Support
 - [x] Basic UI (2 Tabs)
 
-### Phase 2: Data Layer & Services 🔄 IN PROGRESS
-- [ ] LiteDB Integration (NuGet: LiteDB)
-- [ ] Preferences Integration (NuGet: Avalonia.Labs.Preferences)
-- [ ] Models definieren (Ressource, BereitschaftsGruppe, Zeitprofil, etc.)
-- [ ] DatabaseService (CRUD Operations)
-- [ ] SettingsService (User Preferences)
-- [ ] BackupService (Automatische Backups)
-- [ ] MigrationService (PowerShell JSON → LiteDB)
+### Phase 2: Data Layer & Services ✅ DONE
+- [x] LiteDB Integration (NuGet: LiteDB)
+- [x] Preferences Integration (NuGet: Avalonia.Labs.Preferences)
+- [x] Models definieren (Ressource, BereitschaftsGruppe, Zeitprofil, etc.)
+- [x] DatabaseService (CRUD Operations)
+- [x] SettingsService (User Preferences)
+- [x] BackupService (Automatische Backups)
+- [x] MigrationService (PowerShell JSON → LiteDB)
+- [x] App startup integration (automatic backups, migration, initialization)
+- [x] MainWindowViewModel updated to use DatabaseService
 
-**Estimated Time:** 8-12 Stunden
+**Completed:** Phase 2 abgeschlossen - Vollständige Datenbank-Integration
 
 ### Phase 3: Tab 1 - Setup & Import 🔄 PARTIAL
 - [x] Ressourcen Excel-Import (ExcelDataReader)
-- [ ] Ressourcen → LiteDB speichern
+- [x] Ressourcen → LiteDB speichern
 - [ ] Bereitschaftsgruppen Excel-Import
 - [ ] Bereitschaftsgruppen → LiteDB speichern
 - [ ] Import-Preview Dialog
@@ -331,8 +333,8 @@ BereitschaftsPlaner.Avalonia/
 | Phase | Stunden | Status |
 |-------|---------|--------|
 | Phase 1: Setup | 8 | ✅ DONE |
-| Phase 2: Data Layer | 8-12 | 🔄 NEXT |
-| Phase 3: Tab 1 | 10-15 | 📋 PLANNED |
+| Phase 2: Data Layer | 8-12 | ✅ DONE |
+| Phase 3: Tab 1 | 10-15 | 🔄 NEXT |
 | Phase 4: Tab 2 | 8-12 | 📋 PLANNED |
 | Phase 5: Tab 3 | 15-20 | 📋 PLANNED |
 | Phase 6: Tab 4 | 12-18 | 📋 PLANNED |
@@ -444,5 +446,5 @@ public class DatabaseService
 ---
 
 **Letzte Aktualisierung:** 2025-12-19
-**Status:** Phase 2 bereit zu starten
-**Nächster Milestone:** LiteDB Integration + DatabaseService
+**Status:** Phase 2 abgeschlossen ✅
+**Nächster Milestone:** Phase 3 - Bereitschaftsgruppen Import + Validierung
