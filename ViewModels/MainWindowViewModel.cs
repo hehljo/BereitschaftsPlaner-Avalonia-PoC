@@ -28,12 +28,18 @@ public partial class MainWindowViewModel : ViewModelBase
         _dbService = App.DatabaseService;
         _settingsService = App.SettingsService;
 
+        // Initialize sub-ViewModels
+        GeneratorVM = new GeneratorViewModel();
+
         // Load settings and apply theme
         LoadSettings();
 
         // Load existing data from database
         LoadDataFromDatabase();
     }
+
+    // Sub-ViewModels for complex views
+    public GeneratorViewModel GeneratorVM { get; }
 
     [ObservableProperty]
     private string _excelFilePath = string.Empty;

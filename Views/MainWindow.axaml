@@ -851,28 +851,330 @@
                 <!-- ============================================================================ -->
                 <!-- VIEW 3: GENERATOR (SelectedNavIndex == 2) -->
                 <!-- ============================================================================ -->
-                <ScrollViewer IsVisible="{Binding SelectedNavIndex, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=2}">
-                    <Grid Margin="20">
-                        <Border Background="{StaticResource YunexCyan}"
+                <ScrollViewer IsVisible="{Binding SelectedNavIndex, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=2}"
+                              DataContext="{Binding GeneratorVM}">
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>  <!-- Info Banner -->
+                            <RowDefinition Height="Auto"/>  <!-- Date Range & Resource -->
+                            <RowDefinition Height="*"/>     <!-- 2-Column: Filter + Selection -->
+                            <RowDefinition Height="Auto"/>  <!-- Statistics & Actions -->
+                        </Grid.RowDefinitions>
+
+                        <!-- Info Banner -->
+                        <Border Grid.Row="0"
+                                Background="{StaticResource YunexCyan}"
                                 Padding="{StaticResource SpacingMd}"
-                                CornerRadius="{StaticResource RadiusMedium}">
-                            <StackPanel Spacing="10">
-                                <TextBlock Text="⚡ Bereitschafts-Generator"
-                                           Foreground="White"
-                                           FontSize="{StaticResource FontSizeH2}"
-                                           FontFamily="{StaticResource HeadlineFont}"/>
-                                <TextBlock Text="Hier werden Bereitschaftsdienste automatisch generiert."
-                                           Foreground="White"
-                                           FontSize="{StaticResource FontSizeBody}"/>
-                                <TextBlock Text="✅ Backend: BereitschaftsGenerator.ps1 Logik"
-                                           Foreground="White"
-                                           FontSize="{StaticResource FontSizeSmall}"
-                                           FontStyle="Italic"/>
-                                <TextBlock Text="⏳ UI wird in Phase 3 implementiert"
-                                           Foreground="White"
-                                           FontSize="{StaticResource FontSizeSmall}"
-                                           FontStyle="Italic"/>
-                            </StackPanel>
+                                CornerRadius="{StaticResource RadiusMedium}"
+                                Margin="0,0,0,15">
+                            <TextBlock Text="⚡ Bereitschafts-Generator: Automatische Generierung"
+                                       Foreground="White"
+                                       FontSize="{StaticResource FontSizeH3}"
+                                       FontFamily="{StaticResource HeadlineFont}"/>
+                        </Border>
+
+                        <!-- Date Range & Resource Selection -->
+                        <Border Grid.Row="1"
+                                BorderBrush="{StaticResource YunexSteel}"
+                                BorderThickness="1"
+                                CornerRadius="{StaticResource RadiusMedium}"
+                                Padding="{StaticResource SpacingMd}"
+                                Margin="0,0,0,10">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Title -->
+                                <TextBlock Grid.Row="0"
+                                           Text="📅 Datumsbereich &amp; Ressource"
+                                           FontFamily="{StaticResource HeadlineFont}"
+                                           FontSize="{StaticResource FontSizeH4}"
+                                           Foreground="{StaticResource YunexRoyalBlue}"
+                                           Margin="0,0,0,10"/>
+
+                                <!-- Date Range -->
+                                <Grid Grid.Row="1" Margin="0,0,0,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Column="0"
+                                               Text="Von:"
+                                               VerticalAlignment="Center"
+                                               FontWeight="Bold"
+                                               Margin="0,0,10,0"/>
+
+                                    <DatePicker Grid.Column="1"
+                                                SelectedDate="{Binding StartDate}"/>
+
+                                    <TextBlock Grid.Column="3"
+                                               Text="Bis:"
+                                               VerticalAlignment="Center"
+                                               FontWeight="Bold"
+                                               Margin="0,0,10,0"/>
+
+                                    <DatePicker Grid.Column="4"
+                                                SelectedDate="{Binding EndDate}"/>
+
+                                    <!-- Quick Actions -->
+                                    <StackPanel Grid.Column="6" Orientation="Horizontal" Spacing="5">
+                                        <Button Content="Aktueller Monat"
+                                                Command="{Binding SetDateRangeCurrentMonthCommand}"
+                                                Background="{StaticResource YunexPurple}"
+                                                Foreground="White"
+                                                Height="28"
+                                                Padding="10,5"
+                                                FontSize="{StaticResource FontSizeSmall}"
+                                                CornerRadius="{StaticResource RadiusSmall}"/>
+                                        <Button Content="Nächster Monat"
+                                                Command="{Binding SetDateRangeNextMonthCommand}"
+                                                Background="{StaticResource YunexPurple}"
+                                                Foreground="White"
+                                                Height="28"
+                                                Padding="10,5"
+                                                FontSize="{StaticResource FontSizeSmall}"
+                                                CornerRadius="{StaticResource RadiusSmall}"/>
+                                        <Button Content="Aktuelles Quartal"
+                                                Command="{Binding SetDateRangeCurrentQuarterCommand}"
+                                                Background="{StaticResource YunexPurple}"
+                                                Foreground="White"
+                                                Height="28"
+                                                Padding="10,5"
+                                                FontSize="{StaticResource FontSizeSmall}"
+                                                CornerRadius="{StaticResource RadiusSmall}"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- Resource Selection -->
+                                <Grid Grid.Row="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Column="0"
+                                               Text="Ressource (Verantwortlich):"
+                                               VerticalAlignment="Center"
+                                               FontWeight="Bold"
+                                               Margin="0,0,10,0"/>
+
+                                    <ComboBox Grid.Column="1"
+                                              ItemsSource="{Binding Ressourcen}"
+                                              SelectedItem="{Binding SelectedRessource}"
+                                              DisplayMemberPath="Name"
+                                              MinWidth="300"
+                                              HorizontalAlignment="Left"/>
+                                </Grid>
+                            </Grid>
+                        </Border>
+
+                        <!-- 2-Column: Filter + Selection -->
+                        <Grid Grid.Row="2" Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- LEFT: Filter & Available Groups -->
+                            <Border Grid.Column="0"
+                                    BorderBrush="{StaticResource YunexSteel}"
+                                    BorderThickness="1"
+                                    CornerRadius="{StaticResource RadiusMedium}"
+                                    Padding="{StaticResource SpacingMd}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Title -->
+                                    <TextBlock Grid.Row="0"
+                                               Text="📋 Verfügbare Gruppen"
+                                               FontFamily="{StaticResource HeadlineFont}"
+                                               FontSize="{StaticResource FontSizeH4}"
+                                               Foreground="{StaticResource YunexRoyalBlue}"
+                                               Margin="0,0,0,10"/>
+
+                                    <!-- Bezirksfilter -->
+                                    <Grid Grid.Row="1" Margin="0,0,0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Column="0"
+                                                   Text="Bezirk:"
+                                                   VerticalAlignment="Center"
+                                                   FontWeight="Bold"
+                                                   Margin="0,0,10,0"/>
+
+                                        <ComboBox Grid.Column="1"
+                                                  ItemsSource="{Binding Bezirke}"
+                                                  SelectedItem="{Binding SelectedBezirk}"/>
+                                    </Grid>
+
+                                    <!-- Suchfeld -->
+                                    <TextBox Grid.Row="2"
+                                             Text="{Binding GruppenSuchtext}"
+                                             Watermark="🔍 Gruppen suchen..."
+                                             Margin="0,0,0,10"/>
+
+                                    <!-- Gruppenliste -->
+                                    <ListBox Grid.Row="3"
+                                             ItemsSource="{Binding FilteredGruppen}"
+                                             SelectionMode="Multiple"
+                                             BorderThickness="1"
+                                             BorderBrush="{StaticResource YunexSteel}">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                                    <Button Content="➕"
+                                                            Command="{Binding $parent[ScrollViewer].DataContext.AddGruppeCommand}"
+                                                            CommandParameter="{Binding}"
+                                                            Width="30"
+                                                            Height="30"
+                                                            Background="{StaticResource YunexGreen}"
+                                                            Foreground="White"
+                                                            CornerRadius="15"
+                                                            FontSize="14"
+                                                            Padding="0"/>
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+                                                        <TextBlock Text="{Binding Bezirk}"
+                                                                   FontSize="{StaticResource FontSizeSmall}"
+                                                                   Foreground="{StaticResource YunexGray}"/>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+
+                                    <!-- Alle auswählen Button -->
+                                    <Button Grid.Row="4"
+                                            Content="Alle hinzufügen"
+                                            Command="{Binding SelectAllFilteredCommand}"
+                                            Background="{StaticResource YunexRoyalBlue}"
+                                            Foreground="White"
+                                            HorizontalAlignment="Stretch"
+                                            Height="35"
+                                            Margin="0,10,0,0"
+                                            CornerRadius="{StaticResource RadiusSmall}"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- RIGHT: Selected Groups -->
+                            <Border Grid.Column="2"
+                                    BorderBrush="{StaticResource YunexSteel}"
+                                    BorderThickness="1"
+                                    CornerRadius="{StaticResource RadiusMedium}"
+                                    Padding="{StaticResource SpacingMd}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Title -->
+                                    <TextBlock Grid.Row="0"
+                                               Text="✅ Ausgewählte Gruppen"
+                                               FontFamily="{StaticResource HeadlineFont}"
+                                               FontSize="{StaticResource FontSizeH4}"
+                                               Foreground="{StaticResource YunexGreen}"
+                                               Margin="0,0,0,10"/>
+
+                                    <!-- Selected List -->
+                                    <ListBox Grid.Row="1"
+                                             ItemsSource="{Binding SelectedGruppen}"
+                                             BorderThickness="1"
+                                             BorderBrush="{StaticResource YunexSteel}">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                                    <Button Content="➖"
+                                                            Command="{Binding $parent[ScrollViewer].DataContext.RemoveGruppeCommand}"
+                                                            CommandParameter="{Binding}"
+                                                            Width="30"
+                                                            Height="30"
+                                                            Background="{StaticResource YunexOrange}"
+                                                            Foreground="White"
+                                                            CornerRadius="15"
+                                                            FontSize="14"
+                                                            Padding="0"/>
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+                                                        <TextBlock Text="{Binding Bezirk}"
+                                                                   FontSize="{StaticResource FontSizeSmall}"
+                                                                   Foreground="{StaticResource YunexGray}"/>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+
+                                    <!-- Clear Button -->
+                                    <Button Grid.Row="2"
+                                            Content="Alle entfernen"
+                                            Command="{Binding ClearSelectionCommand}"
+                                            Background="{StaticResource YunexOrange}"
+                                            Foreground="White"
+                                            HorizontalAlignment="Stretch"
+                                            Height="35"
+                                            Margin="0,10,0,0"
+                                            CornerRadius="{StaticResource RadiusSmall}"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
+
+                        <!-- Statistics & Generate Button -->
+                        <Border Grid.Row="3"
+                                BorderBrush="{StaticResource YunexSteel}"
+                                BorderThickness="1"
+                                CornerRadius="{StaticResource RadiusMedium}"
+                                Padding="{StaticResource SpacingMd}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Statistics -->
+                                <StackPanel Grid.Column="0" Spacing="5">
+                                    <TextBlock Text="{Binding StatisticsText}"
+                                               FontFamily="{StaticResource HeadlineFont}"
+                                               FontSize="{StaticResource FontSizeH4}"
+                                               Foreground="{Binding StatusColor}"/>
+                                    <TextBlock Text="{Binding StatusMessage}"
+                                               FontSize="{StaticResource FontSizeSmall}"
+                                               Foreground="{Binding StatusColor}"/>
+                                </StackPanel>
+
+                                <!-- Generate Button -->
+                                <Button Grid.Column="1"
+                                        Content="⚡ Generieren"
+                                        Command="{Binding GenerateCommand}"
+                                        Background="{StaticResource YunexCyan}"
+                                        Foreground="White"
+                                        Width="200"
+                                        Height="50"
+                                        FontSize="18"
+                                        FontFamily="{StaticResource HeadlineFont}"
+                                        CornerRadius="{StaticResource RadiusPill}"
+                                        IsEnabled="{Binding !IsGenerating}"/>
+                            </Grid>
                         </Border>
                     </Grid>
                 </ScrollViewer>
