@@ -7,8 +7,10 @@
         x:Class="BereitschaftsPlaner.Avalonia.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="Bereitschafts-Planer (Avalonia PoC)"
-        Width="1100" Height="750">
+        Title="Bereitschafts-Planer | Yunex Traffic"
+        Width="1100" Height="750"
+        FontFamily="{StaticResource BodyFont}"
+        FontSize="{StaticResource FontSizeBody}">
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
@@ -26,15 +28,26 @@
                 </Grid.RowDefinitions>
 
                 <!-- Info Banner -->
-                <Border Grid.Row="0" Background="#0078D4" Padding="15" CornerRadius="5" Margin="0,0,0,15">
-                    <TextBlock Text="PROOF OF CONCEPT: Excel-Import für Ressourcen"
+                <Border Grid.Row="0"
+                        Background="{StaticResource YunexOrange}"
+                        Padding="{StaticResource SpacingMd}"
+                        CornerRadius="{StaticResource RadiusMedium}"
+                        Margin="0,0,0,15"
+                        BoxShadow="{StaticResource ShadowSmall}">
+                    <TextBlock Text="Bereitschafts-Planer | Yunex Traffic"
                                Foreground="White"
-                               FontSize="16"
-                               FontWeight="Bold"/>
+                               FontSize="{StaticResource FontSizeH3}"
+                               FontFamily="{StaticResource HeadlineFont}"/>
                 </Border>
 
                 <!-- File Selection -->
-                <Border Grid.Row="1" BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="5" Padding="15" Margin="0,0,0,10">
+                <Border Grid.Row="1"
+                        BorderBrush="{StaticResource YunexSteel}"
+                        BorderThickness="1"
+                        CornerRadius="{StaticResource RadiusMedium}"
+                        Padding="{StaticResource SpacingMd}"
+                        Margin="0,0,0,10"
+                        BoxShadow="{StaticResource ShadowSmall}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -60,26 +73,29 @@
                                     Content="Durchsuchen"
                                     Command="{Binding BrowseFileCommand}"
                                     Width="120"
-                                    Background="#0078D4"
-                                    Foreground="White"/>
+                                    Background="{StaticResource YunexRoyalBlue}"
+                                    Foreground="White"
+                                    CornerRadius="{StaticResource RadiusSmall}"/>
                         </Grid>
 
                         <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10">
                             <Button Content="Excel importieren"
                                     Command="{Binding ImportExcelCommand}"
-                                    Background="#107C10"
+                                    Background="{StaticResource YunexGreen}"
                                     Foreground="White"
                                     Width="150"
                                     Height="35"
-                                    FontWeight="Bold"/>
+                                    FontFamily="{StaticResource HeadlineFont}"
+                                    CornerRadius="{StaticResource RadiusSmall}"/>
 
                             <Button Content="JSON speichern"
                                     Command="{Binding SaveJsonCommand}"
-                                    Background="#FF8C00"
+                                    Background="{StaticResource YunexPurple}"
                                     Foreground="White"
                                     Width="150"
                                     Height="35"
-                                    FontWeight="Bold"
+                                    FontFamily="{StaticResource HeadlineFont}"
+                                    CornerRadius="{StaticResource RadiusSmall}"
                                     IsEnabled="{Binding HasData}"/>
 
                             <TextBlock Text="{Binding StatusMessage}"
@@ -91,7 +107,12 @@
                 </Border>
 
                 <!-- Data Grid -->
-                <Border Grid.Row="2" BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="5" Padding="10">
+                <Border Grid.Row="2"
+                        BorderBrush="{StaticResource YunexSteel}"
+                        BorderThickness="1"
+                        CornerRadius="{StaticResource RadiusMedium}"
+                        Padding="{StaticResource SpacingSm}"
+                        BoxShadow="{StaticResource ShadowSmall}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -100,8 +121,8 @@
 
                         <TextBlock Grid.Row="0"
                                    Text="{Binding DataGridTitle}"
-                                   FontWeight="Bold"
-                                   FontSize="14"
+                                   FontFamily="{StaticResource HeadlineFont}"
+                                   FontSize="{StaticResource FontSizeH4}"
                                    Margin="0,0,0,10"/>
 
                         <DataGrid Grid.Row="1"
@@ -110,7 +131,7 @@
                                   IsReadOnly="True"
                                   GridLinesVisibility="All"
                                   BorderThickness="1"
-                                  BorderBrush="#CCCCCC">
+                                  BorderBrush="{StaticResource YunexSteel}">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Ressourcenname" Binding="{Binding Name}" Width="*"/>
                                 <DataGridTextColumn Header="Bezirk" Binding="{Binding Bezirk}" Width="*"/>
@@ -131,21 +152,28 @@
                 <!-- Info Footer -->
                 <Border Grid.Row="3"
                         Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
-                        Padding="10"
-                        CornerRadius="5"
+                        BorderBrush="{StaticResource YunexSteel}"
+                        BorderThickness="1"
+                        Padding="{StaticResource SpacingSm}"
+                        CornerRadius="{StaticResource RadiusSmall}"
                         Margin="0,10,0,0">
                     <StackPanel>
-                        <TextBlock FontWeight="Bold" Margin="0,0,0,5">
-                            <Run Text="PoC Technologien:"/>
+                        <TextBlock FontFamily="{StaticResource HeadlineFont}"
+                                   FontSize="{StaticResource FontSizeBody}"
+                                   Margin="0,0,0,5">
+                            <Run Text="Technologie-Stack:"/>
                         </TextBlock>
-                        <TextBlock TextWrapping="Wrap">
+                        <TextBlock TextWrapping="Wrap"
+                                   FontSize="{StaticResource FontSizeSmall}">
                             <Run Text="• Avalonia 11.3.10 (Cross-Platform UI)"/>
                             <LineBreak/>
-                            <Run Text="• ExcelDataReader (Plattformunabhängig, kein COM)"/>
+                            <Run Text="• LiteDB 5.0.21 (NoSQL Database)"/>
                             <LineBreak/>
-                            <Run Text="• .NET 9.0 (STS, kostenlos)"/>
+                            <Run Text="• ExcelDataReader (Plattformunabhängig)"/>
                             <LineBreak/>
-                            <Run Text="• MVVM Pattern (Modern Architecture)"/>
+                            <Run Text="• .NET 9.0 + MVVM Pattern"/>
+                            <LineBreak/>
+                            <Run Text="• Yunex Traffic Branding" Foreground="{StaticResource YunexOrange}"/>
                         </TextBlock>
                     </StackPanel>
                 </Border>
@@ -156,9 +184,15 @@
         <TabItem Header="  2. Vergleich PowerShell vs Avalonia  ">
             <ScrollViewer>
                 <StackPanel Margin="20" Spacing="15">
-                    <TextBlock Text="Technologie-Vergleich" FontSize="20" FontWeight="Bold"/>
+                    <TextBlock Text="Technologie-Vergleich"
+                               FontSize="{StaticResource FontSizeH2}"
+                               FontFamily="{StaticResource HeadlineFont}"/>
 
-                    <Border BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="5" Padding="15">
+                    <Border BorderBrush="{StaticResource YunexSteel}"
+                            BorderThickness="1"
+                            CornerRadius="{StaticResource RadiusMedium}"
+                            Padding="{StaticResource SpacingMd}"
+                            BoxShadow="{StaticResource ShadowSmall}">
                         <StackPanel Spacing="10">
                             <TextBlock Text="Performance" FontWeight="Bold" FontSize="16"/>
                             <Grid>
@@ -180,34 +214,34 @@
 
                                 <TextBlock Grid.Row="1" Grid.Column="0" Text=".exe Größe"/>
                                 <TextBlock Grid.Row="1" Grid.Column="1" Text="~1 MB (.ps1)"/>
-                                <TextBlock Grid.Row="1" Grid.Column="2" Text="~50-80 MB" Foreground="#FF8C00"/>
+                                <TextBlock Grid.Row="1" Grid.Column="2" Text="~50-80 MB" Foreground="{StaticResource YunexOrange}"/>
 
                                 <TextBlock Grid.Row="2" Grid.Column="0" Text="RAM Verbrauch"/>
                                 <TextBlock Grid.Row="2" Grid.Column="1" Text="100-200 MB"/>
-                                <TextBlock Grid.Row="2" Grid.Column="2" Text="80-120 MB" Foreground="Green"/>
+                                <TextBlock Grid.Row="2" Grid.Column="2" Text="80-120 MB" Foreground="{StaticResource YunexGreen}"/>
 
                                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Startzeit"/>
                                 <TextBlock Grid.Row="3" Grid.Column="1" Text="3-5 Sekunden"/>
-                                <TextBlock Grid.Row="3" Grid.Column="2" Text="&lt;1 Sekunde" Foreground="Green"/>
+                                <TextBlock Grid.Row="3" Grid.Column="2" Text="&lt;1 Sekunde" Foreground="{StaticResource YunexGreen}"/>
                             </Grid>
                         </StackPanel>
                     </Border>
 
-                    <Border BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="5" Padding="15">
+                    <Border BorderBrush="{StaticResource YunexSteel}" BorderThickness="1" CornerRadius="{StaticResource RadiusMedium}" Padding="{StaticResource SpacingMd}" BoxShadow="{StaticResource ShadowSmall}">
                         <StackPanel Spacing="10">
                             <TextBlock Text="Features" FontWeight="Bold" FontSize="16"/>
                             <TextBlock TextWrapping="Wrap">
-                                <Run Text="✅ Cross-Platform (Windows, macOS, Linux)" Foreground="Green"/><LineBreak/>
-                                <Run Text="✅ Native Performance (C# compiled)" Foreground="Green"/><LineBreak/>
-                                <Run Text="✅ Moderne UI (Fluent Design)" Foreground="Green"/><LineBreak/>
-                                <Run Text="✅ ExcelDataReader (kein COM, plattformunabhängig)" Foreground="Green"/><LineBreak/>
-                                <Run Text="✅ 100% Kostenlos (MIT Lizenz)" Foreground="Green"/><LineBreak/>
-                                <Run Text="⚠️  Größere .exe Datei (50-80 MB vs 1 MB)" Foreground="#FF8C00"/><LineBreak/>
+                                <Run Text="✅ Cross-Platform (Windows, macOS, Linux)" Foreground="{StaticResource YunexGreen}"/><LineBreak/>
+                                <Run Text="✅ Native Performance (C# compiled)" Foreground="{StaticResource YunexGreen}"/><LineBreak/>
+                                <Run Text="✅ Moderne UI (Fluent Design)" Foreground="{StaticResource YunexGreen}"/><LineBreak/>
+                                <Run Text="✅ ExcelDataReader (kein COM, plattformunabhängig)" Foreground="{StaticResource YunexGreen}"/><LineBreak/>
+                                <Run Text="✅ 100% Kostenlos (MIT Lizenz)" Foreground="{StaticResource YunexGreen}"/><LineBreak/>
+                                <Run Text="⚠️  Größere .exe Datei (50-80 MB vs 1 MB)" Foreground="{StaticResource StatusWarning}"/><LineBreak/>
                             </TextBlock>
                         </StackPanel>
                     </Border>
 
-                    <Border BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="5" Padding="15">
+                    <Border BorderBrush="{StaticResource YunexSteel}" BorderThickness="1" CornerRadius="{StaticResource RadiusMedium}" Padding="{StaticResource SpacingMd}" BoxShadow="{StaticResource ShadowSmall}">
                         <StackPanel Spacing="10">
                             <TextBlock Text="Entwicklung" FontWeight="Bold" FontSize="16"/>
                             <TextBlock TextWrapping="Wrap">
