@@ -35,7 +35,13 @@ public partial class MainWindowViewModel : ViewModelBase
     private string _excelFilePath = string.Empty;
 
     [ObservableProperty]
+    private string _gruppenFilePath = string.Empty;
+
+    [ObservableProperty]
     private ObservableCollection<Ressource> _ressourcen = new();
+
+    [ObservableProperty]
+    private ObservableCollection<BereitschaftsGruppe> _bereitschaftsGruppen = new();
 
     [ObservableProperty]
     private string _statusMessage = "Bereit";
@@ -45,6 +51,9 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool _hasData = false;
+
+    [ObservableProperty]
+    private bool _hasGruppenData = false;
 
     [ObservableProperty]
     private bool _isDarkMode = false;
@@ -146,6 +155,88 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private async Task BrowseGruppenFile()
+    {
+        try
+        {
+            var mainWindow = App.MainWindow;
+            if (mainWindow?.StorageProvider == null)
+            {
+                SetStatus("Fehler: Hauptfenster nicht verfügbar", Brushes.Red);
+                return;
+            }
+
+            var files = await mainWindow.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                Title = "Bereitschaftsgruppen Excel-Datei auswählen",
+                AllowMultiple = false,
+                FileTypeFilter = new[]
+                {
+                    new FilePickerFileType("Excel Dateien") { Patterns = new[] { "*.xlsx", "*.xls" } },
+                    new FilePickerFileType("Alle Dateien") { Patterns = new[] { "*.*" } }
+                }
+            });
+
+            if (files.Count > 0)
+            {
+                GruppenFilePath = files[0].Path.LocalPath;
+                SetStatus($"Gruppendatei ausgewählt: {Path.GetFileName(GruppenFilePath)}", Brushes.Blue);
+            }
+        }
+        catch (Exception ex)
+        {
+            SetStatus($"Fehler bei Dateiauswahl: {ex.Message}", Brushes.Red);
+        }
+    }
+
+    [RelayCommand]
+    private void ImportGruppen()
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(GruppenFilePath))
+            {
+                SetStatus("Bitte zuerst eine Excel-Datei für Gruppen auswählen", Brushes.Orange);
+                return;
+            }
+
+            SetStatus("Importiere Bereitschaftsgruppen...", Brushes.Blue);
+
+            var result = _excelService.ImportBereitschaftsGruppen(GruppenFilePath);
+
+            if (result.Success)
+            {
+                // Save to database
+                _dbService.SaveBereitschaftsGruppen(result.Gruppen);
+
+                // Update UI
+                BereitschaftsGruppen.Clear();
+                foreach (var gruppe in result.Gruppen)
+                {
+                    BereitschaftsGruppen.Add(gruppe);
+                }
+
+                HasGruppenData = BereitschaftsGruppen.Count > 0;
+
+                // Clear file path after successful import
+                GruppenFilePath = string.Empty;
+
+                SetStatus($"{result.Message} (in Datenbank gespeichert)", Brushes.Green);
+            }
+            else
+            {
+                SetStatus(result.Message, Brushes.Red);
+                HasGruppenData = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            SetStatus($"Fehler beim Import: {ex.Message}", Brushes.Red);
+            HasGruppenData = false;
+        }
+    }
+
+    [RelayCommand]
     private async Task SaveJson()
     {
         try
@@ -208,8 +299,8 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         try
         {
+            // Load Ressourcen
             var ressourcenFromDb = _dbService.GetAllRessourcen();
-
             if (ressourcenFromDb.Count > 0)
             {
                 Ressourcen.Clear();
@@ -217,10 +308,26 @@ public partial class MainWindowViewModel : ViewModelBase
                 {
                     Ressourcen.Add(ressource);
                 }
-
                 HasData = true;
                 OnPropertyChanged(nameof(DataGridTitle));
-                SetStatus($"{ressourcenFromDb.Count} Ressourcen aus Datenbank geladen", Brushes.Green);
+            }
+
+            // Load Bereitschaftsgruppen
+            var gruppenFromDb = _dbService.GetAllBereitschaftsGruppen();
+            if (gruppenFromDb.Count > 0)
+            {
+                BereitschaftsGruppen.Clear();
+                foreach (var gruppe in gruppenFromDb)
+                {
+                    BereitschaftsGruppen.Add(gruppe);
+                }
+                HasGruppenData = true;
+            }
+
+            // Status message
+            if (ressourcenFromDb.Count > 0 || gruppenFromDb.Count > 0)
+            {
+                SetStatus($"{ressourcenFromDb.Count} Ressourcen, {gruppenFromDb.Count} Gruppen aus Datenbank geladen", Brushes.Green);
             }
             else
             {

@@ -91,6 +91,75 @@ public class ExcelImportService
     }
 
     /// <summary>
+    /// Imports Bereitschaftsgruppen from Excel file
+    /// </summary>
+    public (bool Success, List<BereitschaftsGruppe> Gruppen, string Message) ImportBereitschaftsGruppen(string filePath)
+    {
+        try
+        {
+            if (!File.Exists(filePath))
+            {
+                return (false, new List<BereitschaftsGruppe>(), $"Datei nicht gefunden: {filePath}");
+            }
+
+            using var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var reader = ExcelReaderFactory.CreateReader(stream);
+
+            var dataSet = reader.AsDataSet(new ExcelDataSetConfiguration
+            {
+                ConfigureDataTable = _ => new ExcelDataTableConfiguration
+                {
+                    UseHeaderRow = true
+                }
+            });
+
+            if (dataSet.Tables.Count == 0)
+            {
+                return (false, new List<BereitschaftsGruppe>(), "Keine Tabellen in Excel gefunden");
+            }
+
+            var table = dataSet.Tables[0];
+            var gruppen = new List<BereitschaftsGruppe>();
+
+            // Find columns
+            int colName = FindColumn(table, "Name", "Bereitschaftsgruppe", "Gruppe");
+            int colBezirk = FindColumn(table, "Bezirk", "Organisationsdaten", "District");
+            int colVerantwortlich = FindColumn(table, "Verantwortliche Person", "Verantwortlich", "Owner");
+
+            if (colName == -1)
+            {
+                var availableColumns = string.Join(", ", table.Columns.Cast<DataColumn>().Select(c => c.ColumnName));
+                return (false, new List<BereitschaftsGruppe>(),
+                    $"Spalte 'Name' nicht gefunden.\n\nGefunden: {availableColumns}");
+            }
+
+            // Read data rows
+            foreach (DataRow row in table.Rows)
+            {
+                var name = row[colName]?.ToString()?.Trim() ?? string.Empty;
+                var bezirk = colBezirk != -1 ? (row[colBezirk]?.ToString()?.Trim() ?? string.Empty) : string.Empty;
+                var verantwortlich = colVerantwortlich != -1 ? (row[colVerantwortlich]?.ToString()?.Trim() ?? string.Empty) : string.Empty;
+
+                if (!string.IsNullOrWhiteSpace(name))
+                {
+                    gruppen.Add(new BereitschaftsGruppe
+                    {
+                        Name = name,
+                        Bezirk = bezirk,
+                        VerantwortlichePerson = verantwortlich
+                    });
+                }
+            }
+
+            return (true, gruppen, $"{gruppen.Count} Bereitschaftsgruppen erfolgreich gelesen");
+        }
+        catch (Exception ex)
+        {
+            return (false, new List<BereitschaftsGruppe>(), $"Fehler beim Lesen: {ex.Message}");
+        }
+    }
+
+    /// <summary>
     /// Saves resources to JSON file
     /// </summary>
     public (bool Success, string Message) SaveToJson(List<Ressource> ressourcen, string jsonPath)
