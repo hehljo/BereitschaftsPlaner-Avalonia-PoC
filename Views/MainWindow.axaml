@@ -16,7 +16,55 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TabControl Margin="10">
+    <DockPanel>
+        <!-- Top Bar: Dark Mode + Environment Switcher -->
+        <Border DockPanel.Dock="Top"
+                Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                BorderBrush="{StaticResource YunexSteel}"
+                BorderThickness="0,0,0,1"
+                Padding="{StaticResource SpacingSm}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Copyright -->
+                <TextBlock Grid.Column="0"
+                           Text="© 2025 Johannes Hehl"
+                           VerticalAlignment="Center"
+                           FontSize="{StaticResource FontSizeSmall}"
+                           Foreground="{StaticResource YunexGray}"/>
+
+                <!-- Environment Switcher -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" Margin="0,0,16,0">
+                    <TextBlock Text="Umgebung:"
+                               VerticalAlignment="Center"
+                               FontSize="{StaticResource FontSizeSmall}"/>
+                    <ComboBox SelectedIndex="{Binding EnvironmentIndex}"
+                              MinWidth="120"
+                              FontSize="{StaticResource FontSizeSmall}">
+                        <ComboBoxItem Content="Production"/>
+                        <ComboBoxItem Content="QA"/>
+                    </ComboBox>
+                </StackPanel>
+
+                <!-- Dark Mode Toggle -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="🌙"
+                               VerticalAlignment="Center"
+                               FontSize="16"/>
+                    <ToggleSwitch IsChecked="{Binding IsDarkMode}"
+                                  OffContent="Light"
+                                  OnContent="Dark"
+                                  FontSize="{StaticResource FontSizeSmall}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Main Content -->
+        <TabControl Margin="10" DockPanel.Dock="Top">
         <!-- Tab 1: Ressourcen Import -->
         <TabItem Header="  1. Ressourcen Import  ">
             <Grid Margin="10">
@@ -257,5 +305,5 @@
             </ScrollViewer>
         </TabItem>
     </TabControl>
-
+    </DockPanel>
 </Window>

@@ -16,7 +16,8 @@ public class AppSettings
     public DateTime LastBackupDate { get; set; } = DateTime.MinValue;
 
     // UI Preferences
-    public bool DarkModeEnabled { get; set; } = true;
+    public bool DarkModeEnabled { get; set; } = false; // Default: Light Mode
+    public string Environment { get; set; } = "Production"; // Production or QA
     public string LastSelectedGruppe { get; set; } = string.Empty;
     public string LastSelectedZeitprofil { get; set; } = string.Empty;
 }

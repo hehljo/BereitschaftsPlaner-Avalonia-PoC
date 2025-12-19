@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Media;
 using Avalonia.Platform.Storage;
+using Avalonia.Styling;
 using BereitschaftsPlaner.Avalonia.Models;
 using BereitschaftsPlaner.Avalonia.Services;
 using BereitschaftsPlaner.Avalonia.Services.Data;
@@ -24,6 +25,9 @@ public partial class MainWindowViewModel : ViewModelBase
         _dbService = App.DatabaseService;
         _settingsService = App.SettingsService;
 
+        // Load settings and apply theme
+        LoadSettings();
+
         // Load existing data from database
         LoadDataFromDatabase();
     }
@@ -42,6 +46,12 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool _hasData = false;
+
+    [ObservableProperty]
+    private bool _isDarkMode = false;
+
+    [ObservableProperty]
+    private int _environmentIndex = 0; // 0 = Production, 1 = QA
 
     public string DataGridTitle => HasData
         ? $"Importierte Ressourcen ({Ressourcen.Count} Einträge)"
@@ -228,5 +238,68 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         StatusMessage = message;
         StatusColor = color;
+    }
+
+    /// <summary>
+    /// Load settings (theme, environment)
+    /// </summary>
+    private void LoadSettings()
+    {
+        var settings = _settingsService.LoadSettings();
+        IsDarkMode = settings.DarkModeEnabled;
+        EnvironmentIndex = settings.Environment == "QA" ? 1 : 0;
+
+        // Apply theme
+        ApplyTheme(IsDarkMode);
+    }
+
+    /// <summary>
+    /// Called when Dark Mode toggle changes
+    /// </summary>
+    partial void OnIsDarkModeChanged(bool value)
+    {
+        ApplyTheme(value);
+        SaveThemeSettings();
+    }
+
+    /// <summary>
+    /// Called when Environment selection changes
+    /// </summary>
+    partial void OnEnvironmentIndexChanged(int value)
+    {
+        SaveEnvironmentSettings();
+    }
+
+    /// <summary>
+    /// Apply Dark/Light theme
+    /// </summary>
+    private void ApplyTheme(bool isDark)
+    {
+        if (App.MainWindow != null)
+        {
+            var themeVariant = isDark ? Avalonia.Styling.ThemeVariant.Dark : Avalonia.Styling.ThemeVariant.Light;
+            App.MainWindow.RequestedThemeVariant = themeVariant;
+        }
+    }
+
+    /// <summary>
+    /// Save theme preference to settings
+    /// </summary>
+    private void SaveThemeSettings()
+    {
+        _settingsService.UpdateSetting<AppSettings>(s =>
+            s.DarkModeEnabled = IsDarkMode
+        );
+    }
+
+    /// <summary>
+    /// Save environment preference to settings
+    /// </summary>
+    private void SaveEnvironmentSettings()
+    {
+        var environment = EnvironmentIndex == 1 ? "QA" : "Production";
+        _settingsService.UpdateSetting<AppSettings>(s =>
+            s.Environment = environment
+        );
     }
 }
