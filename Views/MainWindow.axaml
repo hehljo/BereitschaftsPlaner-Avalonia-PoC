@@ -129,7 +129,11 @@
                 </Border>
 
                 <!-- Info Footer -->
-                <Border Grid.Row="3" Background="#F0F0F0" Padding="10" CornerRadius="5" Margin="0,10,0,0">
+                <Border Grid.Row="3"
+                        Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                        Padding="10"
+                        CornerRadius="5"
+                        Margin="0,10,0,0">
                     <StackPanel>
                         <TextBlock FontWeight="Bold" Margin="0,0,0,5">
                             <Run Text="PoC Technologien:"/>
@@ -139,7 +143,7 @@
                             <LineBreak/>
                             <Run Text="• ExcelDataReader (Plattformunabhängig, kein COM)"/>
                             <LineBreak/>
-                            <Run Text="• .NET 8.0 (LTS, kostenlos)"/>
+                            <Run Text="• .NET 9.0 (STS, kostenlos)"/>
                             <LineBreak/>
                             <Run Text="• MVVM Pattern (Modern Architecture)"/>
                         </TextBlock>
