@@ -33,7 +33,7 @@
                         Padding="{StaticResource SpacingMd}"
                         CornerRadius="{StaticResource RadiusMedium}"
                         Margin="0,0,0,15"
-                        BoxShadow="{StaticResource ShadowSmall}">
+                        >
                     <TextBlock Text="Bereitschafts-Planer | Yunex Traffic"
                                Foreground="White"
                                FontSize="{StaticResource FontSizeH3}"
@@ -47,7 +47,7 @@
                         CornerRadius="{StaticResource RadiusMedium}"
                         Padding="{StaticResource SpacingMd}"
                         Margin="0,0,0,10"
-                        BoxShadow="{StaticResource ShadowSmall}">
+                        >
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -112,7 +112,7 @@
                         BorderThickness="1"
                         CornerRadius="{StaticResource RadiusMedium}"
                         Padding="{StaticResource SpacingSm}"
-                        BoxShadow="{StaticResource ShadowSmall}">
+                        >
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -192,7 +192,7 @@
                             BorderThickness="1"
                             CornerRadius="{StaticResource RadiusMedium}"
                             Padding="{StaticResource SpacingMd}"
-                            BoxShadow="{StaticResource ShadowSmall}">
+                            >
                         <StackPanel Spacing="10">
                             <TextBlock Text="Performance" FontWeight="Bold" FontSize="16"/>
                             <Grid>
@@ -227,7 +227,7 @@
                         </StackPanel>
                     </Border>
 
-                    <Border BorderBrush="{StaticResource YunexSteel}" BorderThickness="1" CornerRadius="{StaticResource RadiusMedium}" Padding="{StaticResource SpacingMd}" BoxShadow="{StaticResource ShadowSmall}">
+                    <Border BorderBrush="{StaticResource YunexSteel}" BorderThickness="1" CornerRadius="{StaticResource RadiusMedium}" Padding="{StaticResource SpacingMd}" >
                         <StackPanel Spacing="10">
                             <TextBlock Text="Features" FontWeight="Bold" FontSize="16"/>
                             <TextBlock TextWrapping="Wrap">
@@ -241,7 +241,7 @@
                         </StackPanel>
                     </Border>
 
-                    <Border BorderBrush="{StaticResource YunexSteel}" BorderThickness="1" CornerRadius="{StaticResource RadiusMedium}" Padding="{StaticResource SpacingMd}" BoxShadow="{StaticResource ShadowSmall}">
+                    <Border BorderBrush="{StaticResource YunexSteel}" BorderThickness="1" CornerRadius="{StaticResource RadiusMedium}" Padding="{StaticResource SpacingMd}" >
                         <StackPanel Spacing="10">
                             <TextBlock Text="Entwicklung" FontWeight="Bold" FontSize="16"/>
                             <TextBlock TextWrapping="Wrap">

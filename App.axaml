@@ -56,10 +56,5 @@
         <CornerRadius x:Key="RadiusSmall">4</CornerRadius>
         <CornerRadius x:Key="RadiusMedium">8</CornerRadius>
         <CornerRadius x:Key="RadiusLarge">12</CornerRadius>
-
-        <!-- Shadows -->
-        <BoxShadow x:Key="ShadowSmall">0 2 4 0 #20000000</BoxShadow>
-        <BoxShadow x:Key="ShadowMedium">0 4 8 0 #30000000</BoxShadow>
-        <BoxShadow x:Key="ShadowLarge">0 8 16 0 #40000000</BoxShadow>
     </Application.Resources>
 </Application>
