@@ -335,80 +335,15 @@
             </ScrollViewer>
         </TabItem>
 
-        <!-- Tab 2: Vergleich (Info) -->
-        <TabItem Header="  2. Vergleich PowerShell vs Avalonia  ">
+        <!-- Tab 2: Zeitprofile Management -->
+        <TabItem Header="  2. Zeitprofile  ">
             <ScrollViewer>
-                <StackPanel Margin="20" Spacing="15">
-                    <TextBlock Text="Technologie-Vergleich"
-                               FontSize="{StaticResource FontSizeH2}"
-                               FontFamily="{StaticResource HeadlineFont}"/>
-
-                    <Border BorderBrush="{StaticResource YunexSteel}"
-                            BorderThickness="1"
-                            CornerRadius="{StaticResource RadiusMedium}"
-                            Padding="{StaticResource SpacingMd}"
-                            >
-                        <StackPanel Spacing="10">
-                            <TextBlock Text="Performance" FontWeight="Bold" FontSize="16"/>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="200"/>
-                                    <ColumnDefinition Width="150"/>
-                                    <ColumnDefinition Width="150"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-
-                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Metrik" FontWeight="Bold"/>
-                                <TextBlock Grid.Row="0" Grid.Column="1" Text="PowerShell" FontWeight="Bold"/>
-                                <TextBlock Grid.Row="0" Grid.Column="2" Text="Avalonia" FontWeight="Bold"/>
-
-                                <TextBlock Grid.Row="1" Grid.Column="0" Text=".exe Größe"/>
-                                <TextBlock Grid.Row="1" Grid.Column="1" Text="~1 MB (.ps1)"/>
-                                <TextBlock Grid.Row="1" Grid.Column="2" Text="~50-80 MB" Foreground="{StaticResource YunexOrange}"/>
-
-                                <TextBlock Grid.Row="2" Grid.Column="0" Text="RAM Verbrauch"/>
-                                <TextBlock Grid.Row="2" Grid.Column="1" Text="100-200 MB"/>
-                                <TextBlock Grid.Row="2" Grid.Column="2" Text="80-120 MB" Foreground="{StaticResource YunexGreen}"/>
-
-                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Startzeit"/>
-                                <TextBlock Grid.Row="3" Grid.Column="1" Text="3-5 Sekunden"/>
-                                <TextBlock Grid.Row="3" Grid.Column="2" Text="&lt;1 Sekunde" Foreground="{StaticResource YunexGreen}"/>
-                            </Grid>
-                        </StackPanel>
-                    </Border>
-
-                    <Border BorderBrush="{StaticResource YunexSteel}" BorderThickness="1" CornerRadius="{StaticResource RadiusMedium}" Padding="{StaticResource SpacingMd}" >
-                        <StackPanel Spacing="10">
-                            <TextBlock Text="Features" FontWeight="Bold" FontSize="16"/>
-                            <TextBlock TextWrapping="Wrap">
-                                <Run Text="✅ Cross-Platform (Windows, macOS, Linux)" Foreground="{StaticResource YunexGreen}"/><LineBreak/>
-                                <Run Text="✅ Native Performance (C# compiled)" Foreground="{StaticResource YunexGreen}"/><LineBreak/>
-                                <Run Text="✅ Moderne UI (Fluent Design)" Foreground="{StaticResource YunexGreen}"/><LineBreak/>
-                                <Run Text="✅ ExcelDataReader (kein COM, plattformunabhängig)" Foreground="{StaticResource YunexGreen}"/><LineBreak/>
-                                <Run Text="✅ 100% Kostenlos (MIT Lizenz)" Foreground="{StaticResource YunexGreen}"/><LineBreak/>
-                                <Run Text="⚠️  Größere .exe Datei (50-80 MB vs 1 MB)" Foreground="{StaticResource StatusWarning}"/><LineBreak/>
-                            </TextBlock>
-                        </StackPanel>
-                    </Border>
-
-                    <Border BorderBrush="{StaticResource YunexSteel}" BorderThickness="1" CornerRadius="{StaticResource RadiusMedium}" Padding="{StaticResource SpacingMd}" >
-                        <StackPanel Spacing="10">
-                            <TextBlock Text="Entwicklung" FontWeight="Bold" FontSize="16"/>
-                            <TextBlock TextWrapping="Wrap">
-                                <Run Text="• PowerShell → C# Migration: ~60-90 Stunden"/><LineBreak/>
-                                <Run Text="• XAML UI (ähnlich WPF)"/><LineBreak/>
-                                <Run Text="• MVVM Pattern (Clean Architecture)"/><LineBreak/>
-                                <Run Text="• Hot Reload Entwicklung"/><LineBreak/>
-                                <Run Text="• Visual Studio / Rider / VS Code"/><LineBreak/>
-                            </TextBlock>
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
+                <TextBlock Text="⚠️ Tab 2 (Zeitprofile) - UI wird implementiert"
+                           FontSize="24"
+                           Margin="50"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Foreground="{StaticResource YunexOrange}"/>
             </ScrollViewer>
         </TabItem>
     </TabControl>
