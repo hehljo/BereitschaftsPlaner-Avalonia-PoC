@@ -338,12 +338,354 @@
         <!-- Tab 2: Zeitprofile Management -->
         <TabItem Header="  2. Zeitprofile  ">
             <ScrollViewer>
-                <TextBlock Text="⚠️ Tab 2 (Zeitprofile) - UI wird implementiert"
-                           FontSize="24"
-                           Margin="50"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           Foreground="{StaticResource YunexOrange}"/>
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>  <!-- Info Banner -->
+                        <RowDefinition Height="Auto"/>  <!-- Profile Selection -->
+                        <RowDefinition Height="Auto"/>  <!-- Profile Name -->
+                        <RowDefinition Height="Auto"/>  <!-- Wochenzeitplan -->
+                        <RowDefinition Height="Auto"/>  <!-- Feiertage -->
+                        <RowDefinition Height="Auto"/>  <!-- Gruppen Zuweisungen -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Info Banner -->
+                    <Border Grid.Row="0"
+                            Background="{StaticResource YunexPurple}"
+                            Padding="{StaticResource SpacingMd}"
+                            CornerRadius="{StaticResource RadiusMedium}"
+                            Margin="0,0,0,15">
+                        <TextBlock Text="⏰ Zeitprofile: Bereitschaftsdienst &amp; Tagesdienst konfigurieren"
+                                   Foreground="White"
+                                   FontSize="{StaticResource FontSizeH3}"
+                                   FontFamily="{StaticResource HeadlineFont}"/>
+                    </Border>
+
+                    <!-- Profil-Auswahl & Verwaltung -->
+                    <Border Grid.Row="1"
+                            BorderBrush="{StaticResource YunexSteel}"
+                            BorderThickness="1"
+                            CornerRadius="{StaticResource RadiusMedium}"
+                            Padding="{StaticResource SpacingMd}"
+                            Margin="0,0,0,10">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="📂 Profil-Verwaltung"
+                                       FontFamily="{StaticResource HeadlineFont}"
+                                       FontSize="{StaticResource FontSizeH4}"
+                                       Foreground="{StaticResource YunexRoyalBlue}"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0"
+                                           Text="Aktives Profil:"
+                                           VerticalAlignment="Center"
+                                           FontWeight="Bold"
+                                           Margin="0,0,10,0"/>
+
+                                <ComboBox Grid.Column="1"
+                                          ItemsSource="{Binding Zeitprofile}"
+                                          SelectedItem="{Binding SelectedZeitprofil}"
+                                          DisplayMemberPath="Name"
+                                          MinWidth="300"
+                                          Margin="0,0,10,0"/>
+
+                                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="5">
+                                    <Button Content="💾 Speichern"
+                                            Command="{Binding SaveSelectedProfilCommand}"
+                                            Background="{StaticResource YunexGreen}"
+                                            Foreground="White"
+                                            Width="120"
+                                            Height="32"
+                                            CornerRadius="{StaticResource RadiusSmall}"/>
+
+                                    <Button Content="📋 Kopieren"
+                                            Command="{Binding CopySelectedProfilCommand}"
+                                            Background="{StaticResource YunexPurple}"
+                                            Foreground="White"
+                                            Width="120"
+                                            Height="32"
+                                            CornerRadius="{StaticResource RadiusSmall}"/>
+
+                                    <Button Content="🗑️ Löschen"
+                                            Command="{Binding DeleteSelectedProfilCommand}"
+                                            Background="{StaticResource YunexOrange}"
+                                            Foreground="White"
+                                            Width="120"
+                                            Height="32"
+                                            CornerRadius="{StaticResource RadiusSmall}"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Neues Profil erstellen -->
+                            <Separator Background="{StaticResource YunexSteel}" Height="1" Margin="0,5,0,5"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0"
+                                           Text="Neues Profil:"
+                                           VerticalAlignment="Center"
+                                           FontWeight="Bold"
+                                           Margin="0,0,10,0"/>
+
+                                <TextBox Grid.Column="1"
+                                         Text="{Binding NewProfilName}"
+                                         Watermark="Name für neues Profil eingeben..."
+                                         Margin="0,0,10,0"/>
+
+                                <Button Grid.Column="2"
+                                        Content="➕ Erstellen"
+                                        Command="{Binding CreateNewProfilCommand}"
+                                        Background="{StaticResource YunexRoyalBlue}"
+                                        Foreground="White"
+                                        Width="120"
+                                        Height="32"
+                                        CornerRadius="{StaticResource RadiusSmall}"/>
+                            </Grid>
+
+                            <!-- Status Message -->
+                            <TextBlock Text="{Binding StatusMessage}"
+                                       Foreground="{Binding StatusColor}"
+                                       FontWeight="Bold"
+                                       FontSize="{StaticResource FontSizeSmall}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Profil Name (wenn Profil ausgewählt) -->
+                    <Border Grid.Row="2"
+                            BorderBrush="{StaticResource YunexSteel}"
+                            BorderThickness="1"
+                            CornerRadius="{StaticResource RadiusMedium}"
+                            Padding="{StaticResource SpacingMd}"
+                            Margin="0,0,0,10"
+                            IsVisible="{Binding SelectedZeitprofil, Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="✏️ Profil-Details"
+                                       FontFamily="{StaticResource HeadlineFont}"
+                                       FontSize="{StaticResource FontSizeH4}"
+                                       Foreground="{StaticResource YunexRoyalBlue}"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0"
+                                           Text="Profil-Name:"
+                                           VerticalAlignment="Center"
+                                           FontWeight="Bold"
+                                           Margin="0,0,10,0"/>
+
+                                <TextBox Grid.Column="1"
+                                         Text="{Binding SelectedZeitprofil.Name}"
+                                         Watermark="Profilname"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Wochenzeitplan: BD + TD -->
+                    <Border Grid.Row="3"
+                            BorderBrush="{StaticResource YunexSteel}"
+                            BorderThickness="1"
+                            CornerRadius="{StaticResource RadiusMedium}"
+                            Padding="{StaticResource SpacingMd}"
+                            Margin="0,0,0,10"
+                            IsVisible="{Binding SelectedZeitprofil, Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <StackPanel Spacing="15">
+                            <TextBlock Text="📅 Wochenzeitplan"
+                                       FontFamily="{StaticResource HeadlineFont}"
+                                       FontSize="{StaticResource FontSizeH4}"
+                                       Foreground="{StaticResource YunexRoyalBlue}"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="10"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- LEFT: Bereitschaftstage (BD) -->
+                                <StackPanel Grid.Column="0" Spacing="10">
+                                    <TextBlock Text="🌙 Bereitschaftsdienst (BD)"
+                                               FontWeight="Bold"
+                                               FontSize="{StaticResource FontSizeBody}"
+                                               Foreground="{StaticResource YunexPurple}"/>
+
+                                    <DataGrid ItemsSource="{Binding SelectedZeitprofil.BereitschaftsTage}"
+                                              AutoGenerateColumns="False"
+                                              GridLinesVisibility="All"
+                                              BorderThickness="1"
+                                              BorderBrush="{StaticResource YunexSteel}"
+                                              Height="220">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Tag" Binding="{Binding Tag}" Width="*" IsReadOnly="True"/>
+                                            <DataGridTextColumn Header="Von" Binding="{Binding Von}" Width="80"/>
+                                            <DataGridTextColumn Header="Bis" Binding="{Binding Bis}" Width="80"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+
+                                    <TextBlock Text="💡 Standard: Mo-So 16:00-07:30 (Folgetag)"
+                                               FontSize="{StaticResource FontSizeSmall}"
+                                               Foreground="{StaticResource YunexGray}"
+                                               FontStyle="Italic"/>
+                                </StackPanel>
+
+                                <!-- RIGHT: Tagesdienste (TD) -->
+                                <StackPanel Grid.Column="2" Spacing="10">
+                                    <TextBlock Text="☀️ Tagesdienst (TD)"
+                                               FontWeight="Bold"
+                                               FontSize="{StaticResource FontSizeBody}"
+                                               Foreground="{StaticResource YunexGreen}"/>
+
+                                    <DataGrid ItemsSource="{Binding SelectedZeitprofil.Tagesdienste}"
+                                              AutoGenerateColumns="False"
+                                              GridLinesVisibility="All"
+                                              BorderThickness="1"
+                                              BorderBrush="{StaticResource YunexSteel}"
+                                              Height="220">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Tag" Binding="{Binding Tag}" Width="*" IsReadOnly="True"/>
+                                            <DataGridTextColumn Header="Von" Binding="{Binding Von}" Width="80"/>
+                                            <DataGridTextColumn Header="Bis" Binding="{Binding Bis}" Width="80"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+
+                                    <TextBlock Text="💡 Standard: Mo-Do 07:30-16:00, Fr 07:30-12:30"
+                                               FontSize="{StaticResource FontSizeSmall}"
+                                               Foreground="{StaticResource YunexGray}"
+                                               FontStyle="Italic"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Feiertags-Konfiguration -->
+                    <Border Grid.Row="4"
+                            BorderBrush="{StaticResource YunexSteel}"
+                            BorderThickness="1"
+                            CornerRadius="{StaticResource RadiusMedium}"
+                            Padding="{StaticResource SpacingMd}"
+                            Margin="0,0,0,10"
+                            IsVisible="{Binding SelectedZeitprofil, Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="🎉 Feiertags-Konfiguration"
+                                       FontFamily="{StaticResource HeadlineFont}"
+                                       FontSize="{StaticResource FontSizeH4}"
+                                       Foreground="{StaticResource YunexRoyalBlue}"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="200"/>
+                                    <ColumnDefinition Width="20"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="200"/>
+                                    <ColumnDefinition Width="20"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="200"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Bundesland -->
+                                <TextBlock Grid.Column="0"
+                                           Text="Bundesland:"
+                                           VerticalAlignment="Center"
+                                           FontWeight="Bold"
+                                           Margin="0,0,10,0"/>
+
+                                <ComboBox Grid.Column="1"
+                                          SelectedValue="{Binding SelectedZeitprofil.Bundesland}">
+                                    <ComboBoxItem Content="BY - Bayern"/>
+                                    <ComboBoxItem Content="BW - Baden-Württemberg"/>
+                                    <ComboBoxItem Content="BE - Berlin"/>
+                                    <ComboBoxItem Content="BB - Brandenburg"/>
+                                    <ComboBoxItem Content="HB - Bremen"/>
+                                    <ComboBoxItem Content="HH - Hamburg"/>
+                                    <ComboBoxItem Content="HE - Hessen"/>
+                                    <ComboBoxItem Content="MV - Mecklenburg-Vorpommern"/>
+                                    <ComboBoxItem Content="NI - Niedersachsen"/>
+                                    <ComboBoxItem Content="NW - Nordrhein-Westfalen"/>
+                                    <ComboBoxItem Content="RP - Rheinland-Pfalz"/>
+                                    <ComboBoxItem Content="SL - Saarland"/>
+                                    <ComboBoxItem Content="SN - Sachsen"/>
+                                    <ComboBoxItem Content="ST - Sachsen-Anhalt"/>
+                                    <ComboBoxItem Content="SH - Schleswig-Holstein"/>
+                                    <ComboBoxItem Content="TH - Thüringen"/>
+                                </ComboBox>
+
+                                <!-- Region -->
+                                <TextBlock Grid.Column="3"
+                                           Text="Region:"
+                                           VerticalAlignment="Center"
+                                           FontWeight="Bold"
+                                           Margin="0,0,10,0"/>
+
+                                <TextBox Grid.Column="4"
+                                         Text="{Binding SelectedZeitprofil.Region}"
+                                         Watermark="z.B. Augsburg (optional)"/>
+
+                                <!-- Behandeln wie -->
+                                <TextBlock Grid.Column="6"
+                                           Text="Behandeln wie:"
+                                           VerticalAlignment="Center"
+                                           FontWeight="Bold"
+                                           Margin="0,0,10,0"/>
+
+                                <ComboBox Grid.Column="7"
+                                          SelectedValue="{Binding SelectedZeitprofil.BehandelnWie}">
+                                    <ComboBoxItem Content="Sonntag"/>
+                                    <ComboBoxItem Content="Samstag"/>
+                                </ComboBox>
+                            </Grid>
+
+                            <TextBlock Text="💡 Feiertage werden automatisch berechnet und wie der gewählte Wochentag behandelt"
+                                       FontSize="{StaticResource FontSizeSmall}"
+                                       Foreground="{StaticResource YunexGray}"
+                                       FontStyle="Italic"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Gruppen-Zuweisungen -->
+                    <Border Grid.Row="5"
+                            BorderBrush="{StaticResource YunexSteel}"
+                            BorderThickness="1"
+                            CornerRadius="{StaticResource RadiusMedium}"
+                            Padding="{StaticResource SpacingMd}"
+                            Margin="0,0,0,10"
+                            IsVisible="{Binding SelectedZeitprofil, Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="👥 Zugewiesene Bereitschaftsgruppen"
+                                       FontFamily="{StaticResource HeadlineFont}"
+                                       FontSize="{StaticResource FontSizeH4}"
+                                       Foreground="{StaticResource YunexRoyalBlue}"/>
+
+                            <DataGrid ItemsSource="{Binding SelectedZeitprofil.GruppenZuweisungen}"
+                                      AutoGenerateColumns="False"
+                                      IsReadOnly="True"
+                                      GridLinesVisibility="All"
+                                      BorderThickness="1"
+                                      BorderBrush="{StaticResource YunexSteel}"
+                                      Height="150">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Gruppenname" Binding="{Binding GruppenName}" Width="*"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <TextBlock Text="💡 Gruppenzuweisungen können in Tab 3 (Generator) verwaltet werden"
+                                       FontSize="{StaticResource FontSizeSmall}"
+                                       Foreground="{StaticResource YunexGray}"
+                                       FontStyle="Italic"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
             </ScrollViewer>
         </TabItem>
     </TabControl>

@@ -19,6 +19,10 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly DatabaseService _dbService;
     private readonly SettingsService _settingsService;
 
+    // Navigation
+    [ObservableProperty]
+    private ViewModelBase? _currentView;
+
     public MainWindowViewModel()
     {
         _dbService = App.DatabaseService;
@@ -407,5 +411,36 @@ public partial class MainWindowViewModel : ViewModelBase
         _settingsService.UpdateSetting<AppSettings>(s =>
             s.Environment = environment
         );
+    }
+
+    // ============================================================================
+    // NAVIGATION (Sidebar)
+    // ============================================================================
+
+    [ObservableProperty]
+    private int _selectedNavIndex = 0; // 0=Import, 1=Zeitprofile, 2=Generator, 3=Editor
+
+    [RelayCommand]
+    private void NavigateToImport()
+    {
+        SelectedNavIndex = 0;
+    }
+
+    [RelayCommand]
+    private void NavigateToZeitprofile()
+    {
+        SelectedNavIndex = 1;
+    }
+
+    [RelayCommand]
+    private void NavigateToGenerator()
+    {
+        SelectedNavIndex = 2;
+    }
+
+    [RelayCommand]
+    private void NavigateToEditor()
+    {
+        SelectedNavIndex = 3;
     }
 }

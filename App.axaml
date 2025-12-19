@@ -13,48 +13,62 @@
         <FluentTheme />
     </Application.Styles>
 
-    <!-- Yunex Traffic Brand Resources -->
+    <!-- Yunex Traffic Brand Resources - Official Design System -->
     <Application.Resources>
-        <!-- Yunex Colors -->
-        <SolidColorBrush x:Key="YunexOrange">#F47738</SolidColorBrush>
-        <SolidColorBrush x:Key="YunexYellow">#FFE564</SolidColorBrush>
-        <SolidColorBrush x:Key="YunexPurple">#A483FF</SolidColorBrush>
-        <SolidColorBrush x:Key="YunexRoyalBlue">#1E2ED9</SolidColorBrush>
-        <SolidColorBrush x:Key="YunexGreen">#3DCC91</SolidColorBrush>
-        <SolidColorBrush x:Key="YunexGray">#6E7278</SolidColorBrush>
-        <SolidColorBrush x:Key="YunexSteel">#8C9196</SolidColorBrush>
-        <SolidColorBrush x:Key="YunexSky">#69B4FF</SolidColorBrush>
-        <SolidColorBrush x:Key="YunexLavender">#C7B8FF</SolidColorBrush>
-        <SolidColorBrush x:Key="YunexPistachio">#B8E6D5</SolidColorBrush>
+        <!-- PRIMARY COLORS (from yunextraffic.com) -->
+        <SolidColorBrush x:Key="YunexGreen">#00E38C</SolidColorBrush>        <!-- Primary Brand Color -->
+        <SolidColorBrush x:Key="YunexBlue">#1E2ED9</SolidColorBrush>         <!-- Dark Blue -->
+        <SolidColorBrush x:Key="YunexCyan">#0693E3</SolidColorBrush>         <!-- Vivid Cyan Blue -->
+        <SolidColorBrush x:Key="YunexPurple">#9B51E0</SolidColorBrush>       <!-- Vivid Purple -->
 
-        <!-- Status Colors -->
-        <SolidColorBrush x:Key="StatusSuccess">#3DCC91</SolidColorBrush>
-        <SolidColorBrush x:Key="StatusWarning">#FFE564</SolidColorBrush>
-        <SolidColorBrush x:Key="StatusError">#F47738</SolidColorBrush>
-        <SolidColorBrush x:Key="StatusInfo">#69B4FF</SolidColorBrush>
+        <!-- NEUTRAL COLORS -->
+        <SolidColorBrush x:Key="YunexGray">#575A76</SolidColorBrush>         <!-- Light Text Gray -->
+        <SolidColorBrush x:Key="YunexLightGray">#E9F0F8</SolidColorBrush>    <!-- Light Background -->
+        <SolidColorBrush x:Key="YunexDarkGray">#313131</SolidColorBrush>     <!-- Dark Gray -->
+        <SolidColorBrush x:Key="YunexSteel">#ABB8C3</SolidColorBrush>        <!-- Cyan Blue Gray (Borders) -->
+        <SolidColorBrush x:Key="YunexWhite">#FFFFFF</SolidColorBrush>
+        <SolidColorBrush x:Key="YunexBlack">#000000</SolidColorBrush>
 
-        <!-- Typography -->
-        <FontFamily x:Key="HeadlineFont">Segoe UI Semibold, Inter, Arial</FontFamily>
-        <FontFamily x:Key="BodyFont">Segoe UI, Inter, Arial</FontFamily>
+        <!-- STATUS COLORS -->
+        <SolidColorBrush x:Key="StatusSuccess">#00E38C</SolidColorBrush>     <!-- = YunexGreen -->
+        <SolidColorBrush x:Key="StatusWarning">#FFE564</SolidColorBrush>     <!-- Yellow -->
+        <SolidColorBrush x:Key="StatusError">#F47738</SolidColorBrush>       <!-- Orange -->
+        <SolidColorBrush x:Key="StatusInfo">#0693E3</SolidColorBrush>        <!-- = YunexCyan -->
 
-        <!-- Font Sizes -->
-        <x:Double x:Key="FontSizeH1">32</x:Double>
-        <x:Double x:Key="FontSizeH2">24</x:Double>
-        <x:Double x:Key="FontSizeH3">20</x:Double>
-        <x:Double x:Key="FontSizeH4">18</x:Double>
+        <!-- SIDEBAR COLORS -->
+        <SolidColorBrush x:Key="SidebarBackground">#FFFFFF</SolidColorBrush>
+        <SolidColorBrush x:Key="SidebarBackgroundDark">#1A1A1A</SolidColorBrush>
+        <SolidColorBrush x:Key="SidebarItemHover">#E9F0F8</SolidColorBrush>
+        <SolidColorBrush x:Key="SidebarItemActive">#00E38C</SolidColorBrush>
+        <SolidColorBrush x:Key="SidebarBorder">#E9F0F8</SolidColorBrush>
+
+        <!-- TYPOGRAPHY (from yunextraffic.com) -->
+        <FontFamily x:Key="HeadlineFont">Segoe UI Semibold, -apple-system, BlinkMacSystemFont, Arial</FontFamily>
+        <FontFamily x:Key="BodyFont">Segoe UI, -apple-system, BlinkMacSystemFont, Arial</FontFamily>
+
+        <!-- FONT SIZES (adapted from Yunex website) -->
+        <x:Double x:Key="FontSizeH1">42</x:Double>    <!-- X-Large -->
+        <x:Double x:Key="FontSizeH2">36</x:Double>    <!-- Large -->
+        <x:Double x:Key="FontSizeH3">20</x:Double>    <!-- Medium -->
+        <x:Double x:Key="FontSizeH4">16</x:Double>
         <x:Double x:Key="FontSizeBody">14</x:Double>
-        <x:Double x:Key="FontSizeSmall">12</x:Double>
+        <x:Double x:Key="FontSizeSmall">13</x:Double> <!-- Small -->
 
-        <!-- Spacing (8pt Grid) -->
+        <!-- SPACING (8pt Grid + Yunex modular scale) -->
         <Thickness x:Key="SpacingXs">4</Thickness>
         <Thickness x:Key="SpacingSm">8</Thickness>
         <Thickness x:Key="SpacingMd">16</Thickness>
         <Thickness x:Key="SpacingLg">24</Thickness>
         <Thickness x:Key="SpacingXl">32</Thickness>
 
-        <!-- Border Radius -->
-        <CornerRadius x:Key="RadiusSmall">4</CornerRadius>
-        <CornerRadius x:Key="RadiusMedium">8</CornerRadius>
-        <CornerRadius x:Key="RadiusLarge">12</CornerRadius>
+        <!-- BORDER RADIUS (Yunex uses pill-shaped buttons) -->
+        <CornerRadius x:Key="RadiusPill">9999</CornerRadius>   <!-- Buttons (pill-shaped) -->
+        <CornerRadius x:Key="RadiusLarge">12</CornerRadius>    <!-- Cards -->
+        <CornerRadius x:Key="RadiusMedium">8</CornerRadius>    <!-- Borders -->
+        <CornerRadius x:Key="RadiusSmall">4</CornerRadius>     <!-- Small elements -->
+
+        <!-- SIDEBAR DIMENSIONS -->
+        <x:Double x:Key="SidebarWidth">200</x:Double>
+        <x:Double x:Key="SidebarIconSize">24</x:Double>
     </Application.Resources>
 </Application>
