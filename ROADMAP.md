@@ -32,10 +32,10 @@
 
 **Settings (User Preferences):**
 ```
-✅ Verwenden: Avalonia.Labs.Preferences (NuGet)
-- Plattform-übergreifend (Windows Registry, macOS Preferences, Linux XDG)
-- Key-Value Store für UI-Einstellungen
-- Automatisches Backup bei Updates
+✅ Verwenden: JSON File Storage (keine zusätzliche NuGet-Dependency)
+- Plattform-übergreifend (gleiche AppData-Ordner wie Datenbank)
+- JSON-Datei: settings.json
+- Einfach, zuverlässig, keine externen Dependencies
 
 Beispiel:
 public class AppSettings
@@ -46,8 +46,10 @@ public class AppSettings
 }
 
 // Laden/Speichern
-Preferences.Default.Set("app_settings", JsonSerializer.Serialize(settings));
-var json = Preferences.Default.Get("app_settings", "{}");
+var settings = settingsService.LoadSettings();
+settingsService.SaveSettings(settings);
+
+// Speicherort: %APPDATA%/BereitschaftsPlaner/settings.json
 ```
 
 **Daten (Ressourcen, Gruppen, Bereitschaften):**
@@ -150,10 +152,10 @@ new BackupService().CreateBackupBeforeUpdate();
 
 ### Phase 2: Data Layer & Services ✅ DONE
 - [x] LiteDB Integration (NuGet: LiteDB)
-- [x] Preferences Integration (NuGet: Avalonia.Labs.Preferences)
+- [x] Settings Integration (JSON File Storage - keine extra NuGet)
 - [x] Models definieren (Ressource, BereitschaftsGruppe, Zeitprofil, etc.)
 - [x] DatabaseService (CRUD Operations)
-- [x] SettingsService (User Preferences)
+- [x] SettingsService (JSON-based User Preferences)
 - [x] BackupService (Automatische Backups)
 - [x] MigrationService (PowerShell JSON → LiteDB)
 - [x] App startup integration (automatic backups, migration, initialization)
@@ -252,7 +254,7 @@ new BackupService().CreateBackupBeforeUpdate();
 ### Data & Storage:
 ```xml
 <PackageReference Include="LiteDB" Version="5.0.21" />
-<PackageReference Include="Avalonia.Labs.Preferences" Version="11.2.0" />
+<!-- Settings: JSON File Storage (keine NuGet-Dependency nötig) -->
 ```
 
 ### Excel Handling:

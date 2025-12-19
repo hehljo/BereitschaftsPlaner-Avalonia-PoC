@@ -1,41 +1,38 @@
-using Avalonia.Labs.Preferences;
 using BereitschaftsPlaner.Avalonia.Models;
 using System.Text.Json;
 
 namespace BereitschaftsPlaner.Avalonia.Services.Data;
 
 /// <summary>
-/// Service for managing application settings using Avalonia.Labs.Preferences
-/// Settings are stored platform-specifically:
-/// - Windows: Registry
-/// - macOS: NSUserDefaults
-/// - Linux: XDG Config
+/// Service for managing application settings using JSON file storage
+/// Settings are stored in platform-specific AppData folder
 /// </summary>
 public class SettingsService
 {
-    private const string SettingsKey = "app_settings";
-    private readonly IPreferences _preferences;
+    private readonly string _settingsPath;
 
     public SettingsService()
     {
-        _preferences = Preferences.Default;
+        var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        var appFolder = Path.Combine(appData, "BereitschaftsPlaner");
+        Directory.CreateDirectory(appFolder);
+        _settingsPath = Path.Combine(appFolder, "settings.json");
     }
 
     /// <summary>
-    /// Load application settings from preferences
+    /// Load application settings from JSON file
     /// Returns default settings if none exist
     /// </summary>
     public AppSettings LoadSettings()
     {
         try
         {
-            var json = _preferences.Get<string>(SettingsKey, string.Empty);
-
-            if (string.IsNullOrEmpty(json))
+            if (!File.Exists(_settingsPath))
             {
                 return GetDefaultSettings();
             }
 
+            var json = File.ReadAllText(_settingsPath);
             var settings = JsonSerializer.Deserialize<AppSettings>(json);
             return settings ?? GetDefaultSettings();
         }
@@ -47,7 +44,7 @@ public class SettingsService
     }
 
     /// <summary>
-    /// Save application settings to preferences
+    /// Save application settings to JSON file
     /// </summary>
     public void SaveSettings(AppSettings settings)
     {
@@ -56,7 +53,7 @@ public class SettingsService
             WriteIndented = true
         });
 
-        _preferences.Set(SettingsKey, json);
+        File.WriteAllText(_settingsPath, json);
     }
 
     /// <summary>
@@ -88,7 +85,10 @@ public class SettingsService
     /// </summary>
     public void ClearSettings()
     {
-        _preferences.Remove(SettingsKey);
+        if (File.Exists(_settingsPath))
+        {
+            File.Delete(_settingsPath);
+        }
     }
 
     /// <summary>
@@ -96,7 +96,7 @@ public class SettingsService
     /// </summary>
     public bool SettingsExist()
     {
-        return _preferences.ContainsKey(SettingsKey);
+        return File.Exists(_settingsPath);
     }
 
     /// <summary>
