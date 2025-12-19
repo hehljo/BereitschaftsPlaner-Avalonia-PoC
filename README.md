@@ -39,7 +39,7 @@ Demonstration einer modernen, plattformunabhängigen Alternative zur PowerShell-
 | Komponente | Technologie | Version |
 |-----------|-------------|---------|
 | UI Framework | **Avalonia** | 11.3.10 |
-| Runtime | **.NET** | 8.0 LTS |
+| Runtime | **.NET** | 9.0 (STS) |
 | MVVM Toolkit | **CommunityToolkit.Mvvm** | 8.2.1 |
 | Excel Reader | **ExcelDataReader** | 3.7.0 |
 | JSON | **System.Text.Json** | Built-in |
@@ -125,7 +125,7 @@ Model + Services (Business Logic)
 ## 🚀 Build & Run
 
 ### Voraussetzungen:
-- .NET 8.0 SDK oder höher
+- .NET 9.0 SDK oder höher
 
 ### Build:
 ```bash
