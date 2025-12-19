@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Media;
 using Avalonia.Platform.Storage;
-using Avalonia.Styling;
 using BereitschaftsPlaner.Avalonia.Models;
 using BereitschaftsPlaner.Avalonia.Services;
 using BereitschaftsPlaner.Avalonia.Services.Data;
@@ -277,7 +276,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         if (App.MainWindow != null)
         {
-            var themeVariant = isDark ? Avalonia.Styling.ThemeVariant.Dark : Avalonia.Styling.ThemeVariant.Light;
+            var themeVariant = isDark ? global::Avalonia.Styling.ThemeVariant.Dark : global::Avalonia.Styling.ThemeVariant.Light;
             App.MainWindow.RequestedThemeVariant = themeVariant;
         }
     }
