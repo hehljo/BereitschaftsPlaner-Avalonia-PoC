@@ -1,29 +1,32 @@
 using System;
+using System.Collections.Generic;
 
 namespace BereitschaftsPlaner.Avalonia.Models;
 
 /// <summary>
-/// Represents a time profile (BD/TD) with weekly schedule configuration
+/// Time profile defining Bereitschaftsdienst and Tagesdienst schedules
+/// Matches PowerShell implementation structure
 /// </summary>
 public class Zeitprofil
 {
     public int Id { get; set; }
-    public string Name { get; set; } = string.Empty; // e.g., "Bereitschaftsdienst", "Tagdienst"
-    public string StartZeit { get; set; } = "16:00"; // Default BD start time
-    public string EndZeit { get; set; } = "07:30"; // Default BD end time
-    public bool Folgetag { get; set; } = true; // End time is next day
+    public string ProfilID { get; set; } = string.Empty;  // Unique identifier (e.g. "Standard", "Augsburg")
+    public string Name { get; set; } = string.Empty;  // Display name
 
-    // Weekly schedule (which days this profile applies to)
-    public bool Montag { get; set; } = true;
-    public bool Dienstag { get; set; } = true;
-    public bool Mittwoch { get; set; } = true;
-    public bool Donnerstag { get; set; } = true;
-    public bool Freitag { get; set; } = true;
-    public bool Samstag { get; set; } = true;
-    public bool Sonntag { get; set; } = true;
+    // Bereitschaftsdienst (BD) - on-call days (16:00-07:30)
+    public List<DienstTag> BereitschaftsTage { get; set; } = new();
+
+    // Tagesdienst (TD) - day shifts (07:30-16:00)
+    public List<DienstTag> Tagesdienste { get; set; } = new();
+
+    // Holiday configuration
+    public FeiertagsKonfiguration Feiertage { get; set; } = new();
+
+    // Default type for undefined days ("BD" or "TD")
+    public string StandardTypFuerUndefiniert { get; set; } = "BD";
 
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-    public override string ToString() => $"{Name} ({StartZeit}-{EndZeit})";
+    public override string ToString() => Name;
 }

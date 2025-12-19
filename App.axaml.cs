@@ -7,6 +7,7 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using BereitschaftsPlaner.Avalonia.ViewModels;
 using BereitschaftsPlaner.Avalonia.Views;
+using BereitschaftsPlaner.Avalonia.Services;
 using BereitschaftsPlaner.Avalonia.Services.Data;
 using BereitschaftsPlaner.Avalonia.Services.Import;
 
@@ -18,6 +19,7 @@ public partial class App : Application
     public static DatabaseService DatabaseService { get; private set; } = new();
     public static SettingsService SettingsService { get; private set; } = new();
     public static BackupService BackupService { get; private set; } = new();
+    public static ZeitprofilService ZeitprofilService { get; private set; } = new(SettingsService);
 
     public override void Initialize()
     {
