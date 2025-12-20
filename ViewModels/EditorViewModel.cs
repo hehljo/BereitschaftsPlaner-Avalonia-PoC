@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using BereitschaftsPlaner.Avalonia.Models;
+using BereitschaftsPlaner.Avalonia.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -12,8 +13,11 @@ namespace BereitschaftsPlaner.Avalonia.ViewModels;
 
 public partial class EditorViewModel : ViewModelBase
 {
+    private readonly BereitschaftsExcelService _excelService;
+
     public EditorViewModel()
     {
+        _excelService = new BereitschaftsExcelService();
         // Set default filter dates (current month)
         FilterStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
         FilterEndDate = FilterStartDate.AddMonths(1).AddDays(-1);
@@ -158,11 +162,16 @@ public partial class EditorViewModel : ViewModelBase
 
         try
         {
-            // TODO: Implement actual Excel import
-            // This will require ExcelDataReader or similar
-            await Task.Delay(1000); // Simulate work
+            var result = await Task.Run(() => _excelService.ImportBereitschaften(ExcelFilePath));
 
-            // Mock data for now
+            if (!result.Success)
+            {
+                SetStatus($"❌ {result.Message}", Brushes.Red);
+                HasLoadedData = false;
+                return;
+            }
+
+            // Clear existing data
             AlleBereitschaften.Clear();
             Gruppen.Clear();
             Ressourcen.Clear();
@@ -170,19 +179,25 @@ public partial class EditorViewModel : ViewModelBase
             Gruppen.Add("Alle");
             Ressourcen.Add("Alle");
 
-            // Example: Create some mock entries
-            for (int i = 0; i < 10; i++)
+            // Load entries from service result
+            if (result.Data is System.Collections.Generic.List<BereitschaftEntry> entries)
             {
-                AlleBereitschaften.Add(new BereitschaftEntry
+                foreach (var entry in entries)
                 {
-                    Id = i + 1,
-                    Datum = DateTime.Now.AddDays(i),
-                    GruppeName = $"Gruppe {(i % 3) + 1}",
-                    RessourceName = $"Mitarbeiter {(i % 5) + 1}",
-                    StartZeit = "16:00",
-                    EndZeit = "07:30",
-                    Typ = i % 2 == 0 ? "BD" : "TD"
-                });
+                    AlleBereitschaften.Add(entry);
+
+                    // Extract unique Gruppen
+                    if (!Gruppen.Contains(entry.GruppeName))
+                    {
+                        Gruppen.Add(entry.GruppeName);
+                    }
+
+                    // Extract unique Ressourcen
+                    if (!Ressourcen.Contains(entry.RessourceName))
+                    {
+                        Ressourcen.Add(entry.RessourceName);
+                    }
+                }
             }
 
             TotalEntries = AlleBereitschaften.Count;
@@ -191,7 +206,7 @@ public partial class EditorViewModel : ViewModelBase
 
             ApplyFilter();
 
-            SetStatus($"✅ {TotalEntries} Einträge geladen", Brushes.Green);
+            SetStatus($"✅ {result.Message}", Brushes.Green);
         }
         catch (Exception ex)
         {
@@ -224,11 +239,19 @@ public partial class EditorViewModel : ViewModelBase
 
         try
         {
-            // TODO: Implement actual Excel save
-            await Task.Delay(1000); // Simulate work
+            var result = await Task.Run(() =>
+                _excelService.SaveBereitschaften(ExcelFilePath, AlleBereitschaften.ToList())
+            );
 
-            HasUnsavedChanges = false;
-            SetStatus($"✅ Änderungen gespeichert: {ExcelFilePath}", Brushes.Green);
+            if (result.Success)
+            {
+                HasUnsavedChanges = false;
+                SetStatus($"✅ {result.Message}: {System.IO.Path.GetFileName(ExcelFilePath)}", Brushes.Green);
+            }
+            else
+            {
+                SetStatus($"❌ {result.Message}", Brushes.Red);
+            }
         }
         catch (Exception ex)
         {

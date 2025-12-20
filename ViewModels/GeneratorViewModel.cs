@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Media;
+using Avalonia.Platform.Storage;
 using BereitschaftsPlaner.Avalonia.Models;
+using BereitschaftsPlaner.Avalonia.Services;
 using BereitschaftsPlaner.Avalonia.Services.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -14,10 +17,14 @@ namespace BereitschaftsPlaner.Avalonia.ViewModels;
 public partial class GeneratorViewModel : ViewModelBase
 {
     private readonly DatabaseService _dbService;
+    private readonly ZeitprofilService _zeitprofilService;
+    private readonly BereitschaftsExcelService _excelService;
 
     public GeneratorViewModel()
     {
         _dbService = App.DatabaseService;
+        _zeitprofilService = App.ZeitprofilService;
+        _excelService = new BereitschaftsExcelService();
 
         // Load data from database
         LoadDataFromDatabase();
@@ -291,20 +298,67 @@ public partial class GeneratorViewModel : ViewModelBase
             return;
         }
 
+        // Get save location
+        var mainWindow = App.MainWindow;
+        if (mainWindow?.StorageProvider == null)
+        {
+            SetStatus("Fehler: Hauptfenster nicht verfügbar", Brushes.Red);
+            return;
+        }
+
+        var file = await mainWindow.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = "Bereitschaftsdienste speichern",
+            DefaultExtension = "xlsx",
+            SuggestedFileName = $"Bereitschaften_{StartDate:yyyyMMdd}-{EndDate:yyyyMMdd}.xlsx",
+            FileTypeChoices = new[]
+            {
+                new FilePickerFileType("Excel Dateien") { Patterns = new[] { "*.xlsx" } },
+                new FilePickerFileType("Alle Dateien") { Patterns = new[] { "*.*" } }
+            }
+        });
+
+        if (file == null)
+        {
+            SetStatus("Abgebrochen", Brushes.Gray);
+            return;
+        }
+
+        var outputPath = file.Path.LocalPath;
+
         IsGenerating = true;
         SetStatus("Generierung gestartet...", Brushes.Blue);
 
         try
         {
-            // TODO: Implement actual generation logic
-            // This will require:
-            // 1. BereitschaftsGeneratorService
-            // 2. Excel export functionality
-            // 3. Zeitprofile integration
+            var result = await Task.Run(() =>
+            {
+                return _excelService.GenerateBereitschaften(
+                    outputPath,
+                    SelectedGruppen.ToList(),
+                    SelectedRessource,
+                    StartDate,
+                    EndDate,
+                    _zeitprofilService,
+                    progressCallback: (current, total, message) =>
+                    {
+                        // Update status on UI thread
+                        Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                        {
+                            SetStatus($"{message} ({current}/{total})", Brushes.Blue);
+                        });
+                    }
+                );
+            });
 
-            await Task.Delay(1000); // Simulate work
-
-            SetStatus($"✅ {TotalEntries} Einträge würden generiert (Feature in Entwicklung)", Brushes.Green);
+            if (result.Success)
+            {
+                SetStatus($"✅ {result.Message}\n📄 Gespeichert: {Path.GetFileName(outputPath)}", Brushes.Green);
+            }
+            else
+            {
+                SetStatus($"❌ {result.Message}", Brushes.Red);
+            }
         }
         catch (Exception ex)
         {
