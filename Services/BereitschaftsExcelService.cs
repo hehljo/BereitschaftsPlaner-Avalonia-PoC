@@ -4,14 +4,18 @@ using System.IO;
 using System.Linq;
 using BereitschaftsPlaner.Avalonia.Models;
 using BereitschaftsPlaner.Avalonia.ViewModels;
+using ClosedXML.Excel;
 
 namespace BereitschaftsPlaner.Avalonia.Services;
 
 /// <summary>
 /// Service for Excel operations specific to Bereitschaftsdienst generation and editing
+/// Uses ClosedXML for real Excel file manipulation
 /// </summary>
 public class BereitschaftsExcelService
 {
+    private const string TEMPLATE_FILENAME = "template.xlsx";
+
     // ============================================================================
     // GENERATION
     // ============================================================================
@@ -19,14 +23,6 @@ public class BereitschaftsExcelService
     /// <summary>
     /// Generates a new Excel file with Bereitschaftsdienste based on configuration
     /// </summary>
-    /// <param name="outputPath">Path where to save the Excel file</param>
-    /// <param name="gruppen">Selected Bereitschaftsgruppen</param>
-    /// <param name="ressource">Responsible resource/person</param>
-    /// <param name="startDate">Start date</param>
-    /// <param name="endDate">End date</param>
-    /// <param name="zeitprofilService">Service to get Zeitprofile for groups</param>
-    /// <param name="progressCallback">Optional progress callback (current, total, message)</param>
-    /// <returns>Result with success status and message</returns>
     public ServiceResult GenerateBereitschaften(
         string outputPath,
         List<BereitschaftsGruppe> gruppen,
@@ -38,6 +34,7 @@ public class BereitschaftsExcelService
     {
         try
         {
+            // Validation
             if (gruppen == null || gruppen.Count == 0)
             {
                 return new ServiceResult { Success = false, Message = "Keine Gruppen ausgewählt" };
@@ -53,10 +50,36 @@ public class BereitschaftsExcelService
                 return new ServiceResult { Success = false, Message = "Enddatum muss nach Startdatum liegen" };
             }
 
+            // Find template file
+            var templatePath = FindTemplatePath();
+            if (templatePath == null || !File.Exists(templatePath))
+            {
+                return new ServiceResult
+                {
+                    Success = false,
+                    Message = $"Template-Datei nicht gefunden!\nErwartet: config/{TEMPLATE_FILENAME}\nBitte Template aus D365 exportieren."
+                };
+            }
+
+            // Load template
+            using var workbook = new XLWorkbook(templatePath);
+            var worksheet = workbook.Worksheet(1);
+
+            // Find header row (usually row 1)
+            var headerRow = 1;
+
+            // Clear any existing data rows (keep header)
+            var lastRow = worksheet.LastRowUsed()?.RowNumber() ?? headerRow;
+            if (lastRow > headerRow)
+            {
+                worksheet.Rows(headerRow + 1, lastRow).Delete();
+            }
+
             // Calculate total entries
             var totalDays = (endDate - startDate).Days + 1;
             var totalEntries = gruppen.Count * totalDays;
             var currentEntry = 0;
+            var currentRow = headerRow + 1;
 
             var bereitschaften = new List<BereitschaftEntry>();
 
@@ -88,7 +111,7 @@ public class BereitschaftsExcelService
 
                     if (typ != null) // Only create entry if service is defined for this day
                     {
-                        bereitschaften.Add(new BereitschaftEntry
+                        var entry = new BereitschaftEntry
                         {
                             Id = bereitschaften.Count + 1,
                             Datum = date,
@@ -97,7 +120,13 @@ public class BereitschaftsExcelService
                             StartZeit = startZeit ?? "16:00",
                             EndZeit = endZeit ?? "07:30",
                             Typ = typ
-                        });
+                        };
+
+                        bereitschaften.Add(entry);
+
+                        // Write to Excel
+                        WriteEntryToWorksheet(worksheet, currentRow, entry, date);
+                        currentRow++;
                     }
 
                     currentEntry++;
@@ -105,18 +134,15 @@ public class BereitschaftsExcelService
                 }
             }
 
-            // TODO: Write to actual Excel file using ClosedXML or EPPlus
-            // For now, we'll create a mock file to demonstrate the structure
+            progressCallback?.Invoke(totalEntries, totalEntries, "Speichere Excel-Datei...");
 
-            progressCallback?.Invoke(totalEntries, totalEntries, "Schreibe Excel-Datei...");
-
-            // Mock: Write a simple text file with the data structure
-            WriteMockExcel(outputPath, bereitschaften);
+            // Save workbook
+            workbook.SaveAs(outputPath);
 
             return new ServiceResult
             {
                 Success = true,
-                Message = $"Erfolgreich {bereitschaften.Count} Einträge generiert und gespeichert",
+                Message = $"{bereitschaften.Count} Einträge generiert und gespeichert",
                 Data = bereitschaften
             };
         }
@@ -125,7 +151,7 @@ public class BereitschaftsExcelService
             return new ServiceResult
             {
                 Success = false,
-                Message = $"Fehler bei Generierung: {ex.Message}"
+                Message = $"Fehler bei Generierung: {ex.Message}\n{ex.StackTrace}"
             };
         }
     }
@@ -146,16 +172,50 @@ public class BereitschaftsExcelService
                 return new ServiceResult { Success = false, Message = "Datei nicht gefunden" };
             }
 
-            // TODO: Use ExcelDataReader or ClosedXML to read the file
-            // For now, return mock data
+            using var workbook = new XLWorkbook(filePath);
+            var worksheet = workbook.Worksheet(1);
 
-            var mockEntries = GenerateMockEntries();
+            var entries = new List<BereitschaftEntry>();
+
+            // Find header row (usually row 1)
+            var headerRow = 1;
+            var lastRow = worksheet.LastRowUsed()?.RowNumber() ?? headerRow;
+
+            // Find column indices (case-insensitive)
+            var columns = FindColumnIndices(worksheet, headerRow);
+
+            // Read all data rows
+            for (int row = headerRow + 1; row <= lastRow; row++)
+            {
+                try
+                {
+                    var entry = ReadEntryFromWorksheet(worksheet, row, columns);
+                    if (entry != null)
+                    {
+                        entries.Add(entry);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Log but continue with other rows
+                    Console.WriteLine($"Warnung: Zeile {row} konnte nicht gelesen werden: {ex.Message}");
+                }
+            }
+
+            if (entries.Count == 0)
+            {
+                return new ServiceResult
+                {
+                    Success = false,
+                    Message = "Keine gültigen Einträge in der Excel-Datei gefunden"
+                };
+            }
 
             return new ServiceResult
             {
                 Success = true,
-                Message = $"{mockEntries.Count} Einträge geladen",
-                Data = mockEntries
+                Message = $"{entries.Count} Einträge geladen",
+                Data = entries
             };
         }
         catch (Exception ex)
@@ -184,10 +244,34 @@ public class BereitschaftsExcelService
                 return new ServiceResult { Success = false, Message = "Keine Daten zum Speichern" };
             }
 
-            // TODO: Use ClosedXML or EPPlus to write to existing Excel file
-            // Preserve D365 XML metadata in columns A, B, C
+            if (!File.Exists(filePath))
+            {
+                return new ServiceResult { Success = false, Message = "Datei nicht gefunden" };
+            }
 
-            WriteMockExcel(filePath, bereitschaften);
+            using var workbook = new XLWorkbook(filePath);
+            var worksheet = workbook.Worksheet(1);
+
+            var headerRow = 1;
+            var columns = FindColumnIndices(worksheet, headerRow);
+
+            // Clear existing data rows (keep header)
+            var lastRow = worksheet.LastRowUsed()?.RowNumber() ?? headerRow;
+            if (lastRow > headerRow)
+            {
+                worksheet.Rows(headerRow + 1, lastRow).Delete();
+            }
+
+            // Write all entries
+            var currentRow = headerRow + 1;
+            foreach (var entry in bereitschaften.OrderBy(e => e.Datum).ThenBy(e => e.GruppeName))
+            {
+                WriteEntryToWorksheet(worksheet, currentRow, entry, entry.Datum, columns);
+                currentRow++;
+            }
+
+            // Save workbook
+            workbook.SaveAs(filePath);
 
             return new ServiceResult
             {
@@ -206,7 +290,130 @@ public class BereitschaftsExcelService
     }
 
     // ============================================================================
-    // HELPER METHODS
+    // HELPER METHODS - Excel Operations
+    // ============================================================================
+
+    /// <summary>
+    /// Finds the template file in various possible locations
+    /// </summary>
+    private string? FindTemplatePath()
+    {
+        var possiblePaths = new[]
+        {
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config", TEMPLATE_FILENAME),
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "config", TEMPLATE_FILENAME),
+            Path.Combine(Environment.CurrentDirectory, "config", TEMPLATE_FILENAME),
+            Path.Combine("/root/BereitschaftsPlaner-Avalonia-PoC", "config", TEMPLATE_FILENAME)
+        };
+
+        foreach (var path in possiblePaths)
+        {
+            if (File.Exists(path))
+            {
+                return path;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Finds column indices from header row (case-insensitive)
+    /// </summary>
+    private Dictionary<string, int> FindColumnIndices(IXLWorksheet worksheet, int headerRow)
+    {
+        var columns = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+        var lastCol = worksheet.Row(headerRow).LastCellUsed()?.Address.ColumnNumber ?? 1;
+
+        for (int col = 1; col <= lastCol; col++)
+        {
+            var headerValue = worksheet.Cell(headerRow, col).GetString().Trim();
+            if (!string.IsNullOrEmpty(headerValue))
+            {
+                columns[headerValue] = col;
+            }
+        }
+
+        return columns;
+    }
+
+    /// <summary>
+    /// Writes a BereitschaftEntry to a worksheet row
+    /// </summary>
+    private void WriteEntryToWorksheet(IXLWorksheet worksheet, int row, BereitschaftEntry entry, DateTime date, Dictionary<string, int>? columns = null)
+    {
+        // Common D365 column names (will auto-detect from template)
+        var colMap = columns ?? new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+        // Helper to set cell value if column exists
+        void SetCell(string columnName, object value)
+        {
+            if (colMap.TryGetValue(columnName, out var colIndex))
+            {
+                worksheet.Cell(row, colIndex).Value = value;
+            }
+        }
+
+        // Map entry fields to Excel columns
+        SetCell("Name", entry.GruppeName); // Bereitschaftsgruppe
+        SetCell("Bookable Resource", entry.RessourceName); // Ressource/Person
+        SetCell("Start Time", $"{date:dd.MM.yyyy} {entry.StartZeit}"); // Startzeit
+        SetCell("End Time", CalculateEndDateTime(date, entry.StartZeit, entry.EndZeit)); // Endzeit
+
+        // Additional fields that might exist
+        SetCell("Booking Status", "Committed");
+        SetCell("Duration", CalculateDuration(entry.StartZeit, entry.EndZeit));
+    }
+
+    /// <summary>
+    /// Reads a BereitschaftEntry from a worksheet row
+    /// </summary>
+    private BereitschaftEntry? ReadEntryFromWorksheet(IXLWorksheet worksheet, int row, Dictionary<string, int> columns)
+    {
+        string GetCell(string columnName)
+        {
+            if (columns.TryGetValue(columnName, out var colIndex))
+            {
+                return worksheet.Cell(row, colIndex).GetString().Trim();
+            }
+            return string.Empty;
+        }
+
+        var name = GetCell("Name");
+        if (string.IsNullOrEmpty(name))
+        {
+            return null; // Skip empty rows
+        }
+
+        var startTimeStr = GetCell("Start Time");
+        var endTimeStr = GetCell("End Time");
+
+        // Parse date and time
+        DateTime? startDateTime = ParseDateTime(startTimeStr);
+        DateTime? endDateTime = ParseDateTime(endTimeStr);
+
+        if (!startDateTime.HasValue)
+        {
+            return null;
+        }
+
+        var entry = new BereitschaftEntry
+        {
+            Id = row - 1, // Use row number as ID
+            Datum = startDateTime.Value.Date,
+            GruppeName = name,
+            RessourceName = GetCell("Bookable Resource"),
+            StartZeit = startDateTime.Value.ToString("HH:mm"),
+            EndZeit = endDateTime?.ToString("HH:mm") ?? "07:30",
+            Typ = DetermineTyp(startDateTime.Value.ToString("HH:mm"))
+        };
+
+        return entry;
+    }
+
+    // ============================================================================
+    // HELPER METHODS - Business Logic
     // ============================================================================
 
     /// <summary>
@@ -261,53 +468,79 @@ public class BereitschaftsExcelService
     }
 
     /// <summary>
-    /// Generates mock entries for testing
+    /// Calculates end date/time considering overnight shifts
     /// </summary>
-    private List<BereitschaftEntry> GenerateMockEntries()
+    private string CalculateEndDateTime(DateTime startDate, string startZeit, string endZeit)
     {
-        var entries = new List<BereitschaftEntry>();
-        var startDate = DateTime.Now;
+        var start = TimeSpan.Parse(startZeit);
+        var end = TimeSpan.Parse(endZeit);
 
-        for (int i = 0; i < 20; i++)
-        {
-            entries.Add(new BereitschaftEntry
-            {
-                Id = i + 1,
-                Datum = startDate.AddDays(i),
-                GruppeName = $"EMUW194 {(i % 3 == 0 ? "Augsburg" : "Umland")}",
-                RessourceName = $"Max Mustermann {(i % 5) + 1}",
-                StartZeit = i % 2 == 0 ? "16:00" : "07:30",
-                EndZeit = i % 2 == 0 ? "07:30" : "16:00",
-                Typ = i % 2 == 0 ? "BD" : "TD"
-            });
-        }
+        // If end time is before start time, it's next day
+        var endDate = end < start ? startDate.AddDays(1) : startDate;
 
-        return entries;
+        return $"{endDate:dd.MM.yyyy} {endZeit}";
     }
 
     /// <summary>
-    /// Writes a mock Excel file (CSV format for now)
-    /// TODO: Replace with actual Excel writing using ClosedXML
+    /// Calculates duration in minutes
     /// </summary>
-    private void WriteMockExcel(string filePath, List<BereitschaftEntry> bereitschaften)
+    private int CalculateDuration(string startZeit, string endZeit)
     {
-        // For demonstration, write CSV format
-        // In production, this would write proper .xlsx format
-        var csvPath = Path.ChangeExtension(filePath, ".csv");
+        var start = TimeSpan.Parse(startZeit);
+        var end = TimeSpan.Parse(endZeit);
 
-        using var writer = new StreamWriter(csvPath);
+        // If end time is before start time, it's next day
+        var duration = end < start ? (TimeSpan.FromHours(24) - start + end) : (end - start);
 
-        // Header
-        writer.WriteLine("ID;Datum;Gruppe;Ressource;Von;Bis;Typ");
+        return (int)duration.TotalMinutes;
+    }
 
-        // Data
-        foreach (var entry in bereitschaften.OrderBy(e => e.Datum).ThenBy(e => e.GruppeName))
+    /// <summary>
+    /// Parses a date/time string from Excel
+    /// </summary>
+    private DateTime? ParseDateTime(string dateTimeStr)
+    {
+        if (string.IsNullOrWhiteSpace(dateTimeStr))
         {
-            writer.WriteLine($"{entry.Id};{entry.Datum:dd.MM.yyyy};{entry.GruppeName};{entry.RessourceName};{entry.StartZeit};{entry.EndZeit};{entry.Typ}");
+            return null;
         }
 
-        // Also create a .xlsx file marker
-        File.WriteAllText(filePath, $"Excel-Datei würde hier erstellt werden.\nCSV-Version verfügbar unter: {csvPath}\nAnzahl Einträge: {bereitschaften.Count}");
+        // Try various formats
+        var formats = new[]
+        {
+            "dd.MM.yyyy HH:mm",
+            "dd/MM/yyyy HH:mm",
+            "yyyy-MM-dd HH:mm",
+            "MM/dd/yyyy HH:mm"
+        };
+
+        foreach (var format in formats)
+        {
+            if (DateTime.TryParseExact(dateTimeStr, format, null, System.Globalization.DateTimeStyles.None, out var result))
+            {
+                return result;
+            }
+        }
+
+        // Try general parse
+        if (DateTime.TryParse(dateTimeStr, out var generalResult))
+        {
+            return generalResult;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Determines BD or TD based on start time
+    /// </summary>
+    private string DetermineTyp(string startZeit)
+    {
+        var time = TimeSpan.Parse(startZeit);
+
+        // BD typically starts in afternoon/evening (after 12:00)
+        // TD typically starts in morning (before 12:00)
+        return time.Hours >= 12 ? "BD" : "TD";
     }
 }
 
