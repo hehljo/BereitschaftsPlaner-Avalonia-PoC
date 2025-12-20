@@ -1,0 +1,62 @@
+﻿[
+    {
+        "Datum":  "2026-01-01",
+        "Name":  "Neujahrstag",
+        "Hinweis":  "",
+        "Quelle":  "API"
+    },
+    {
+        "Datum":  "2026-03-08",
+        "Name":  "Frauentag",
+        "Hinweis":  "",
+        "Quelle":  "API"
+    },
+    {
+        "Datum":  "2026-04-03",
+        "Name":  "Karfreitag",
+        "Hinweis":  "",
+        "Quelle":  "API"
+    },
+    {
+        "Datum":  "2026-04-06",
+        "Name":  "Ostermontag",
+        "Hinweis":  "",
+        "Quelle":  "API"
+    },
+    {
+        "Datum":  "2026-05-01",
+        "Name":  "Tag der Arbeit",
+        "Hinweis":  "",
+        "Quelle":  "API"
+    },
+    {
+        "Datum":  "2026-05-14",
+        "Name":  "Christi Himmelfahrt",
+        "Hinweis":  "",
+        "Quelle":  "API"
+    },
+    {
+        "Datum":  "2026-05-25",
+        "Name":  "Pfingstmontag",
+        "Hinweis":  "",
+        "Quelle":  "API"
+    },
+    {
+        "Datum":  "2026-10-03",
+        "Name":  "Tag der Deutschen Einheit",
+        "Hinweis":  "",
+        "Quelle":  "API"
+    },
+    {
+        "Datum":  "2026-12-25",
+        "Name":  "1. Weihnachtstag",
+        "Hinweis":  "",
+        "Quelle":  "API"
+    },
+    {
+        "Datum":  "2026-12-26",
+        "Name":  "2. Weihnachtstag",
+        "Hinweis":  "",
+        "Quelle":  "API"
+    }
+]

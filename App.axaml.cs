@@ -20,6 +20,7 @@ public partial class App : Application
     public static SettingsService SettingsService { get; private set; } = new();
     public static BackupService BackupService { get; private set; } = new();
     public static ZeitprofilService ZeitprofilService { get; private set; } = new(SettingsService);
+    public static FeiertagsService FeiertagsService { get; private set; } = new();
 
     public override void Initialize()
     {

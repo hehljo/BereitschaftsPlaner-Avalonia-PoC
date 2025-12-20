@@ -340,6 +340,7 @@ public partial class GeneratorViewModel : ViewModelBase
                     StartDate,
                     EndDate,
                     _zeitprofilService,
+                    App.FeiertagsService,
                     progressCallback: (current, total, message) =>
                     {
                         // Update status on UI thread

@@ -30,6 +30,7 @@ public class BereitschaftsExcelService
         DateTime startDate,
         DateTime endDate,
         ZeitprofilService zeitprofilService,
+        FeiertagsService feiertagsService,
         Action<int, int, string>? progressCallback = null)
     {
         try
@@ -107,7 +108,11 @@ public class BereitschaftsExcelService
                 for (var date = startDate; date <= endDate; date = date.AddDays(1))
                 {
                     // Determine service type and times for this day
-                    var (startZeit, endZeit, typ) = GetDienstForDate(date, zeitprofil);
+                    var (startZeit, endZeit, typ) = GetDienstForDateAsync(
+                        date,
+                        zeitprofil,
+                        feiertagsService
+                    ).GetAwaiter().GetResult(); // Sync call in loop context
 
                     if (typ != null) // Only create entry if service is defined for this day
                     {
@@ -419,7 +424,10 @@ public class BereitschaftsExcelService
     /// <summary>
     /// Determines service type and times for a specific date based on Zeitprofil
     /// </summary>
-    private (string? StartZeit, string? EndZeit, string? Typ) GetDienstForDate(DateTime date, Zeitprofil? zeitprofil)
+    private async Task<(string? StartZeit, string? EndZeit, string? Typ)> GetDienstForDateAsync(
+        DateTime date,
+        Zeitprofil? zeitprofil,
+        FeiertagsService feiertagsService)
     {
         if (zeitprofil == null)
         {
@@ -430,8 +438,11 @@ public class BereitschaftsExcelService
         var dayName = date.ToString("dddd", new System.Globalization.CultureInfo("de-DE"));
 
         // Check if it's a holiday
-        // TODO: Integrate FeiertagsManager
-        bool isHoliday = false;
+        bool isHoliday = await feiertagsService.IstFeiertagAsync(
+            date,
+            zeitprofil.Feiertage.Bundesland,
+            zeitprofil.Feiertage.Region
+        );
 
         if (isHoliday)
         {
