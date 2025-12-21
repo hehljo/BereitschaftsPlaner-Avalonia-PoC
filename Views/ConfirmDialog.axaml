@@ -1,0 +1,54 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="BereitschaftsPlaner.Avalonia.Views.ConfirmDialog"
+        Title="Bestätigung"
+        Width="450" Height="200"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        Background="{DynamicResource BackgroundBrush}">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <TextBlock Grid.Row="0"
+                   Text="{Binding Title}"
+                   FontSize="16"
+                   FontWeight="Bold"
+                   Margin="0,0,0,15"/>
+
+        <!-- Message -->
+        <TextBlock Grid.Row="1"
+                   Text="{Binding Message}"
+                   TextWrapping="Wrap"
+                   FontSize="13"
+                   Margin="0,0,0,20"/>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="10">
+            <Button Content="{Binding CancelText}"
+                    Width="120"
+                    Height="35"
+                    Background="#CCCCCC"
+                    Foreground="Black"
+                    FontWeight="SemiBold"
+                    CornerRadius="8"
+                    Click="OnCancelClicked"/>
+            <Button Content="{Binding ConfirmText}"
+                    Width="120"
+                    Height="35"
+                    Background="#FF6B6B"
+                    Foreground="White"
+                    FontWeight="SemiBold"
+                    CornerRadius="8"
+                    Click="OnConfirmClicked"/>
+        </StackPanel>
+    </Grid>
+</Window>

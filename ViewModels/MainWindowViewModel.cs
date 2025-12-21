@@ -114,7 +114,7 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void ImportExcel()
+    private async Task ImportExcel()
     {
         try
         {
@@ -128,36 +128,60 @@ public partial class MainWindowViewModel : ViewModelBase
 
             var result = _excelService.ImportRessourcen(ExcelFilePath);
 
-            if (result.Success)
-            {
-                // Save to database
-                _dbService.SaveRessourcen(result.Ressourcen);
-
-                // Update UI
-                Ressourcen.Clear();
-                foreach (var ressource in result.Ressourcen)
-                {
-                    Ressourcen.Add(ressource);
-                }
-
-                HasData = Ressourcen.Count > 0;
-                OnPropertyChanged(nameof(DataGridTitle));
-
-                // Update settings with last import path
-                _settingsService.UpdateSetting<Models.AppSettings>(s =>
-                    s.LastImportPath = ExcelFilePath
-                );
-
-                // Clear file path after successful import
-                ExcelFilePath = string.Empty;
-
-                SetStatus($"{result.Message} (in Datenbank gespeichert)", Brushes.Green);
-            }
-            else
+            if (!result.Success)
             {
                 SetStatus(result.Message, Brushes.Red);
                 HasData = false;
+                return;
             }
+
+            // Validate data
+            var validator = new DataValidator();
+            var validationResult = validator.ValidateRessourcen(result.Ressourcen);
+
+            // Clean data (remove duplicates, empty names)
+            var cleanedData = validator.CleanRessourcen(result.Ressourcen);
+
+            // Show preview dialog
+            var previewVM = new ImportPreviewViewModel(
+                cleanedData.Cast<object>().ToList(),
+                "Ressourcen",
+                validationResult
+            );
+
+            var previewWindow = new Views.ImportPreviewWindow(previewVM);
+
+            // Show dialog and wait for user confirmation
+            var confirmed = await previewWindow.ShowDialog<bool>(App.MainWindow!);
+
+            if (!confirmed)
+            {
+                SetStatus("Import abgebrochen", Brushes.Orange);
+                return;
+            }
+
+            // Save to database (only if user confirmed)
+            _dbService.SaveRessourcen(cleanedData);
+
+            // Update UI
+            Ressourcen.Clear();
+            foreach (var ressource in cleanedData)
+            {
+                Ressourcen.Add(ressource);
+            }
+
+            HasData = Ressourcen.Count > 0;
+            OnPropertyChanged(nameof(DataGridTitle));
+
+            // Update settings with last import path
+            _settingsService.UpdateSetting<Models.AppSettings>(s =>
+                s.LastImportPath = ExcelFilePath
+            );
+
+            // Clear file path after successful import
+            ExcelFilePath = string.Empty;
+
+            SetStatus($"✅ {cleanedData.Count} Ressourcen importiert und gespeichert", Brushes.Green);
         }
         catch (Exception ex)
         {
@@ -202,7 +226,7 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void ImportGruppen()
+    private async Task ImportGruppen()
     {
         try
         {
@@ -216,30 +240,54 @@ public partial class MainWindowViewModel : ViewModelBase
 
             var result = _excelService.ImportBereitschaftsGruppen(GruppenFilePath);
 
-            if (result.Success)
-            {
-                // Save to database
-                _dbService.SaveBereitschaftsGruppen(result.Gruppen);
-
-                // Update UI
-                BereitschaftsGruppen.Clear();
-                foreach (var gruppe in result.Gruppen)
-                {
-                    BereitschaftsGruppen.Add(gruppe);
-                }
-
-                HasGruppenData = BereitschaftsGruppen.Count > 0;
-
-                // Clear file path after successful import
-                GruppenFilePath = string.Empty;
-
-                SetStatus($"{result.Message} (in Datenbank gespeichert)", Brushes.Green);
-            }
-            else
+            if (!result.Success)
             {
                 SetStatus(result.Message, Brushes.Red);
                 HasGruppenData = false;
+                return;
             }
+
+            // Validate data
+            var validator = new DataValidator();
+            var validationResult = validator.ValidateBereitschaftsGruppen(result.Gruppen);
+
+            // Clean data (remove duplicates, empty names)
+            var cleanedData = validator.CleanBereitschaftsGruppen(result.Gruppen);
+
+            // Show preview dialog
+            var previewVM = new ImportPreviewViewModel(
+                cleanedData.Cast<object>().ToList(),
+                "Bereitschaftsgruppen",
+                validationResult
+            );
+
+            var previewWindow = new Views.ImportPreviewWindow(previewVM);
+
+            // Show dialog and wait for user confirmation
+            var confirmed = await previewWindow.ShowDialog<bool>(App.MainWindow!);
+
+            if (!confirmed)
+            {
+                SetStatus("Import abgebrochen", Brushes.Orange);
+                return;
+            }
+
+            // Save to database (only if user confirmed)
+            _dbService.SaveBereitschaftsGruppen(cleanedData);
+
+            // Update UI
+            BereitschaftsGruppen.Clear();
+            foreach (var gruppe in cleanedData)
+            {
+                BereitschaftsGruppen.Add(gruppe);
+            }
+
+            HasGruppenData = BereitschaftsGruppen.Count > 0;
+
+            // Clear file path after successful import
+            GruppenFilePath = string.Empty;
+
+            SetStatus($"✅ {cleanedData.Count} Bereitschaftsgruppen importiert und gespeichert", Brushes.Green);
         }
         catch (Exception ex)
         {
@@ -349,6 +397,49 @@ public partial class MainWindowViewModel : ViewModelBase
         catch (Exception ex)
         {
             SetStatus($"Fehler beim Laden der Daten: {ex.Message}", Brushes.Red);
+        }
+    }
+
+    [RelayCommand]
+    private async Task ResetDatabase()
+    {
+        // Ask for confirmation
+        var confirmWindow = new Views.ConfirmDialog(
+            "Datenbank zurücksetzen",
+            "Möchten Sie wirklich alle importierten Daten löschen?\n\nEin Backup wird automatisch erstellt.",
+            "Löschen",
+            "Abbrechen"
+        );
+
+        var confirmed = await confirmWindow.ShowDialog<bool>(App.MainWindow!);
+
+        if (!confirmed)
+        {
+            return;
+        }
+
+        try
+        {
+            SetStatus("Erstelle Backup...", Brushes.Blue);
+
+            // Create backup before reset
+            App.BackupService.CreateManualBackup();
+
+            // Clear database
+            _dbService.ClearAllData();
+
+            // Clear UI
+            Ressourcen.Clear();
+            BereitschaftsGruppen.Clear();
+            HasData = false;
+            HasGruppenData = false;
+            OnPropertyChanged(nameof(DataGridTitle));
+
+            SetStatus("✅ Datenbank zurückgesetzt (Backup erstellt)", Brushes.Green);
+        }
+        catch (Exception ex)
+        {
+            SetStatus($"Fehler beim Zurücksetzen: {ex.Message}", Brushes.Red);
         }
     }
 

@@ -317,5 +317,21 @@ public class DatabaseService
         db.Rebuild();
     }
 
+    /// <summary>
+    /// Clear all data from database (Ressourcen, Bereitschaftsgruppen, Zeitprofile)
+    /// </summary>
+    public void ClearAllData()
+    {
+        using var db = new LiteDatabase(_dbPath);
+
+        // Clear all collections
+        db.GetCollection<Ressource>("ressourcen").DeleteAll();
+        db.GetCollection<BereitschaftsGruppe>("bereitschaftsgruppen").DeleteAll();
+        db.GetCollection<Zeitprofil>("zeitprofile").DeleteAll();
+
+        // Compact after delete
+        db.Rebuild();
+    }
+
     #endregion
 }
