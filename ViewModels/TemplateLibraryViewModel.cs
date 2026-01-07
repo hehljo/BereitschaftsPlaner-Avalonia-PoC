@@ -180,7 +180,7 @@ public partial class TemplateLibraryViewModel : ViewModelBase
 
         var stackPanel = new StackPanel { Margin = new(20) };
         var textBox = new TextBox { Text = SelectedTemplate.Name, Margin = new(0, 10) };
-        var buttonsPanel = new StackPanel { Orientation = Layout.Orientation.Horizontal, HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right };
+        var buttonsPanel = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
 
         var okButton = new Button { Content = "OK", Width = 80, Margin = new(5, 10, 0, 0) };
         var cancelButton = new Button { Content = "Abbrechen", Width = 80, Margin = new(5, 10, 0, 0) };

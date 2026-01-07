@@ -600,46 +600,46 @@ public partial class PlanningBoardViewModel : ViewModelBase
         }
 
         // Create input dialog
-        var inputWindow = new Avalonia.Controls.Window
+        var inputWindow = new Window
         {
             Title = "Template speichern",
             Width = 450,
             Height = 250,
-            WindowStartupLocation = Avalonia.Controls.WindowStartupLocation.CenterOwner
+            WindowStartupLocation = WindowStartupLocation.CenterOwner
         };
 
-        var stackPanel = new Avalonia.Controls.StackPanel { Margin = new(20) };
+        var stackPanel = new StackPanel { Margin = new(20) };
 
-        var nameTextBox = new Avalonia.Controls.TextBox
+        var nameTextBox = new TextBox
         {
             Watermark = "Template-Name",
             Margin = new(0, 5)
         };
 
-        var descriptionTextBox = new Avalonia.Controls.TextBox
+        var descriptionTextBox = new TextBox
         {
             Watermark = "Beschreibung (optional)",
             Margin = new(0, 5),
             Height = 60,
-            TextWrapping = Avalonia.Media.TextWrapping.Wrap,
+            TextWrapping = TextWrapping.Wrap,
             AcceptsReturn = true
         };
 
-        var categoryComboBox = new Avalonia.Controls.ComboBox
+        var categoryComboBox = new ComboBox
         {
             Margin = new(0, 5),
             ItemsSource = new[] { "Standard", "Sommer", "Winter", "Urlaubszeit", "Andere" },
             SelectedIndex = 0
         };
 
-        var buttonsPanel = new Avalonia.Controls.StackPanel
+        var buttonsPanel = new StackPanel
         {
-            Orientation = Avalonia.Layout.Orientation.Horizontal,
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right
+            Orientation = Orientation.Horizontal,
+            HorizontalAlignment = HorizontalAlignment.Right
         };
 
-        var saveButton = new Avalonia.Controls.Button { Content = "Speichern", Width = 100, Margin = new(5, 10, 0, 0) };
-        var cancelButton = new Avalonia.Controls.Button { Content = "Abbrechen", Width = 100, Margin = new(5, 10, 0, 0) };
+        var saveButton = new Button { Content = "Speichern", Width = 100, Margin = new(5, 10, 0, 0) };
+        var cancelButton = new Button { Content = "Abbrechen", Width = 100, Margin = new(5, 10, 0, 0) };
 
         bool confirmed = false;
 
@@ -659,11 +659,11 @@ public partial class PlanningBoardViewModel : ViewModelBase
         buttonsPanel.Children.Add(saveButton);
         buttonsPanel.Children.Add(cancelButton);
 
-        stackPanel.Children.Add(new Avalonia.Controls.TextBlock { Text = "Template-Name:" });
+        stackPanel.Children.Add(new TextBlock { Text = "Template-Name:" });
         stackPanel.Children.Add(nameTextBox);
-        stackPanel.Children.Add(new Avalonia.Controls.TextBlock { Text = "Beschreibung:", Margin = new(0, 10, 0, 0) });
+        stackPanel.Children.Add(new TextBlock { Text = "Beschreibung:", Margin = new(0, 10, 0, 0) });
         stackPanel.Children.Add(descriptionTextBox);
-        stackPanel.Children.Add(new Avalonia.Controls.TextBlock { Text = "Kategorie:", Margin = new(0, 10, 0, 0) });
+        stackPanel.Children.Add(new TextBlock { Text = "Kategorie:", Margin = new(0, 10, 0, 0) });
         stackPanel.Children.Add(categoryComboBox);
         stackPanel.Children.Add(buttonsPanel);
 
