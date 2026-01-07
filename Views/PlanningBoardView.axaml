@@ -1,0 +1,407 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:BereitschaftsPlaner.Avalonia.ViewModels"
+             x:Class="BereitschaftsPlaner.Avalonia.Views.PlanningBoardView"
+             x:DataType="vm:PlanningBoardViewModel">
+
+    <Design.DataContext>
+        <vm:PlanningBoardViewModel/>
+    </Design.DataContext>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>  <!-- Header with controls -->
+            <RowDefinition Height="*"/>     <!-- Main planning area -->
+            <RowDefinition Height="Auto"/>  <!-- Status bar -->
+        </Grid.RowDefinitions>
+
+        <!-- ============================================================================ -->
+        <!-- HEADER: Navigation & Controls -->
+        <!-- ============================================================================ -->
+        <Grid Grid.Row="0" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>  <!-- Month navigation -->
+                <ColumnDefinition Width="*"/>      <!-- Title -->
+                <ColumnDefinition Width="Auto"/>  <!-- Action buttons -->
+            </Grid.ColumnDefinitions>
+
+            <!-- Month Navigation -->
+            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
+                <Button Content="◀ Vorheriger"
+                        Command="{Binding PreviousMonthCommand}"
+                        Width="120"
+                        Height="36"
+                        Background="#F0F0F0"
+                        CornerRadius="10"
+                        FontSize="12"/>
+
+                <Button Content="Heute"
+                        Command="{Binding TodayCommand}"
+                        Width="80"
+                        Height="36"
+                        Background="{StaticResource YunexGreen}"
+                        Foreground="White"
+                        CornerRadius="10"
+                        FontSize="12"
+                        FontWeight="SemiBold"/>
+
+                <Button Content="Nächster ▶"
+                        Command="{Binding NextMonthCommand}"
+                        Width="120"
+                        Height="36"
+                        Background="#F0F0F0"
+                        CornerRadius="10"
+                        FontSize="12"/>
+            </StackPanel>
+
+            <!-- Month Title -->
+            <TextBlock Grid.Column="1"
+                       Text="{Binding MonthTitle}"
+                       FontSize="24"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"/>
+
+            <!-- Action Buttons -->
+            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                <Button Content="📤 Export"
+                        Command="{Binding ExportToExcelCommand}"
+                        Width="100"
+                        Height="36"
+                        Background="{StaticResource YunexBlue}"
+                        Foreground="White"
+                        CornerRadius="10"
+                        FontSize="12"
+                        FontWeight="SemiBold"/>
+
+                <Button Content="🗑️ Alle löschen"
+                        Command="{Binding ClearAllCommand}"
+                        Width="120"
+                        Height="36"
+                        Background="#FFE5E5"
+                        Foreground="#D32F2F"
+                        CornerRadius="10"
+                        FontSize="12"
+                        FontWeight="SemiBold"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- ============================================================================ -->
+        <!-- MAIN CONTENT: Planning Board + Ressourcen Panel -->
+        <!-- ============================================================================ -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250"/>  <!-- Ressourcen Panel -->
+                <ColumnDefinition Width="*"/>     <!-- Calendar View -->
+            </Grid.ColumnDefinitions>
+
+            <!-- ============================================================================ -->
+            <!-- LEFT PANEL: Ressourcen & Controls -->
+            <!-- ============================================================================ -->
+            <Border Grid.Column="0"
+                    Background="#FAFAFA"
+                    BorderBrush="#E0E0E0"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="16"
+                    Margin="0,0,16,0">
+                <ScrollViewer>
+                    <StackPanel Spacing="16">
+                        <!-- Section: Modus -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="1️⃣ Modus wählen"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="#333333"/>
+
+                            <StackPanel Spacing="4">
+                                <RadioButton Content="🌙 Bereitschaftsdienst (BD)"
+                                             IsChecked="{Binding IsBD}"
+                                             FontSize="12"
+                                             GroupName="Modus"/>
+                                <TextBlock Text="1 Person für alles"
+                                           FontSize="10"
+                                           Foreground="#888888"
+                                           Margin="28,0,0,0"/>
+
+                                <RadioButton Content="☀️ Tagesdienst (TD)"
+                                             IsChecked="{Binding IsBD, Converter={x:Static ObjectConverters.Not}}"
+                                             FontSize="12"
+                                             GroupName="Modus"
+                                             Margin="0,8,0,0"/>
+                                <TextBlock Text="Pro Bezirk 1 Person"
+                                           FontSize="10"
+                                           Foreground="#888888"
+                                           Margin="28,0,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <Separator Background="#E0E0E0" Height="1"/>
+
+                        <!-- Section: Gruppe -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="2️⃣ Gruppe auswählen"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="#333333"/>
+
+                            <ComboBox ItemsSource="{Binding AvailableGroups}"
+                                      SelectedItem="{Binding SelectedGroup}"
+                                      DisplayMemberBinding="{Binding Name}"
+                                      PlaceholderText="Gruppe wählen..."
+                                      FontSize="12"
+                                      HorizontalAlignment="Stretch"/>
+
+                            <TextBlock Text="{Binding AvailableGroups.Count, StringFormat='{}{0} Gruppen verfügbar'}"
+                                       FontSize="10"
+                                       Foreground="#888888"/>
+                        </StackPanel>
+
+                        <Separator Background="#E0E0E0" Height="1"/>
+
+                        <!-- Section: Ressource -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="3️⃣ Person auswählen"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="#333333"/>
+
+                            <ComboBox ItemsSource="{Binding AvailableRessourcen}"
+                                      SelectedItem="{Binding SelectedRessource}"
+                                      DisplayMemberBinding="{Binding Name}"
+                                      PlaceholderText="Person wählen..."
+                                      FontSize="12"
+                                      HorizontalAlignment="Stretch"/>
+
+                            <TextBlock Text="{Binding AvailableRessourcen.Count, StringFormat='{}{0} Personen verfügbar'}"
+                                       FontSize="10"
+                                       Foreground="#888888"/>
+                        </StackPanel>
+
+                        <Separator Background="#E0E0E0" Height="1"/>
+
+                        <!-- Section: Anleitung -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="4️⃣ Zuordnen"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="#333333"/>
+
+                            <Border Background="#E8F5E9"
+                                    BorderBrush="#4CAF50"
+                                    BorderThickness="2"
+                                    CornerRadius="8"
+                                    Padding="12">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="💡 So geht's:"
+                                               FontSize="11"
+                                               FontWeight="SemiBold"
+                                               Foreground="#2E7D32"/>
+
+                                    <TextBlock Text="• Klicken Sie auf einen Tag"
+                                               FontSize="10"
+                                               Foreground="#555555"/>
+                                    <TextBlock Text="• Oder auf KW X für ganze Woche"
+                                               FontSize="10"
+                                               Foreground="#555555"/>
+                                    <TextBlock Text="• Person wird zugeordnet"
+                                               FontSize="10"
+                                               Foreground="#555555"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <Separator Background="#E0E0E0" Height="1"/>
+
+                        <!-- Section: Export Settings -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="⚙️ Export-Einstellungen"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="#333333"/>
+
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="Zeilen pro Datei:"
+                                           FontSize="11"
+                                           Foreground="#555555"/>
+
+                                <NumericUpDown Value="{Binding ExportSplitLines}"
+                                               Minimum="10"
+                                               Maximum="1000"
+                                               Increment="10"
+                                               FormatString="0"
+                                               FontSize="12"/>
+
+                                <TextBlock Text="Bei mehr Zeilen wird automatisch auf mehrere Dateien aufgeteilt"
+                                           FontSize="9"
+                                           Foreground="#888888"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Spacer -->
+                        <Border Height="20"/>
+
+                        <!-- Statistics -->
+                        <Border Background="#FFF9E6"
+                                BorderBrush="#FFC107"
+                                BorderThickness="2"
+                                CornerRadius="8"
+                                Padding="12">
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="📊 Statistik"
+                                           FontSize="11"
+                                           FontWeight="SemiBold"
+                                           Foreground="#F57C00"/>
+
+                                <TextBlock FontSize="10" Foreground="#555555">
+                                    <Run Text="Zuordnungen: "/>
+                                    <Run Text="{Binding Assignments.Count}" FontWeight="Bold"/>
+                                </TextBlock>
+
+                                <TextBlock FontSize="10" Foreground="#555555">
+                                    <Run Text="Monat: "/>
+                                    <Run Text="{Binding MonthTitle}" FontWeight="Bold"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <!-- ============================================================================ -->
+            <!-- RIGHT PANEL: Calendar Month View -->
+            <!-- ============================================================================ -->
+            <Border Grid.Column="1"
+                    Background="White"
+                    BorderBrush="#E0E0E0"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="16">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>  <!-- Weekday headers -->
+                        <RowDefinition Height="*"/>     <!-- Days grid -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Weekday Headers -->
+                    <Grid Grid.Row="0" Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="MO" FontSize="12" FontWeight="SemiBold" Foreground="#555555" HorizontalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" Text="DI" FontSize="12" FontWeight="SemiBold" Foreground="#555555" HorizontalAlignment="Center"/>
+                        <TextBlock Grid.Column="2" Text="MI" FontSize="12" FontWeight="SemiBold" Foreground="#555555" HorizontalAlignment="Center"/>
+                        <TextBlock Grid.Column="3" Text="DO" FontSize="12" FontWeight="SemiBold" Foreground="#555555" HorizontalAlignment="Center"/>
+                        <TextBlock Grid.Column="4" Text="FR" FontSize="12" FontWeight="SemiBold" Foreground="#555555" HorizontalAlignment="Center"/>
+                        <TextBlock Grid.Column="5" Text="SA" FontSize="12" FontWeight="SemiBold" Foreground="#FF9800" HorizontalAlignment="Center"/>
+                        <TextBlock Grid.Column="6" Text="SO" FontSize="12" FontWeight="SemiBold" Foreground="#FF9800" HorizontalAlignment="Center"/>
+                    </Grid>
+
+                    <!-- Days Grid (6 weeks max) -->
+                    <ItemsControl Grid.Row="1" ItemsSource="{Binding MonthDays}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="7" Rows="6"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <!-- Day Cell -->
+                                <Border BorderBrush="#E0E0E0"
+                                        BorderThickness="0.5"
+                                        Padding="4"
+                                        Margin="1">
+                                    <Border.Styles>
+                                        <Style Selector="Border">
+                                            <Setter Property="Background" Value="White"/>
+                                        </Style>
+                                        <Style Selector="Border:pointerover">
+                                            <Setter Property="Background" Value="#F5F5F5"/>
+                                        </Style>
+                                    </Border.Styles>
+
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>  <!-- Day number -->
+                                            <RowDefinition Height="*"/>     <!-- Assignments -->
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Day Number & Week -->
+                                        <Grid Grid.Row="0">
+                                            <TextBlock Text="{Binding DayNumber}"
+                                                       FontSize="14"
+                                                       FontWeight="{Binding IsToday, Converter={x:Static ObjectConverters.BoolToValue}, ConverterParameter='Bold|Medium'}"
+                                                       Foreground="{Binding IsCurrentMonth, Converter={x:Static ObjectConverters.BoolToValue}, ConverterParameter='#333333|#BBBBBB'}"
+                                                       HorizontalAlignment="Left"
+                                                       VerticalAlignment="Top"/>
+
+                                            <TextBlock Text="{Binding WeekNumber}"
+                                                       FontSize="8"
+                                                       Foreground="#888888"
+                                                       HorizontalAlignment="Right"
+                                                       VerticalAlignment="Top"/>
+                                        </Grid>
+
+                                        <!-- Assignments List -->
+                                        <ItemsControl Grid.Row="1"
+                                                      ItemsSource="{Binding Assignments}"
+                                                      Margin="0,4,0,0">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Background="{Binding GroupColor}"
+                                                            BorderBrush="{Binding HasConflict, Converter={x:Static ObjectConverters.BoolToValue}, ConverterParameter='#FF0000|Transparent'}"
+                                                            BorderThickness="2"
+                                                            CornerRadius="4"
+                                                            Padding="4,2"
+                                                            Margin="0,2">
+                                                        <TextBlock Text="{Binding RessourceName}"
+                                                                   FontSize="9"
+                                                                   Foreground="#333333"
+                                                                   TextTrimming="CharacterEllipsis"
+                                                                   ToolTip.Tip="{Binding DisplayText}"/>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+
+                                        <!-- Today Indicator -->
+                                        <Border Grid.Row="0"
+                                                Grid.RowSpan="2"
+                                                BorderBrush="{StaticResource YunexGreen}"
+                                                BorderThickness="3"
+                                                CornerRadius="4"
+                                                IsVisible="{Binding IsToday}"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- ============================================================================ -->
+        <!-- STATUS BAR -->
+        <!-- ============================================================================ -->
+        <Border Grid.Row="2"
+                Background="#F8F8F8"
+                BorderBrush="#E0E0E0"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="12,8"
+                Margin="0,16,0,0">
+            <TextBlock Text="{Binding StatusMessage}"
+                       FontSize="12"
+                       Foreground="{Binding StatusColor}"/>
+        </Border>
+    </Grid>
+</UserControl>

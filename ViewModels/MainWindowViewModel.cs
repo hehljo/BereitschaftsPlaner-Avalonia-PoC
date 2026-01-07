@@ -44,6 +44,9 @@ public partial class MainWindowViewModel : ViewModelBase
     public EditorViewModel EditorVM { get; }
     public ZeitprofileTabViewModel ZeitprofileVM { get; }
 
+    // Planning Board View (UserControl)
+    public Views.PlanningBoardView PlanningBoardView { get; } = new();
+
     [ObservableProperty]
     private string _excelFilePath = string.Empty;
 
@@ -532,7 +535,7 @@ public partial class MainWindowViewModel : ViewModelBase
     // ============================================================================
 
     [ObservableProperty]
-    private int _selectedNavIndex = 0; // 0=Import, 1=Zeitprofile, 2=Generator, 3=Editor
+    private int _selectedNavIndex = 0; // 0=Import, 1=Zeitprofile, 2=Generator, 3=Planning, 4=Editor
 
     [RelayCommand]
     private void NavigateToImport()
@@ -553,8 +556,14 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void NavigateToEditor()
+    private void NavigateToPlanning()
     {
         SelectedNavIndex = 3;
+    }
+
+    [RelayCommand]
+    private void NavigateToEditor()
+    {
+        SelectedNavIndex = 4;
     }
 }

@@ -131,6 +131,30 @@
                         </StackPanel>
                     </Button>
 
+                    <!-- Planning Board -->
+                    <Button Command="{Binding NavigateToPlanningCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Padding="16,12"
+                            CornerRadius="0"
+                            Background="Transparent"
+                            BorderThickness="0">
+                        <Button.Styles>
+                            <Style Selector="Button">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="{StaticResource YunexGray}"/>
+                            </Style>
+                            <Style Selector="Button:pointerover">
+                                <Setter Property="Background" Value="{StaticResource SidebarItemHover}"/>
+                                <Setter Property="Foreground" Value="{StaticResource YunexBlue}"/>
+                            </Style>
+                        </Button.Styles>
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <TextBlock Text="📅" FontSize="20" VerticalAlignment="Center"/>
+                            <TextBlock Text="Planung" FontSize="14" FontWeight="Medium" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
                     <!-- Editor -->
                     <Button Command="{Binding NavigateToEditorCommand}"
                             HorizontalAlignment="Stretch"
@@ -1675,6 +1699,12 @@
                         </Border>
                     </Grid>
                 </ScrollViewer>
+
+                <!-- ============================================================================ -->
+                <!-- VIEW 5: PLANNING BOARD (SelectedNavIndex == 4) -->
+                <!-- ============================================================================ -->
+                <ContentControl Content="{Binding PlanningBoardView}"
+                                IsVisible="{Binding SelectedNavIndex, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=4}"/>
             </Grid>
         </Grid>
     </Grid>
