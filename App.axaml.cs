@@ -11,6 +11,7 @@ using SettingsService = BereitschaftsPlaner.Avalonia.Services.Data.SettingsServi
 using BereitschaftsPlaner.Avalonia.Services.Data;
 using BereitschaftsPlaner.Avalonia.Services.Import;
 using BereitschaftsPlaner.Avalonia.Services;
+using Serilog;
 
 namespace BereitschaftsPlaner.Avalonia;
 
@@ -30,22 +31,34 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        try
         {
-            // Initialize services and perform startup tasks
-            InitializeServicesAsync().Wait();
-
-            // Avoid duplicate validations from both Avalonia and the CommunityToolkit.
-            // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
-            DisableAvaloniaDataAnnotationValidation();
-            MainWindow = new MainWindow
+            Log.Information("Framework initialization started");
+            
+            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                DataContext = new MainWindowViewModel(),
-            };
-            desktop.MainWindow = MainWindow;
-        }
+                // Initialize services and perform startup tasks
+                InitializeServicesAsync().Wait();
 
-        base.OnFrameworkInitializationCompleted();
+                // Avoid duplicate validations from both Avalonia and the CommunityToolkit.
+                // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
+                DisableAvaloniaDataAnnotationValidation();
+                MainWindow = new MainWindow
+                {
+                    DataContext = new MainWindowViewModel(),
+                };
+                desktop.MainWindow = MainWindow;
+                
+                Log.Information("Main window created and displayed");
+            }
+
+            base.OnFrameworkInitializationCompleted();
+        }
+        catch (Exception ex)
+        {
+            Log.Fatal(ex, "Fatal error during framework initialization");
+            throw;
+        }
     }
 
     /// <summary>

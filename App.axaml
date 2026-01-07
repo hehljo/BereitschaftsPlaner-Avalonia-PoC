@@ -20,6 +20,7 @@
         <SolidColorBrush x:Key="YunexBlue">#1E2ED9</SolidColorBrush>         <!-- Dark Blue -->
         <SolidColorBrush x:Key="YunexCyan">#0693E3</SolidColorBrush>         <!-- Vivid Cyan Blue -->
         <SolidColorBrush x:Key="YunexPurple">#9B51E0</SolidColorBrush>       <!-- Vivid Purple -->
+        <SolidColorBrush x:Key="YunexOrange">#F47738</SolidColorBrush>       <!-- Yunex Orange -->
 
         <!-- NEUTRAL COLORS -->
         <SolidColorBrush x:Key="YunexGray">#575A76</SolidColorBrush>         <!-- Light Text Gray -->
