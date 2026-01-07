@@ -241,7 +241,7 @@
                             Padding="{StaticResource SpacingMd}"
                             CornerRadius="{StaticResource RadiusMedium}"
                             Margin="0,0,0,15">
-                        <TextBlock Text="Setup: Ressourcen & Bereitschaftsgruppen importieren"
+                        <TextBlock Text="Setup: Ressourcen und Bereitschaftsgruppen importieren"
                                    Foreground="White"
                                    FontSize="{StaticResource FontSizeH3}"
                                    FontFamily="{StaticResource HeadlineFont}"/>
@@ -520,7 +520,7 @@
                                    FontFamily="{StaticResource HeadlineFont}"/>
                     </Border>
 
-                    <!-- Profil-Auswahl & Verwaltung -->
+                    <!-- Profil-Auswahl und Verwaltung -->
                     <Border Grid.Row="1"
                             BorderBrush="{StaticResource YunexSteel}"
                             BorderThickness="1"
@@ -856,9 +856,9 @@
                     <Grid Margin="10">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>  <!-- Info Banner -->
-                            <RowDefinition Height="Auto"/>  <!-- Date Range & Resource -->
+                            <RowDefinition Height="Auto"/>  <!-- Date Range und Resource -->
                             <RowDefinition Height="*"/>     <!-- 2-Column: Filter + Selection -->
-                            <RowDefinition Height="Auto"/>  <!-- Statistics & Actions -->
+                            <RowDefinition Height="Auto"/>  <!-- Statistics und Actions -->
                         </Grid.RowDefinitions>
 
                         <!-- Info Banner -->
@@ -873,7 +873,7 @@
                                        FontFamily="{StaticResource HeadlineFont}"/>
                         </Border>
 
-                        <!-- Date Range & Resource Selection -->
+                        <!-- Date Range und Resource Selection -->
                         <Border Grid.Row="1"
                                 BorderBrush="{StaticResource YunexSteel}"
                                 BorderThickness="1"
@@ -985,7 +985,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-                            <!-- LEFT: Filter & Available Groups -->
+                            <!-- LEFT: Filter und Available Groups -->
                             <Border Grid.Column="0"
                                     BorderBrush="{StaticResource YunexSteel}"
                                     BorderThickness="1"
@@ -1139,7 +1139,7 @@
                             </Border>
                         </Grid>
 
-                        <!-- Statistics & Generate Button -->
+                        <!-- Statistics und Generate Button -->
                         <Border Grid.Row="3"
                                 BorderBrush="{StaticResource YunexSteel}"
                                 BorderThickness="1"
@@ -1190,7 +1190,7 @@
                             <RowDefinition Height="Auto"/>  <!-- File Selection -->
                             <RowDefinition Height="Auto"/>  <!-- Filter Options -->
                             <RowDefinition Height="*"/>     <!-- Data Grid -->
-                            <RowDefinition Height="Auto"/>  <!-- Actions & Status -->
+                            <RowDefinition Height="Auto"/>  <!-- Actions und Status -->
                         </Grid.RowDefinitions>
 
                         <!-- Info Banner -->
@@ -1286,7 +1286,7 @@
                                            Foreground="{StaticResource YunexRoyalBlue}"
                                            Margin="0,0,0,10"/>
 
-                                <!-- Date Range & Dropdowns -->
+                                <!-- Date Range und Dropdowns -->
                                 <Grid Grid.Row="1" Margin="0,0,0,10">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
@@ -1337,7 +1337,7 @@
                                               SelectedItem="{Binding SelectedRessourceFilter}"/>
                                 </Grid>
 
-                                <!-- Search & Quick Actions -->
+                                <!-- Search und Quick Actions -->
                                 <Grid Grid.Row="2">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -1445,7 +1445,7 @@
                             </Grid>
                         </Border>
 
-                        <!-- Actions & Status -->
+                        <!-- Actions und Status -->
                         <Border Grid.Row="4"
                                 BorderBrush="{StaticResource YunexSteel}"
                                 BorderThickness="1"
