@@ -364,14 +364,14 @@ public partial class PlanningBoardViewModel : ViewModelBase
                 return;
             }
 
-            var file = await mainWindow.StorageProvider.SaveFilePickerAsync(new Avalonia.Platform.Storage.FilePickerSaveOptions
+            var file = await mainWindow.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
             {
                 Title = "Excel-Datei speichern",
                 DefaultExtension = "xlsx",
                 SuggestedFileName = $"Bereitschaftsplan_{SelectedMonth:yyyy-MM}.xlsx",
                 FileTypeChoices = new[]
                 {
-                    new Avalonia.Platform.Storage.FilePickerFileType("Excel Dateien") { Patterns = new[] { "*.xlsx" } }
+                    new FilePickerFileType("Excel Dateien") { Patterns = new[] { "*.xlsx" } }
                 }
             });
 
