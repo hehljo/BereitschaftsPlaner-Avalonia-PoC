@@ -4,10 +4,9 @@ using System.Linq;
 using Avalonia.Controls;
 using BereitschaftsPlaner.Avalonia.Models;
 using BereitschaftsPlaner.Avalonia.Services.Planning;
+using BereitschaftsPlaner.Avalonia.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MsBox.Avalonia;
-using MsBox.Avalonia.Enums;
 using Serilog;
 
 namespace BereitschaftsPlaner.Avalonia.ViewModels;
@@ -101,23 +100,26 @@ public partial class TemplateLibraryViewModel : ViewModelBase
     {
         if (SelectedTemplate == null)
         {
-            await MessageBoxManager.GetMessageBoxStandard(
+            var warningDialog = new ConfirmDialog(
                 "Kein Template ausgewählt",
                 "Bitte wählen Sie ein Template zum Löschen aus.",
-                ButtonEnum.Ok,
-                Icon.Warning
-            ).ShowAsync();
+                "OK",
+                ""
+            );
+            await warningDialog.ShowDialog<bool>(App.MainWindow!);
             return;
         }
 
-        var result = await MessageBoxManager.GetMessageBoxStandard(
+        var confirmDialog = new ConfirmDialog(
             "Template löschen?",
             $"Möchten Sie das Template '{SelectedTemplate.Name}' wirklich löschen?",
-            ButtonEnum.YesNo,
-            Icon.Question
-        ).ShowAsync();
+            "Löschen",
+            "Abbrechen"
+        );
 
-        if (result == ButtonResult.Yes)
+        var result = await confirmDialog.ShowDialog<bool>(App.MainWindow!);
+
+        if (result)
         {
             try
             {
@@ -125,22 +127,24 @@ public partial class TemplateLibraryViewModel : ViewModelBase
                 LoadTemplates();
                 LoadCategories();
 
-                await MessageBoxManager.GetMessageBoxStandard(
+                var successDialog = new ConfirmDialog(
                     "Gelöscht",
                     "Template erfolgreich gelöscht.",
-                    ButtonEnum.Ok,
-                    Icon.Success
-                ).ShowAsync();
+                    "OK",
+                    ""
+                );
+                await successDialog.ShowDialog<bool>(App.MainWindow!);
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "Fehler beim Löschen des Templates");
-                await MessageBoxManager.GetMessageBoxStandard(
+                var errorDialog = new ConfirmDialog(
                     "Fehler",
                     $"Fehler beim Löschen: {ex.Message}",
-                    ButtonEnum.Ok,
-                    Icon.Error
-                ).ShowAsync();
+                    "OK",
+                    ""
+                );
+                await errorDialog.ShowDialog<bool>(App.MainWindow!);
             }
         }
     }
@@ -153,12 +157,13 @@ public partial class TemplateLibraryViewModel : ViewModelBase
     {
         if (SelectedTemplate == null)
         {
-            await MessageBoxManager.GetMessageBoxStandard(
+            var warningDialog = new ConfirmDialog(
                 "Kein Template ausgewählt",
                 "Bitte wählen Sie ein Template zum Umbenennen aus.",
-                ButtonEnum.Ok,
-                Icon.Warning
-            ).ShowAsync();
+                "OK",
+                ""
+            );
+            await warningDialog.ShowDialog<bool>(App.MainWindow!);
             return;
         }
 
@@ -206,22 +211,24 @@ public partial class TemplateLibraryViewModel : ViewModelBase
                 _templateService.RenameTemplate(SelectedTemplate.Id, textBox.Text);
                 LoadTemplates();
 
-                await MessageBoxManager.GetMessageBoxStandard(
+                var successDialog = new ConfirmDialog(
                     "Umbenannt",
                     "Template erfolgreich umbenannt.",
-                    ButtonEnum.Ok,
-                    Icon.Success
-                ).ShowAsync();
+                    "OK",
+                    ""
+                );
+                await successDialog.ShowDialog<bool>(App.MainWindow!);
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "Fehler beim Umbenennen des Templates");
-                await MessageBoxManager.GetMessageBoxStandard(
+                var errorDialog = new ConfirmDialog(
                     "Fehler",
                     $"Fehler beim Umbenennen: {ex.Message}",
-                    ButtonEnum.Ok,
-                    Icon.Error
-                ).ShowAsync();
+                    "OK",
+                    ""
+                );
+                await errorDialog.ShowDialog<bool>(App.MainWindow!);
             }
         }
     }
@@ -246,12 +253,13 @@ public partial class TemplateLibraryViewModel : ViewModelBase
     {
         if (SelectedTemplate == null)
         {
-            await MessageBoxManager.GetMessageBoxStandard(
+            var warningDialog = new ConfirmDialog(
                 "Kein Template ausgewählt",
                 "Bitte wählen Sie ein Template für die Vorschau aus.",
-                ButtonEnum.Ok,
-                Icon.Warning
-            ).ShowAsync();
+                "OK",
+                ""
+            );
+            await warningDialog.ShowDialog<bool>(App.MainWindow!);
             return;
         }
 
@@ -276,11 +284,12 @@ public partial class TemplateLibraryViewModel : ViewModelBase
             preview += $"  Tag {day}: {data.RessourceName} ({data.GruppeName})\n";
         }
 
-        await MessageBoxManager.GetMessageBoxStandard(
+        var previewDialog = new ConfirmDialog(
             "Template-Vorschau",
             preview,
-            ButtonEnum.Ok,
-            Icon.Info
-        ).ShowAsync();
+            "OK",
+            ""
+        );
+        await previewDialog.ShowDialog<bool>(App.MainWindow!);
     }
 }

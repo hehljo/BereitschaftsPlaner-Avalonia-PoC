@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using BereitschaftsPlaner.Avalonia.Models;
 using BereitschaftsPlaner.Avalonia.Services.Planning;
+using BereitschaftsPlaner.Avalonia.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MsBox.Avalonia;
-using MsBox.Avalonia.Enums;
 using Serilog;
 
 namespace BereitschaftsPlaner.Avalonia.ViewModels;
@@ -77,12 +76,13 @@ public partial class HistoryAnalysisViewModel : ViewModelBase
     {
         if (CurrentReport == null)
         {
-            await MessageBoxManager.GetMessageBoxStandard(
+            var warningDialog = new ConfirmDialog(
                 "Kein Report",
                 "Bitte erst einen Report generieren.",
-                ButtonEnum.Ok,
-                Icon.Warning
-            ).ShowAsync();
+                "OK",
+                ""
+            );
+            await warningDialog.ShowDialog<bool>(App.MainWindow!);
             return;
         }
 
@@ -119,12 +119,13 @@ public partial class HistoryAnalysisViewModel : ViewModelBase
             sb.AppendLine($"    • Wochenenden: {person.WeekendShifts}");
         }
 
-        await MessageBoxManager.GetMessageBoxStandard(
+        var reportDialog = new ConfirmDialog(
             "Detaillierter Report",
             sb.ToString(),
-            ButtonEnum.Ok,
-            Icon.Info
-        ).ShowAsync();
+            "OK",
+            ""
+        );
+        await reportDialog.ShowDialog<bool>(App.MainWindow!);
     }
 
     /// <summary>
@@ -135,12 +136,13 @@ public partial class HistoryAnalysisViewModel : ViewModelBase
     {
         if (CurrentReport == null)
         {
-            await MessageBoxManager.GetMessageBoxStandard(
+            var warningDialog = new ConfirmDialog(
                 "Kein Report",
                 "Bitte erst einen Report generieren.",
-                ButtonEnum.Ok,
-                Icon.Warning
-            ).ShowAsync();
+                "OK",
+                ""
+            );
+            await warningDialog.ShowDialog<bool>(App.MainWindow!);
             return;
         }
 
@@ -161,24 +163,26 @@ public partial class HistoryAnalysisViewModel : ViewModelBase
 
             System.IO.File.WriteAllText(csvPath, sb.ToString(), System.Text.Encoding.UTF8);
 
-            await MessageBoxManager.GetMessageBoxStandard(
+            var successDialog = new ConfirmDialog(
                 "Export erfolgreich",
                 $"Report exportiert nach:\n{csvPath}",
-                ButtonEnum.Ok,
-                Icon.Success
-            ).ShowAsync();
+                "OK",
+                ""
+            );
+            await successDialog.ShowDialog<bool>(App.MainWindow!);
 
             Log.Information("Report exportiert: {Path}", csvPath);
         }
         catch (Exception ex)
         {
             Log.Error(ex, "Fehler beim CSV-Export");
-            await MessageBoxManager.GetMessageBoxStandard(
+            var errorDialog = new ConfirmDialog(
                 "Fehler",
                 $"Fehler beim Export: {ex.Message}",
-                ButtonEnum.Ok,
-                Icon.Error
-            ).ShowAsync();
+                "OK",
+                ""
+            );
+            await errorDialog.ShowDialog<bool>(App.MainWindow!);
         }
     }
 }
