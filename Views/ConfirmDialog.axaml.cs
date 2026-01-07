@@ -6,8 +6,7 @@ namespace BereitschaftsPlaner.Avalonia.Views;
 
 public partial class ConfirmDialog : Window
 {
-    public new string Title { get; set; }
-    public string Title { get; set; } = "Bestätigung";
+    public new string Title { get; set; } = "Bestätigung";
     public string Message { get; set; } = "Möchten Sie fortfahren?";
     public string ConfirmText { get; set; } = "OK";
     public string CancelText { get; set; } = "Abbrechen";
