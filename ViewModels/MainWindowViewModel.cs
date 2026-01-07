@@ -514,6 +514,20 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     // ============================================================================
+    // BACKUP MANAGEMENT
+    // ============================================================================
+
+    /// <summary>
+    /// Open Backup Management Window
+    /// </summary>
+    [RelayCommand]
+    private async Task OpenBackupManagement()
+    {
+        var backupWindow = new Views.BackupManagementWindow();
+        await backupWindow.ShowDialog(App.MainWindow!);
+    }
+
+    // ============================================================================
     // NAVIGATION (Sidebar)
     // ============================================================================
 

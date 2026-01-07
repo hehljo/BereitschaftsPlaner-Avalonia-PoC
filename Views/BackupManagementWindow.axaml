@@ -1,0 +1,225 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:BereitschaftsPlaner.Avalonia.ViewModels"
+        x:Class="BereitschaftsPlaner.Avalonia.Views.BackupManagementWindow"
+        x:DataType="vm:BackupManagementViewModel"
+        Title="Backup-Verwaltung"
+        Width="900" Height="650"
+        MinWidth="700" MinHeight="500"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource BackgroundBrush}">
+
+    <Design.DataContext>
+        <vm:BackupManagementViewModel/>
+    </Design.DataContext>
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header with 2026 quiet luxury design -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="💾 Backup-Verwaltung"
+                       FontSize="24"
+                       FontWeight="SemiBold"
+                       Margin="0,0,0,8"/>
+            <TextBlock Text="Datenbank sichern und wiederherstellen"
+                       FontSize="13"
+                       Foreground="#888888"
+                       Margin="0"/>
+        </StackPanel>
+
+        <!-- Action Buttons with rounded corners (2026 design) -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="12" Margin="0,0,0,20">
+            <Button Content="➕ Neues Backup erstellen"
+                    Command="{Binding CreateBackupCommand}"
+                    Width="200"
+                    Height="40"
+                    Background="{StaticResource YunexGreen}"
+                    Foreground="White"
+                    FontWeight="SemiBold"
+                    CornerRadius="12"
+                    Padding="16,0">
+                <Button.Styles>
+                    <Style Selector="Button:pointerover">
+                        <Setter Property="Background" Value="#00CC7A"/>
+                        <Setter Property="BoxShadow" Value="0 4 12 0 #33000000"/>
+                    </Style>
+                </Button.Styles>
+            </Button>
+
+            <Button Content="🔄 Aktualisieren"
+                    Command="{Binding RefreshCommand}"
+                    Width="140"
+                    Height="40"
+                    Background="#F0F0F0"
+                    Foreground="#333333"
+                    FontWeight="Medium"
+                    CornerRadius="12"
+                    Padding="16,0">
+                <Button.Styles>
+                    <Style Selector="Button:pointerover">
+                        <Setter Property="Background" Value="#E5E5E5"/>
+                        <Setter Property="BoxShadow" Value="0 2 8 0 #22000000"/>
+                    </Style>
+                </Button.Styles>
+            </Button>
+        </StackPanel>
+
+        <!-- Backup List with modern styling -->
+        <Border Grid.Row="2"
+                BorderBrush="#E0E0E0"
+                BorderThickness="1"
+                CornerRadius="16"
+                Padding="0"
+                Margin="0,0,0,20"
+                BoxShadow="0 2 16 0 #11000000">
+            <DataGrid ItemsSource="{Binding Backups}"
+                      SelectedItem="{Binding SelectedBackup}"
+                      IsReadOnly="True"
+                      GridLinesVisibility="None"
+                      BorderThickness="0"
+                      CanUserResizeColumns="True"
+                      CanUserSortColumns="True"
+                      AutoGenerateColumns="False"
+                      SelectionMode="Single"
+                      CornerRadius="16"
+                      Background="White">
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Dateiname"
+                                        Binding="{Binding FileName}"
+                                        Width="*"
+                                        MinWidth="250"/>
+                    <DataGridTextColumn Header="Erstellt am"
+                                        Binding="{Binding CreatedAt, StringFormat='{}{0:dd.MM.yyyy HH:mm:ss}'}"
+                                        Width="180"/>
+                    <DataGridTextColumn Header="Größe (MB)"
+                                        Binding="{Binding SizeMB, StringFormat='{}{0:F2}'}"
+                                        Width="120"/>
+                </DataGrid.Columns>
+
+                <DataGrid.Styles>
+                    <!-- Row styles with soft colors -->
+                    <Style Selector="DataGridRow">
+                        <Setter Property="Background" Value="White"/>
+                        <Setter Property="Height" Value="48"/>
+                    </Style>
+                    <Style Selector="DataGridRow:nth-child(2n)">
+                        <Setter Property="Background" Value="#FAFAFA"/>
+                    </Style>
+                    <Style Selector="DataGridRow:selected">
+                        <Setter Property="Background" Value="#E8F5E9"/>
+                        <Setter Property="Foreground" Value="#1B5E20"/>
+                    </Style>
+                    <Style Selector="DataGridRow:pointerover">
+                        <Setter Property="Background" Value="#F5F5F5"/>
+                    </Style>
+
+                    <!-- Header with soft design -->
+                    <Style Selector="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#FAFAFA"/>
+                        <Setter Property="Foreground" Value="#555555"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                        <Setter Property="FontSize" Value="12"/>
+                        <Setter Property="Padding" Value="16,12"/>
+                        <Setter Property="Height" Value="44"/>
+                    </Style>
+
+                    <!-- Cell padding -->
+                    <Style Selector="DataGridCell">
+                        <Setter Property="Padding" Value="16,0"/>
+                    </Style>
+                </DataGrid.Styles>
+            </DataGrid>
+        </Border>
+
+        <!-- Action buttons for selected backup -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="12" Margin="0,0,0,20">
+            <Button Content="↩️ Wiederherstellen"
+                    Command="{Binding RestoreBackupCommand}"
+                    Width="160"
+                    Height="40"
+                    Background="{StaticResource YunexBlue}"
+                    Foreground="White"
+                    FontWeight="SemiBold"
+                    CornerRadius="12"
+                    Padding="16,0">
+                <Button.Styles>
+                    <Style Selector="Button:pointerover">
+                        <Setter Property="Background" Value="#1A28C1"/>
+                        <Setter Property="BoxShadow" Value="0 4 12 0 #33000000"/>
+                    </Style>
+                    <Style Selector="Button:disabled">
+                        <Setter Property="Background" Value="#CCCCCC"/>
+                        <Setter Property="Foreground" Value="#888888"/>
+                    </Style>
+                </Button.Styles>
+            </Button>
+
+            <Button Content="🗑️ Löschen"
+                    Command="{Binding DeleteBackupCommand}"
+                    Width="130"
+                    Height="40"
+                    Background="#FFE5E5"
+                    Foreground="#D32F2F"
+                    FontWeight="SemiBold"
+                    CornerRadius="12"
+                    Padding="16,0">
+                <Button.Styles>
+                    <Style Selector="Button:pointerover">
+                        <Setter Property="Background" Value="#FFD5D5"/>
+                        <Setter Property="BoxShadow" Value="0 2 8 0 #22FF0000"/>
+                    </Style>
+                    <Style Selector="Button:disabled">
+                        <Setter Property="Background" Value="#F5F5F5"/>
+                        <Setter Property="Foreground" Value="#BBBBBB"/>
+                    </Style>
+                </Button.Styles>
+            </Button>
+        </StackPanel>
+
+        <!-- Status bar and close button -->
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Status message with soft background -->
+            <Border Grid.Column="0"
+                    Background="#F8F8F8"
+                    CornerRadius="10"
+                    Padding="16,10"
+                    Margin="0,0,12,0">
+                <TextBlock Text="{Binding StatusMessage}"
+                           FontSize="12"
+                           Foreground="#666666"
+                           VerticalAlignment="Center"/>
+            </Border>
+
+            <!-- Close button -->
+            <Button Grid.Column="1"
+                    Content="Schließen"
+                    Command="{Binding CloseCommand}"
+                    Width="120"
+                    Height="40"
+                    Background="#F0F0F0"
+                    Foreground="#555555"
+                    FontWeight="Medium"
+                    CornerRadius="10"
+                    Padding="16,0">
+                <Button.Styles>
+                    <Style Selector="Button:pointerover">
+                        <Setter Property="Background" Value="#E0E0E0"/>
+                    </Style>
+                </Button.Styles>
+            </Button>
+        </Grid>
+    </Grid>
+</Window>
