@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using BereitschaftsPlaner.Avalonia.Models;
 using BereitschaftsPlaner.Avalonia.Services.Data;
+using Serilog;
 
 namespace BereitschaftsPlaner.Avalonia.Services.Import;
 
@@ -114,8 +115,9 @@ public class MigrationService
 
             return (false, 0);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Log.Error(ex, "Failed to migrate Ressourcen from {JsonPath}", jsonPath);
             return (false, 0);
         }
     }
@@ -138,8 +140,9 @@ public class MigrationService
 
             return (false, 0);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Log.Error(ex, "Failed to migrate Bereitschaftsgruppen from {JsonPath}", jsonPath);
             return (false, 0);
         }
     }
@@ -188,8 +191,9 @@ public class MigrationService
 
             return true;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Log.Error(ex, "Failed to export data to JSON at {ExportPath}", exportPath);
             return false;
         }
     }

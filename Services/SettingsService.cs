@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text.Json;
 using BereitschaftsPlaner.Avalonia.Models;
+using Serilog;
 
 namespace BereitschaftsPlaner.Avalonia.Services;
 
@@ -49,7 +50,7 @@ public class SettingsService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Fehler beim Laden: {ex.Message}");
+            Log.Warning(ex, "Failed to load settings from {SettingsPath}, using defaults", _settingsFilePath);
             _cachedSettings = CreateDefaultSettings();
             return _cachedSettings;
         }

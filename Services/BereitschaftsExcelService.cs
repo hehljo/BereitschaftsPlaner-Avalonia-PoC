@@ -6,6 +6,7 @@ using BereitschaftsPlaner.Avalonia.Models;
 using BereitschaftsPlaner.Avalonia.ViewModels;
 using ClosedXML.Excel;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace BereitschaftsPlaner.Avalonia.Services;
 
@@ -204,7 +205,7 @@ public class BereitschaftsExcelService
                 catch (Exception ex)
                 {
                     // Log but continue with other rows
-                    Console.WriteLine($"Warnung: Zeile {row} konnte nicht gelesen werden: {ex.Message}");
+                    Log.Warning(ex, "Row {Row} could not be read, skipping", row);
                 }
             }
 
@@ -306,20 +307,34 @@ public class BereitschaftsExcelService
     {
         var possiblePaths = new[]
         {
+            // 1. Next to executable (deployment/published app)
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config", TEMPLATE_FILENAME),
+
+            // 2. Development directory (3 levels up from bin/Debug/net9.0/)
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "config", TEMPLATE_FILENAME),
+
+            // 3. Current working directory
             Path.Combine(Environment.CurrentDirectory, "config", TEMPLATE_FILENAME),
-            Path.Combine("/root/BereitschaftsPlaner-Avalonia-PoC", "config", TEMPLATE_FILENAME)
+
+            // 4. AppData (platform-independent)
+            Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "BereitschaftsPlaner",
+                "config",
+                TEMPLATE_FILENAME
+            )
         };
 
         foreach (var path in possiblePaths)
         {
             if (File.Exists(path))
             {
+                Log.Information("Template found at {TemplatePath}", path);
                 return path;
             }
         }
 
+        Log.Warning("Template file not found in any of the expected locations");
         return null;
     }
 

@@ -38,8 +38,8 @@ public partial class App : Application
             
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                // Initialize services and perform startup tasks
-                InitializeServicesAsync().Wait();
+                // Initialize services and perform startup tasks (synchronous to avoid .Wait() deadlock)
+                InitializeServices();
 
                 // Avoid duplicate validations from both Avalonia and the CommunityToolkit.
                 // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
@@ -49,7 +49,7 @@ public partial class App : Application
                     DataContext = new MainWindowViewModel(),
                 };
                 desktop.MainWindow = MainWindow;
-                
+
                 Log.Information("Main window created and displayed");
             }
 
@@ -63,10 +63,12 @@ public partial class App : Application
     }
 
     /// <summary>
-    /// Initialize services on application startup
+    /// Initialize services on application startup (synchronous to avoid UI thread blocking)
     /// </summary>
-    private async Task InitializeServicesAsync()
+    private void InitializeServices()
     {
+        Log.Information("Initializing services...");
+
         // 1. Create backup before app starts (protects against update issues)
         BackupService.CreateBackupBeforeUpdate();
 
@@ -76,14 +78,28 @@ public partial class App : Application
         // 3. Initialize default Zeitprofile if database is empty
         DatabaseService.InitializeDefaultZeitprofile();
 
-        // 4. Check for PowerShell data to migrate
+        // 4. Check for PowerShell data to migrate (run in background to avoid blocking UI)
         var migrationService = new MigrationService(DatabaseService);
         if (migrationService.HasPowerShellDataToMigrate())
         {
-            // Automatically migrate on first run
-            // (Could show dialog to user, but auto-migration is safer)
-            await migrationService.MigrateFromPowerShellJsonAsync();
+            Log.Information("PowerShell data detected, starting background migration...");
+
+            // Run migration in background without blocking UI thread
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await migrationService.MigrateFromPowerShellJsonAsync();
+                    Log.Information("PowerShell data migration completed successfully");
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Failed to migrate PowerShell data");
+                }
+            });
         }
+
+        Log.Information("Services initialized successfully");
     }
 
     private void DisableAvaloniaDataAnnotationValidation()

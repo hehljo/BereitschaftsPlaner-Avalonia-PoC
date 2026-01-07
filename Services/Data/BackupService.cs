@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Serilog;
 
 namespace BereitschaftsPlaner.Avalonia.Services.Data;
 
@@ -54,7 +55,7 @@ public class BackupService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Backup creation failed: {ex.Message}");
+            Log.Error(ex, "Backup creation failed");
             return null;
         }
     }
@@ -83,7 +84,7 @@ public class BackupService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Manual backup failed: {ex.Message}");
+            Log.Error(ex, "Manual backup failed");
             return null;
         }
     }
@@ -116,7 +117,7 @@ public class BackupService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Restore failed: {ex.Message}");
+            Log.Error(ex, "Restore from backup failed");
             return false;
         }
     }
@@ -168,7 +169,7 @@ public class BackupService
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to delete old backup {oldBackup}: {ex.Message}");
+                Log.Warning(ex, "Failed to delete old backup {BackupPath}", oldBackup);
             }
         }
     }
@@ -189,7 +190,7 @@ public class BackupService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Failed to delete backup: {ex.Message}");
+            Log.Error(ex, "Failed to delete backup {BackupPath}", backupFilePath);
             return false;
         }
     }

@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text.Json;
 using BereitschaftsPlaner.Avalonia.Models;
+using Serilog;
 
 namespace BereitschaftsPlaner.Avalonia.Services.Data;
 
@@ -38,9 +39,10 @@ public class SettingsService
             var settings = JsonSerializer.Deserialize<AppSettings>(json);
             return settings ?? GetDefaultSettings();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             // If deserialization fails, return defaults
+            Log.Warning(ex, "Failed to deserialize settings from {SettingsPath}, using defaults", _settingsPath);
             return GetDefaultSettings();
         }
     }
