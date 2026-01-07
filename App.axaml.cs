@@ -7,7 +7,7 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using BereitschaftsPlaner.Avalonia.ViewModels;
 using BereitschaftsPlaner.Avalonia.Views;
-using BereitschaftsPlaner.Avalonia.Services;
+using SettingsService = BereitschaftsPlaner.Avalonia.Services.Data.SettingsService;
 using BereitschaftsPlaner.Avalonia.Services.Data;
 using BereitschaftsPlaner.Avalonia.Services.Import;
 
