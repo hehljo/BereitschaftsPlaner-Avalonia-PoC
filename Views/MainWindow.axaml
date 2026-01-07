@@ -189,6 +189,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
                     <!-- Empty space for title (can add breadcrumb later) -->
@@ -196,8 +197,29 @@
                                Text=""
                                VerticalAlignment="Center"/>
 
+                    <!-- Backup Management Button -->
+                    <Button Grid.Column="1"
+                            Command="{Binding OpenBackupManagementCommand}"
+                            Content="💾 Backup"
+                            FontSize="12"
+                            Height="32"
+                            Padding="12,0"
+                            CornerRadius="8"
+                            Margin="0,0,16,0"
+                            Background="#F0F0F0"
+                            Foreground="#555555"
+                            FontWeight="Medium"
+                            ToolTip.Tip="Backup erstellen und wiederherstellen">
+                        <Button.Styles>
+                            <Style Selector="Button:pointerover">
+                                <Setter Property="Background" Value="#E5E5E5"/>
+                                <Setter Property="Opacity" Value="0.95"/>
+                            </Style>
+                        </Button.Styles>
+                    </Button>
+
                     <!-- Environment Switcher -->
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" Margin="0,0,16,0">
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" Margin="0,0,16,0">
                         <TextBlock Text="Umgebung:"
                                    VerticalAlignment="Center"
                                    FontSize="{StaticResource FontSizeSmall}"/>
@@ -210,7 +232,7 @@
                     </StackPanel>
 
                     <!-- Dark Mode Toggle -->
-                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                    <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="8">
                         <TextBlock Text="🌙"
                                    VerticalAlignment="Center"
                                    FontSize="16"/>
