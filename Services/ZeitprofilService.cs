@@ -11,9 +11,9 @@ namespace BereitschaftsPlaner.Avalonia.Services;
 /// </summary>
 public class ZeitprofilService
 {
-    private readonly SettingsService _settingsService;
+    private readonly BereitschaftsPlaner.Avalonia.Services.Data.SettingsService _settingsService;
 
-    public ZeitprofilService(SettingsService settingsService)
+    public ZeitprofilService(BereitschaftsPlaner.Avalonia.Services.Data.SettingsService settingsService)
     {
         _settingsService = settingsService;
         InitializeZeitprofileStruktur();
@@ -86,7 +86,18 @@ public class ZeitprofilService
                 Region = "",
                 BehandelnWie = "Sonntag"
             },
-            StandardTypFuerUndefiniert = "BD"
+            StandardTypFuerUndefiniert = "BD",
+            // Backwards-compatible fields for database and legacy code
+            StartZeit = "16:00",
+            EndZeit = "07:30",
+            Folgetag = true,
+            Montag = true,
+            Dienstag = true,
+            Mittwoch = true,
+            Donnerstag = true,
+            Freitag = true,
+            Samstag = true,
+            Sonntag = true
         };
     }
 
@@ -279,6 +290,19 @@ public class ZeitprofilService
         }
 
         return gruppen;
+    }
+
+    /// <summary>
+    /// Returns the profile ID assigned to a group, or null if none is set
+    /// </summary>
+    public string? GetProfilIDForGruppe(string gruppenName)
+    {
+        var settings = _settingsService.LoadSettings();
+        if (settings.Zeitprofile != null && settings.Zeitprofile.GruppenZuweisungen != null && settings.Zeitprofile.GruppenZuweisungen.ContainsKey(gruppenName))
+        {
+            return settings.Zeitprofile.GruppenZuweisungen[gruppenName];
+        }
+        return null;
     }
 
     /// <summary>

@@ -357,11 +357,10 @@ public class BereitschaftsExcelService
         {
             if (colMap.TryGetValue(columnName, out var colIndex))
             {
-                worksheet.Cell(row, colIndex).Value = value;
+                worksheet.Cell(row, colIndex).SetValue(value?.ToString() ?? string.Empty);
             }
         }
 
-        // Map entry fields to Excel columns
         SetCell("Name", entry.GruppeName); // Bereitschaftsgruppe
         SetCell("Bookable Resource", entry.RessourceName); // Ressource/Person
         SetCell("Start Time", $"{date:dd.MM.yyyy} {entry.StartZeit}"); // Startzeit

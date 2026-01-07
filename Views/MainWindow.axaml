@@ -547,15 +547,14 @@
                                            Margin="0,0,10,0"/>
 
                                 <ComboBox Grid.Column="1"
-                                          ItemsSource="{Binding Zeitprofile}"
-                                          SelectedItem="{Binding SelectedZeitprofil}"
-                                          DisplayMemberPath="Name"
+                                          ItemsSource="{Binding ZeitprofileVM.Zeitprofile}"
+                                          SelectedItem="{Binding ZeitprofileVM.SelectedZeitprofil}"
                                           MinWidth="300"
                                           Margin="0,0,10,0"/>
 
                                 <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="5">
                                     <Button Content="💾 Speichern"
-                                            Command="{Binding SaveSelectedProfilCommand}"
+                                            Command="{Binding ZeitprofileVM.SaveSelectedProfilCommand}"
                                             Background="{StaticResource YunexGreen}"
                                             Foreground="White"
                                             Width="120"
@@ -563,7 +562,7 @@
                                             CornerRadius="{StaticResource RadiusSmall}"/>
 
                                     <Button Content="📋 Kopieren"
-                                            Command="{Binding CopySelectedProfilCommand}"
+                                            Command="{Binding ZeitprofileVM.CopySelectedProfilCommand}"
                                             Background="{StaticResource YunexPurple}"
                                             Foreground="White"
                                             Width="120"
@@ -571,7 +570,7 @@
                                             CornerRadius="{StaticResource RadiusSmall}"/>
 
                                     <Button Content="🗑️ Löschen"
-                                            Command="{Binding DeleteSelectedProfilCommand}"
+                                            Command="{Binding ZeitprofileVM.DeleteSelectedProfilCommand}"
                                             Background="{StaticResource YunexOrange}"
                                             Foreground="White"
                                             Width="120"
@@ -597,18 +596,24 @@
                                            Margin="0,0,10,0"/>
 
                                 <TextBox Grid.Column="1"
-                                         Text="{Binding NewProfilName}"
+                                         Text="{Binding ZeitprofileVM.NewProfilName}"
                                          Watermark="Name für neues Profil eingeben..."
                                          Margin="0,0,10,0"/>
 
                                 <Button Grid.Column="2"
                                         Content="➕ Erstellen"
-                                        Command="{Binding CreateNewProfilCommand}"
+                                        Command="{Binding ZeitprofileVM.CreateNewProfilCommand}"
                                         Background="{StaticResource YunexRoyalBlue}"
                                         Foreground="White"
                                         Width="120"
                                         Height="32"
                                         CornerRadius="{StaticResource RadiusSmall}"/>
+
+                            <!-- Status Message -->
+                            <TextBlock Text="{Binding ZeitprofileVM.StatusMessage}"
+                                       Foreground="{Binding ZeitprofileVM.StatusColor}"
+                                       FontWeight="Bold"
+                                       FontSize="{StaticResource FontSizeSmall}"/>
                             </Grid>
 
                             <!-- Status Message -->
@@ -626,7 +631,7 @@
                             CornerRadius="{StaticResource RadiusMedium}"
                             Padding="{StaticResource SpacingMd}"
                             Margin="0,0,0,10"
-                            IsVisible="{Binding SelectedZeitprofil, Converter={x:Static ObjectConverters.IsNotNull}}">
+                            IsVisible="{Binding ZeitprofileVM.SelectedZeitprofil, Converter={x:Static ObjectConverters.IsNotNull}}">
                         <StackPanel Spacing="10">
                             <TextBlock Text="✏️ Profil-Details"
                                        FontFamily="{StaticResource HeadlineFont}"
@@ -646,7 +651,7 @@
                                            Margin="0,0,10,0"/>
 
                                 <TextBox Grid.Column="1"
-                                         Text="{Binding SelectedZeitprofil.Name}"
+                                         Text="{Binding ZeitprofileVM.SelectedZeitprofil.Name}"
                                          Watermark="Profilname"/>
                             </Grid>
                         </StackPanel>
@@ -659,7 +664,7 @@
                             CornerRadius="{StaticResource RadiusMedium}"
                             Padding="{StaticResource SpacingMd}"
                             Margin="0,0,0,10"
-                            IsVisible="{Binding SelectedZeitprofil, Converter={x:Static ObjectConverters.IsNotNull}}">
+                            IsVisible="{Binding ZeitprofileVM.SelectedZeitprofil, Converter={x:Static ObjectConverters.IsNotNull}}">
                         <StackPanel Spacing="15">
                             <TextBlock Text="📅 Wochenzeitplan"
                                        FontFamily="{StaticResource HeadlineFont}"
@@ -680,7 +685,7 @@
                                                FontSize="{StaticResource FontSizeBody}"
                                                Foreground="{StaticResource YunexPurple}"/>
 
-                                    <DataGrid ItemsSource="{Binding SelectedZeitprofil.BereitschaftsTage}"
+                                    <DataGrid ItemsSource="{Binding ZeitprofileVM.SelectedZeitprofil.BereitschaftsTage}"
                                               AutoGenerateColumns="False"
                                               GridLinesVisibility="All"
                                               BorderThickness="1"
@@ -706,7 +711,7 @@
                                                FontSize="{StaticResource FontSizeBody}"
                                                Foreground="{StaticResource YunexGreen}"/>
 
-                                    <DataGrid ItemsSource="{Binding SelectedZeitprofil.Tagesdienste}"
+                                    <DataGrid ItemsSource="{Binding ZeitprofileVM.SelectedZeitprofil.Tagesdienste}"
                                               AutoGenerateColumns="False"
                                               GridLinesVisibility="All"
                                               BorderThickness="1"
@@ -735,7 +740,7 @@
                             CornerRadius="{StaticResource RadiusMedium}"
                             Padding="{StaticResource SpacingMd}"
                             Margin="0,0,0,10"
-                            IsVisible="{Binding SelectedZeitprofil, Converter={x:Static ObjectConverters.IsNotNull}}">
+                            IsVisible="{Binding ZeitprofileVM.SelectedZeitprofil, Converter={x:Static ObjectConverters.IsNotNull}}">
                         <StackPanel Spacing="10">
                             <TextBlock Text="🎉 Feiertags-Konfiguration"
                                        FontFamily="{StaticResource HeadlineFont}"
@@ -762,7 +767,7 @@
                                            Margin="0,0,10,0"/>
 
                                 <ComboBox Grid.Column="1"
-                                          SelectedValue="{Binding SelectedZeitprofil.Bundesland}">
+                                          SelectedValue="{Binding ZeitprofileVM.SelectedZeitprofil.Bundesland}">
                                     <ComboBoxItem Content="BY - Bayern"/>
                                     <ComboBoxItem Content="BW - Baden-Württemberg"/>
                                     <ComboBoxItem Content="BE - Berlin"/>
@@ -789,7 +794,7 @@
                                            Margin="0,0,10,0"/>
 
                                 <TextBox Grid.Column="4"
-                                         Text="{Binding SelectedZeitprofil.Region}"
+                                         Text="{Binding ZeitprofileVM.SelectedZeitprofil.Region}"
                                          Watermark="z.B. Augsburg (optional)"/>
 
                                 <!-- Behandeln wie -->
@@ -800,7 +805,7 @@
                                            Margin="0,0,10,0"/>
 
                                 <ComboBox Grid.Column="7"
-                                          SelectedValue="{Binding SelectedZeitprofil.BehandelnWie}">
+                                          SelectedValue="{Binding ZeitprofileVM.SelectedZeitprofil.BehandelnWie}">
                                     <ComboBoxItem Content="Sonntag"/>
                                     <ComboBoxItem Content="Samstag"/>
                                 </ComboBox>
@@ -820,14 +825,14 @@
                             CornerRadius="{StaticResource RadiusMedium}"
                             Padding="{StaticResource SpacingMd}"
                             Margin="0,0,0,10"
-                            IsVisible="{Binding SelectedZeitprofil, Converter={x:Static ObjectConverters.IsNotNull}}">
+                            IsVisible="{Binding ZeitprofileVM.SelectedZeitprofil, Converter={x:Static ObjectConverters.IsNotNull}}">
                         <StackPanel Spacing="10">
                             <TextBlock Text="👥 Zugewiesene Bereitschaftsgruppen"
                                        FontFamily="{StaticResource HeadlineFont}"
                                        FontSize="{StaticResource FontSizeH4}"
                                        Foreground="{StaticResource YunexRoyalBlue}"/>
 
-                            <DataGrid ItemsSource="{Binding SelectedZeitprofil.GruppenZuweisungen}"
+                            <DataGrid ItemsSource="{Binding ZeitprofileVM.SelectedZeitprofil.GruppenZuweisungen}"
                                       AutoGenerateColumns="False"
                                       IsReadOnly="True"
                                       GridLinesVisibility="All"
@@ -1112,7 +1117,6 @@
             <ComboBox Grid.Column="1"
                       ItemsSource="{Binding Ressourcen}"
                       SelectedItem="{Binding SelectedRessource}"
-                      DisplayMemberPath="Name"
                       MinWidth="300"
                       HorizontalAlignment="Left"/>
         </Grid>

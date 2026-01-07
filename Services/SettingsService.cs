@@ -109,15 +109,4 @@ public class SettingsService
     }
 }
 
-public class AppSettings
-{
-    public ZeitprofileSettings Zeitprofile { get; set; } = new();
-    public string LastExportPath { get; set; } = string.Empty;
-    public string Environment { get; set; } = "Production";
-}
-
-public class ZeitprofileSettings
-{
-    public System.Collections.Generic.Dictionary<string, Zeitprofil> Profile { get; set; } = new();
-    public System.Collections.Generic.Dictionary<string, string> GruppenZuweisungen { get; set; } = new();
-}
+// AppSettings and ZeitprofileSettings are defined in `Models/AppSettings.cs` to avoid duplicate types.

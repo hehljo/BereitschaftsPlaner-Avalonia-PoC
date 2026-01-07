@@ -518,7 +518,7 @@ public partial class GeneratorViewModel : ViewModelBase
                     progressCallback: (current, total, message) =>
                     {
                         // Update status on UI thread
-                        Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                        global::Avalonia.Threading.Dispatcher.UIThread.Post(() =>
                         {
                             var percentage = total > 0 ? (current * 100 / total) : 0;
                             SetStatus($"⚡ {message} ({percentage}%)", Brushes.Blue);

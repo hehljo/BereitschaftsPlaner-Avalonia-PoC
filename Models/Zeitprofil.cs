@@ -25,6 +25,18 @@ public class Zeitprofil
     // Default type for undefined days ("BD" or "TD")
     public string StandardTypFuerUndefiniert { get; set; } = "BD";
 
+    public string StartZeit { get; set; } = string.Empty;
+    public string EndZeit { get; set; } = string.Empty;
+    public bool Folgetag { get; set; } = false;
+
+    public bool Montag { get; set; } = false;
+    public bool Dienstag { get; set; } = false;
+    public bool Mittwoch { get; set; } = false;
+    public bool Donnerstag { get; set; } = false;
+    public bool Freitag { get; set; } = false;
+    public bool Samstag { get; set; } = false;
+    public bool Sonntag { get; set; } = false;
+
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; } = DateTime.Now;
 

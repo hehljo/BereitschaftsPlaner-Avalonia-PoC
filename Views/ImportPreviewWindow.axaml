@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:BereitschaftsPlaner.Avalonia.ViewModels"
         x:Class="BereitschaftsPlaner.Avalonia.Views.ImportPreviewWindow"
+        x:DataType="vm:ImportPreviewViewModel"
         Title="Import-Vorschau"
         Width="900" Height="600"
         MinWidth="700" MinHeight="500"

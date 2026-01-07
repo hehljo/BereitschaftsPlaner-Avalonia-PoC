@@ -14,7 +14,7 @@ namespace BereitschaftsPlaner.Avalonia.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    private readonly ExcelImportService _excelService = new();
+    private readonly BereitschaftsPlaner.Avalonia.Services.ExcelImportService _excelService = new();
     private readonly DatabaseService _dbService;
     private readonly SettingsService _settingsService;
 
@@ -30,6 +30,7 @@ public partial class MainWindowViewModel : ViewModelBase
         // Initialize sub-ViewModels
         GeneratorVM = new GeneratorViewModel();
         EditorVM = new EditorViewModel();
+        ZeitprofileVM = new ZeitprofileTabViewModel();
 
         // Load settings and apply theme
         LoadSettings();
@@ -41,6 +42,7 @@ public partial class MainWindowViewModel : ViewModelBase
     // Sub-ViewModels for complex views
     public GeneratorViewModel GeneratorVM { get; }
     public EditorViewModel EditorVM { get; }
+    public ZeitprofileTabViewModel ZeitprofileVM { get; }
 
     [ObservableProperty]
     private string _excelFilePath = string.Empty;
@@ -135,7 +137,7 @@ public partial class MainWindowViewModel : ViewModelBase
             }
 
             // Validate data
-            var validator = new DataValidator();
+            var validator = new BereitschaftsPlaner.Avalonia.Services.DataValidator();
             var validationResult = validator.ValidateRessourcen(result.Ressourcen);
 
             // Clean data (remove duplicates, empty names)
@@ -247,7 +249,7 @@ public partial class MainWindowViewModel : ViewModelBase
             }
 
             // Validate data
-            var validator = new DataValidator();
+            var validator = new BereitschaftsPlaner.Avalonia.Services.DataValidator();
             var validationResult = validator.ValidateBereitschaftsGruppen(result.Gruppen);
 
             // Clean data (remove duplicates, empty names)
