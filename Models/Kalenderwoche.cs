@@ -1,16 +1,34 @@
 using System;
+using System.ComponentModel;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace BereitschaftsPlaner.Avalonia.Models;
 
 /// <summary>
-/// Represents a calendar week (Kalenderwoche)
+/// Represents a calendar week (Kalenderwoche) with INotifyPropertyChanged support
 /// </summary>
-public class Kalenderwoche
+public class Kalenderwoche : INotifyPropertyChanged
 {
+    private bool _isSelected;
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
     public int Jahr { get; set; }
     public int Woche { get; set; }
-    public bool IsSelected { get; set; }
+    
+    public bool IsSelected
+    {
+        get => _isSelected;
+        set
+        {
+            if (_isSelected != value)
+            {
+                _isSelected = value;
+                OnPropertyChanged();
+            }
+        }
+    }
     
     public string DisplayText => $"KW {Woche}";
     public string DisplayTextLong => $"KW {Woche} ({Jahr})";
@@ -30,6 +48,11 @@ public class Kalenderwoche
         var (start, end) = GetWeekDates(jahr, woche);
         StartDatum = start;
         EndDatum = end;
+    }
+
+    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
     /// <summary>
