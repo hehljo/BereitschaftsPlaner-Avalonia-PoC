@@ -1,0 +1,111 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:BereitschaftsPlaner.Avalonia.ViewModels"
+        x:Class="BereitschaftsPlaner.Avalonia.Views.WelcomeWizardWindow"
+        x:DataType="vm:WelcomeWizardViewModel"
+        Title="Willkommens-Assistent"
+        Width="700"
+        Height="500"
+        WindowStartupLocation="CenterScreen"
+        CanResize="False"
+        Background="#F5F5F5">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0"
+                Background="{StaticResource YunexGreen}"
+                Padding="30,20">
+            <StackPanel>
+                <TextBlock Text="{Binding CurrentTitle}"
+                           FontSize="24"
+                           FontWeight="Bold"
+                           Foreground="White"
+                           TextWrapping="Wrap"/>
+
+                <TextBlock Text="{Binding CurrentStep, StringFormat='Schritt {0} von 6'}"
+                           FontSize="14"
+                           Foreground="White"
+                           Opacity="0.9"
+                           Margin="0,5,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Content -->
+        <ScrollViewer Grid.Row="1" Padding="30">
+            <TextBlock Text="{Binding CurrentContent}"
+                       FontSize="14"
+                       LineHeight="24"
+                       TextWrapping="Wrap"
+                       Foreground="#333333"/>
+        </ScrollViewer>
+
+        <!-- Progress Bar -->
+        <ProgressBar Grid.Row="2"
+                     Minimum="0"
+                     Maximum="6"
+                     Value="{Binding CurrentStep}"
+                     Height="4"
+                     Background="#E0E0E0"
+                     Foreground="{StaticResource YunexGreen}"
+                     IsIndeterminate="False"/>
+
+        <!-- Footer Buttons -->
+        <Border Grid.Row="2"
+                Background="White"
+                BorderBrush="#E0E0E0"
+                BorderThickness="0,1,0,0"
+                Padding="30,15"
+                Margin="0,4,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Skip Button -->
+                <Button Grid.Column="0"
+                        Content="Überspringen"
+                        Command="{Binding SkipWizardCommand}"
+                        Click="SkipButton_Click"
+                        Background="Transparent"
+                        Foreground="#666666"
+                        BorderThickness="0"
+                        Padding="15,8"
+                        Cursor="Hand"/>
+
+                <StackPanel Grid.Column="2"
+                            Orientation="Horizontal"
+                            Spacing="10">
+                    <!-- Previous Button -->
+                    <Button Content="◀ Zurück"
+                            Command="{Binding PreviousStepCommand}"
+                            IsEnabled="{Binding !IsFirstStep}"
+                            Background="#F0F0F0"
+                            Foreground="#333333"
+                            CornerRadius="8"
+                            Padding="20,10"
+                            Width="120"/>
+
+                    <!-- Next/Finish Button -->
+                    <Button Content="{Binding IsLastStep, Converter={x:Static ObjectConverters.BoolToValue}, ConverterParameter='Fertig|Weiter ▶'}"
+                            Command="{Binding NextStepCommand}"
+                            Click="NextButton_Click"
+                            Background="{StaticResource YunexGreen}"
+                            Foreground="White"
+                            CornerRadius="8"
+                            Padding="20,10"
+                            Width="120"
+                            FontWeight="SemiBold"
+                            Cursor="Hand"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

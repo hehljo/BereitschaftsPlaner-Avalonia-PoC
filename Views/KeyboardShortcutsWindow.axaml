@@ -1,0 +1,104 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:BereitschaftsPlaner.Avalonia.ViewModels"
+        x:Class="BereitschaftsPlaner.Avalonia.Views.KeyboardShortcutsWindow"
+        x:DataType="vm:KeyboardShortcutsViewModel"
+        Title="Tastenkombinationen"
+        Width="800"
+        Height="600"
+        WindowStartupLocation="CenterOwner"
+        Background="#F5F5F5">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Tastenkombinationen"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       Foreground="#333333"/>
+            <TextBlock Text="Alle Keyboard-Shortcuts für schnelleres Arbeiten"
+                       FontSize="14"
+                       Foreground="#666666"
+                       Margin="0,5,0,0"/>
+        </StackPanel>
+
+        <!-- Shortcuts List -->
+        <ScrollViewer Grid.Row="1">
+            <ItemsControl ItemsSource="{Binding ShortcutGroups}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="White"
+                                CornerRadius="12"
+                                Padding="20"
+                                Margin="0,0,0,15"
+                                BoxShadow="0 2 8 0 #10000000">
+                            <StackPanel>
+                                <!-- Group Title -->
+                                <TextBlock Text="{Binding Name}"
+                                           FontSize="18"
+                                           FontWeight="SemiBold"
+                                           Foreground="#333333"
+                                           Margin="0,0,0,15"/>
+
+                                <!-- Shortcuts in Group -->
+                                <ItemsControl ItemsSource="{Binding Shortcuts}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="0,0,0,10">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="200"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <!-- Keys -->
+                                                <Border Grid.Column="0"
+                                                        Background="#F5F5F5"
+                                                        CornerRadius="6"
+                                                        Padding="12,6"
+                                                        HorizontalAlignment="Left">
+                                                    <TextBlock Text="{Binding Keys}"
+                                                               FontFamily="Consolas,monospace"
+                                                               FontSize="13"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="#00CC7A"/>
+                                                </Border>
+
+                                                <!-- Description -->
+                                                <TextBlock Grid.Column="1"
+                                                           Text="{Binding Description}"
+                                                           FontSize="13"
+                                                           Foreground="#555555"
+                                                           VerticalAlignment="Center"
+                                                           Margin="15,0,0,0"
+                                                           TextWrapping="Wrap"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!-- Close Button -->
+        <Button Grid.Row="2"
+                Content="Schließen"
+                HorizontalAlignment="Right"
+                Background="{StaticResource YunexGreen}"
+                Foreground="White"
+                CornerRadius="8"
+                Padding="30,10"
+                FontWeight="SemiBold"
+                Cursor="Hand"
+                Click="CloseButton_Click"
+                Margin="0,15,0,0"/>
+    </Grid>
+</Window>
