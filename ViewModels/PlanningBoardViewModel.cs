@@ -614,7 +614,7 @@ public partial class DayCell : ObservableObject
 
     public bool HasAssignments => Assignments.Any();
 
-    public Avalonia.Media.FontWeight DayFontWeight => IsToday ? Avalonia.Media.FontWeight.Bold : Avalonia.Media.FontWeight.Medium;
+    public FontWeight DayFontWeight => IsToday ? FontWeight.Bold : FontWeight.Medium;
 
     public string DayForeground => IsCurrentMonth ? "#333333" : "#BBBBBB";
 }
