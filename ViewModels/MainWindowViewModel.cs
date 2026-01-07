@@ -8,6 +8,7 @@ using Avalonia.Platform.Storage;
 using BereitschaftsPlaner.Avalonia.Models;
 using SettingsService = BereitschaftsPlaner.Avalonia.Services.Data.SettingsService;
 using BereitschaftsPlaner.Avalonia.Services.Data;
+using BereitschaftsPlaner.Avalonia.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -74,8 +75,8 @@ public partial class MainWindowViewModel : ViewModelBase
     private int _environmentIndex = 0; // 0 = Production, 1 = QA
 
     public string DataGridTitle => HasData
-        ? $"Importierte Ressourcen ({Ressourcen.Count} Einträge)"
-        : "Importierte Ressourcen (0 Einträge)";
+        ? $"Importierte Ressourcen ({Ressourcen.Count} Eintr\u00e4ge)"
+        : "Importierte Ressourcen (0 Eintr\u00e4ge)";
 
     [RelayCommand]
     private async Task BrowseFile()
@@ -86,13 +87,13 @@ public partial class MainWindowViewModel : ViewModelBase
             var mainWindow = App.MainWindow;
             if (mainWindow?.StorageProvider == null)
             {
-                SetStatus("Fehler: Hauptfenster nicht verfügbar", Brushes.Red);
+                SetStatus("Fehler: Hauptfenster nicht verf\u00fcgbar", Brushes.Red);
                 return;
             }
 
             var files = await mainWindow.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
-                Title = "Excel-Datei auswählen",
+                Title = "Excel-Datei ausw\u00e4hlen",
                 AllowMultiple = false,
                 FileTypeFilter = new[]
                 {
@@ -104,7 +105,7 @@ public partial class MainWindowViewModel : ViewModelBase
             if (files.Count > 0)
             {
                 ExcelFilePath = files[0].Path.LocalPath;
-                SetStatus($"Datei ausgewählt: {Path.GetFileName(ExcelFilePath)}", Brushes.Blue);
+                SetStatus($"Datei ausgew\u00e4hlt: {Path.GetFileName(ExcelFilePath)}", Brushes.Blue);
             }
         }
         catch (Exception ex)
@@ -120,7 +121,7 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             if (string.IsNullOrWhiteSpace(ExcelFilePath))
             {
-                SetStatus("Bitte zuerst eine Excel-Datei auswählen", Brushes.Orange);
+                SetStatus("Bitte zuerst eine Excel-Datei ausw\u00e4hlen", Brushes.Orange);
                 return;
             }
 
@@ -181,7 +182,7 @@ public partial class MainWindowViewModel : ViewModelBase
             // Clear file path after successful import
             ExcelFilePath = string.Empty;
 
-            SetStatus($"✅ {cleanedData.Count} Ressourcen importiert und gespeichert", Brushes.Green);
+            SetStatus($"\u2705 {cleanedData.Count} Ressourcen importiert und gespeichert", Brushes.Green);
         }
         catch (Exception ex)
         {
@@ -198,13 +199,13 @@ public partial class MainWindowViewModel : ViewModelBase
             var mainWindow = App.MainWindow;
             if (mainWindow?.StorageProvider == null)
             {
-                SetStatus("Fehler: Hauptfenster nicht verfügbar", Brushes.Red);
+                SetStatus("Fehler: Hauptfenster nicht verf\u00fcgbar", Brushes.Red);
                 return;
             }
 
             var files = await mainWindow.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
-                Title = "Bereitschaftsgruppen Excel-Datei auswählen",
+                Title = "Bereitschaftsgruppen Excel-Datei ausw\u00e4hlen",
                 AllowMultiple = false,
                 FileTypeFilter = new[]
                 {
@@ -216,7 +217,7 @@ public partial class MainWindowViewModel : ViewModelBase
             if (files.Count > 0)
             {
                 GruppenFilePath = files[0].Path.LocalPath;
-                SetStatus($"Gruppendatei ausgewählt: {Path.GetFileName(GruppenFilePath)}", Brushes.Blue);
+                SetStatus($"Gruppendatei ausgew\u00e4hlt: {Path.GetFileName(GruppenFilePath)}", Brushes.Blue);
             }
         }
         catch (Exception ex)
@@ -232,7 +233,7 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             if (string.IsNullOrWhiteSpace(GruppenFilePath))
             {
-                SetStatus("Bitte zuerst eine Excel-Datei für Gruppen auswählen", Brushes.Orange);
+                SetStatus("Bitte zuerst eine Excel-Datei f\u00fcr Gruppen ausw\u00e4hlen", Brushes.Orange);
                 return;
             }
 
@@ -287,7 +288,7 @@ public partial class MainWindowViewModel : ViewModelBase
             // Clear file path after successful import
             GruppenFilePath = string.Empty;
 
-            SetStatus($"✅ {cleanedData.Count} Bereitschaftsgruppen importiert und gespeichert", Brushes.Green);
+            SetStatus($"\u2705 {cleanedData.Count} Bereitschaftsgruppen importiert und gespeichert", Brushes.Green);
         }
         catch (Exception ex)
         {
@@ -311,7 +312,7 @@ public partial class MainWindowViewModel : ViewModelBase
             var mainWindow = App.MainWindow;
             if (mainWindow?.StorageProvider == null)
             {
-                SetStatus("Fehler: Hauptfenster nicht verfügbar", Brushes.Red);
+                SetStatus("Fehler: Hauptfenster nicht verf\u00fcgbar", Brushes.Red);
                 return;
             }
 
@@ -405,9 +406,9 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         // Ask for confirmation
         var confirmWindow = new Views.ConfirmDialog(
-            "Datenbank zurücksetzen",
-            "Möchten Sie wirklich alle importierten Daten löschen?\n\nEin Backup wird automatisch erstellt.",
-            "Löschen",
+            "Datenbank zur\u00fccksetzen",
+            "M\u00f6chten Sie wirklich alle importierten Daten l\u00f6schen?\n\nEin Backup wird automatisch erstellt.",
+            "L\u00f6schen",
             "Abbrechen"
         );
 
@@ -435,11 +436,11 @@ public partial class MainWindowViewModel : ViewModelBase
             HasGruppenData = false;
             OnPropertyChanged(nameof(DataGridTitle));
 
-            SetStatus("✅ Datenbank zurückgesetzt (Backup erstellt)", Brushes.Green);
+            SetStatus("\u2705 Datenbank zur\u00fcckgesetzt (Backup erstellt)", Brushes.Green);
         }
         catch (Exception ex)
         {
-            SetStatus($"Fehler beim Zurücksetzen: {ex.Message}", Brushes.Red);
+            SetStatus($"Fehler beim Zur\u00fccksetzen: {ex.Message}", Brushes.Red);
         }
     }
 
