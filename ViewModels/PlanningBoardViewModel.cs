@@ -8,6 +8,7 @@ using Avalonia.Media;
 using BereitschaftsPlaner.Avalonia.Models;
 using BereitschaftsPlaner.Avalonia.Services;
 using BereitschaftsPlaner.Avalonia.Services.Data;
+using BereitschaftsPlaner.Avalonia.Services.Planning;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Serilog;
@@ -20,6 +21,7 @@ public partial class PlanningBoardViewModel : ViewModelBase
     private readonly BereitschaftsExcelService _excelService;
     private readonly ZeitprofilService _zeitprofilService;
     private readonly FeiertagsService _feiertagsService;
+    private readonly AutoFillService _autoFillService;
 
     [ObservableProperty]
     private ObservableCollection<BereitschaftsGruppe> _availableGroups = new();
@@ -68,6 +70,7 @@ public partial class PlanningBoardViewModel : ViewModelBase
         _excelService = new BereitschaftsExcelService();
         _zeitprofilService = App.ZeitprofilService;
         _feiertagsService = App.FeiertagsService;
+        _autoFillService = new AutoFillService();
 
         LoadData();
         GenerateMonthView();
@@ -404,6 +407,175 @@ public partial class PlanningBoardViewModel : ViewModelBase
     partial void OnIsBDChanged(bool value)
     {
         SelectedTyp = value ? "BD" : "TD";
+    }
+
+    /// <summary>
+    /// Auto-fill month with fair resource distribution
+    /// </summary>
+    [RelayCommand]
+    private async Task AutoFillMonth()
+    {
+        // Check feature flag
+        var settings = App.SettingsService.LoadSettings();
+        if (!settings.Features.AutoFillEnabled)
+        {
+            SetStatus("⚠️ Auto-Fill ist in den Einstellungen deaktiviert", Brushes.Orange);
+            return;
+        }
+
+        if (AvailableGroups.Count == 0 || AvailableRessourcen.Count == 0)
+        {
+            SetStatus("⚠️ Keine Gruppen oder Ressourcen verfügbar", Brushes.Orange);
+            return;
+        }
+
+        // Confirm action
+        var confirmDialog = new Views.ConfirmDialog(
+            "Auto-Fill Monat",
+            $"Möchten Sie den Monat {MonthTitle} automatisch planen?\n\n" +
+            $"• {AvailableGroups.Count} Gruppen\n" +
+            $"• {AvailableRessourcen.Count} Ressourcen\n" +
+            $"• Modus: {(IsBD ? "Bereitschaftsdienst (BD)" : "Tagesdienst (TD)")}\n\n" +
+            "Bestehende Zuordnungen werden überschrieben!",
+            "Auto-Fill starten",
+            "Abbrechen"
+        );
+
+        var confirmed = await confirmDialog.ShowDialog<bool>(App.MainWindow!);
+        if (!confirmed) return;
+
+        try
+        {
+            SetStatus("🪄 Auto-Fill läuft...", Brushes.Blue);
+
+            // Clear existing assignments for this month
+            var monthStart = new DateTime(SelectedMonth.Year, SelectedMonth.Month, 1);
+            var monthEnd = monthStart.AddMonths(1).AddDays(-1);
+
+            var toRemove = Assignments
+                .Where(a => a.Date >= monthStart && a.Date <= monthEnd)
+                .ToList();
+
+            foreach (var assignment in toRemove)
+            {
+                Assignments.Remove(assignment);
+            }
+
+            // Load vacation days for the month
+            var monthStart = new DateTime(SelectedMonth.Year, SelectedMonth.Month, 1);
+            var monthEnd = monthStart.AddMonths(1).AddDays(-1);
+            var vacationDays = App.VacationCalendarService.GetVacationDictionary(monthStart, monthEnd);
+
+            // Auto-fill
+            var newAssignments = _autoFillService.AutoFillMonth(
+                SelectedMonth,
+                AvailableGroups.ToList(),
+                AvailableRessourcen.ToList(),
+                SelectedTyp,
+                vacationDays
+            );
+
+            // Add to collection
+            foreach (var assignment in newAssignments)
+            {
+                Assignments.Add(assignment);
+            }
+
+            // Refresh view
+            GenerateMonthView();
+
+            // Calculate fairness
+            var stats = _autoFillService.GetFairnessStats(
+                Assignments.ToList(),
+                AvailableRessourcen.ToList()
+            );
+
+            SetStatus($"✅ Auto-Fill abgeschlossen: {newAssignments.Count} Zuordnungen | {stats.GetSummary()}", Brushes.Green);
+            Log.Information("Auto-Fill completed: {Count} assignments, fairness: {Score:F0}%",
+                newAssignments.Count, stats.FairnessScore);
+        }
+        catch (Exception ex)
+        {
+            SetStatus($"❌ Auto-Fill Fehler: {ex.Message}", Brushes.Red);
+            Log.Error(ex, "Auto-Fill failed");
+        }
+    }
+
+    /// <summary>
+    /// Open vacation calendar window
+    /// </summary>
+    [RelayCommand]
+    private async Task OpenVacationCalendar()
+    {
+        var settings = App.SettingsService.LoadSettings();
+        if (!settings.Features.VacationCalendarEnabled)
+        {
+            SetStatus("⚠️ Urlaubskalender ist in den Einstellungen deaktiviert", Brushes.Orange);
+            return;
+        }
+
+        try
+        {
+            var vacationWindow = new Views.VacationCalendarWindow();
+            await vacationWindow.ShowDialog(App.MainWindow!);
+        }
+        catch (Exception ex)
+        {
+            SetStatus($"Fehler beim Öffnen: {ex.Message}", Brushes.Red);
+            Log.Error(ex, "Failed to open vacation calendar");
+        }
+    }
+
+    /// <summary>
+    /// Show fairness dashboard
+    /// </summary>
+    [RelayCommand]
+    private void ShowFairnessDashboard()
+    {
+        // Check feature flag
+        var settings = App.SettingsService.LoadSettings();
+        if (!settings.Features.FairnessDashboardEnabled)
+        {
+            SetStatus("⚠️ Fairness-Dashboard ist in den Einstellungen deaktiviert", Brushes.Orange);
+            return;
+        }
+
+        if (Assignments.Count == 0)
+        {
+            SetStatus("⚠️ Keine Zuordnungen vorhanden", Brushes.Orange);
+            return;
+        }
+
+        var stats = _autoFillService.GetFairnessStats(
+            Assignments.ToList(),
+            AvailableRessourcen.ToList()
+        );
+
+        // Build detailed message
+        var message = $"📊 Fairness-Analyse\n\n";
+        message += $"Bewertung: {stats.FairnessLevel} ({stats.FairnessScore:F0}%)\n";
+        message += $"Durchschnitt: {stats.AverageShifts:F1} Dienste\n";
+        message += $"Bereich: {stats.MinShifts} - {stats.MaxShifts}\n";
+        message += $"Standardabweichung: {stats.StandardDeviation:F2}\n\n";
+        message += "Pro Person:\n";
+
+        foreach (var person in stats.PersonStats)
+        {
+            message += $"{person.Status} {person.Name}: {person.ShiftCount} Dienste " +
+                      $"({person.DeviationFromAverage:+0.0;-0.0;±0.0})\n";
+        }
+
+        SetStatus(stats.GetSummary(), stats.FairnessScore >= 70 ? Brushes.Green : Brushes.Orange);
+
+        // Show in dialog
+        var infoDialog = new Views.ConfirmDialog(
+            "Fairness-Dashboard",
+            message,
+            "OK",
+            null
+        );
+
+        _ = infoDialog.ShowDialog<bool>(App.MainWindow!);
     }
 
     private void SetStatus(string message, IBrush color)

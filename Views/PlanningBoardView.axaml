@@ -64,6 +64,28 @@
 
             <!-- Action Buttons -->
             <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                <Button Content="🪄 Auto-Fill"
+                        Command="{Binding AutoFillMonthCommand}"
+                        Width="110"
+                        Height="36"
+                        Background="{StaticResource YunexGreen}"
+                        Foreground="White"
+                        CornerRadius="10"
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        ToolTip.Tip="Monat automatisch gleichmäßig planen"/>
+
+                <Button Content="📊 Fairness"
+                        Command="{Binding ShowFairnessDashboardCommand}"
+                        Width="100"
+                        Height="36"
+                        Background="{StaticResource YunexBlue}"
+                        Foreground="White"
+                        CornerRadius="10"
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        ToolTip.Tip="Fairness-Analyse anzeigen"/>
+
                 <Button Content="📤 Export"
                         Command="{Binding ExportToExcelCommand}"
                         Width="100"
@@ -176,6 +198,27 @@
                             <TextBlock Text="{Binding AvailableRessourcen.Count, StringFormat='{}{0} Personen verfügbar'}"
                                        FontSize="10"
                                        Foreground="#888888"/>
+                        </StackPanel>
+
+                        <Separator Background="#E0E0E0" Height="1"/>
+
+                        <!-- Section: Vacation Calendar -->
+                        <StackPanel Spacing="8">
+                            <Button Content="🏖️ Urlaubskalender"
+                                    Command="{Binding OpenVacationCalendarCommand}"
+                                    Background="#FFF9E6"
+                                    Foreground="#F57C00"
+                                    BorderBrush="#FFC107"
+                                    BorderThickness="2"
+                                    CornerRadius="8"
+                                    Height="36"
+                                    FontSize="12"
+                                    FontWeight="SemiBold"
+                                    HorizontalAlignment="Stretch"/>
+                            <TextBlock Text="Verwalte Urlaub und Verfügbarkeit"
+                                       FontSize="9"
+                                       Foreground="#888888"
+                                       TextWrapping="Wrap"/>
                         </StackPanel>
 
                         <Separator Background="#E0E0E0" Height="1"/>

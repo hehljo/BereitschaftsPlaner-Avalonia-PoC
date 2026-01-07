@@ -1,0 +1,285 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:BereitschaftsPlaner.Avalonia.ViewModels"
+        x:Class="BereitschaftsPlaner.Avalonia.Views.SettingsWindow"
+        x:DataType="vm:SettingsViewModel"
+        Width="800"
+        Height="700"
+        MinWidth="700"
+        MinHeight="600"
+        Title="Feature-Einstellungen"
+        Icon="/Assets/icon.ico"
+        Background="#FAFAFA"
+        WindowStartupLocation="CenterOwner">
+
+    <Design.DataContext>
+        <vm:SettingsViewModel/>
+    </Design.DataContext>
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>  <!-- Header -->
+            <RowDefinition Height="*"/>     <!-- Content -->
+            <RowDefinition Height="Auto"/>  <!-- Footer -->
+        </Grid.RowDefinitions>
+
+        <!-- ============================================================================ -->
+        <!-- HEADER -->
+        <!-- ============================================================================ -->
+        <StackPanel Grid.Row="0" Spacing="8" Margin="0,0,0,20">
+            <TextBlock Text="⚙️ Feature-Einstellungen"
+                       FontSize="24"
+                       FontWeight="Bold"
+                       Foreground="#333333"/>
+            <TextBlock Text="Aktiviere oder deaktiviere erweiterte Funktionen nach Bedarf"
+                       FontSize="13"
+                       Foreground="#666666"/>
+        </StackPanel>
+
+        <!-- ============================================================================ -->
+        <!-- CONTENT: Feature Categories -->
+        <!-- ============================================================================ -->
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Spacing="20">
+
+                <!-- TIER 1: Core Features -->
+                <Border Background="White"
+                        BorderBrush="#E0E0E0"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        Padding="20">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="🔥 Tier 1: Basis-Features"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Foreground="#00CC7A"/>
+
+                        <CheckBox IsChecked="{Binding AutoFillEnabled}"
+                                  Content="Auto-Fill Algorithm"
+                                  FontSize="13"/>
+                        <TextBlock Text="Automatische gleichmäßige Verteilung von Ressourcen"
+                                   FontSize="11"
+                                   Foreground="#888888"
+                                   Margin="28,0,0,8"/>
+
+                        <CheckBox IsChecked="{Binding FairnessDashboardEnabled}"
+                                  Content="Fairness-Dashboard"
+                                  FontSize="13"/>
+                        <TextBlock Text="Live-Anzeige der Workload-Verteilung pro Person"
+                                   FontSize="11"
+                                   Foreground="#888888"
+                                   Margin="28,0,0,8"/>
+
+                        <CheckBox IsChecked="{Binding VacationCalendarEnabled}"
+                                  Content="Urlaubs-/Verfügbarkeitskalender"
+                                  FontSize="13"/>
+                        <TextBlock Text="Verwaltung von Urlaub und Nicht-Verfügbarkeiten"
+                                   FontSize="11"
+                                   Foreground="#888888"
+                                   Margin="28,0,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- TIER 2: Quality-of-Life -->
+                <Border Background="White"
+                        BorderBrush="#E0E0E0"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        Padding="20">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="🚀 Tier 2: Quality-of-Life Features"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Foreground="#1E88E5"/>
+
+                        <CheckBox IsChecked="{Binding HistoricalAnalysisEnabled}"
+                                  Content="Historische Analyse"
+                                  FontSize="13"/>
+                        <TextBlock Text="Auswertung vergangener Bereitschaftsdienste (3/6/12 Monate)"
+                                   FontSize="11"
+                                   Foreground="#888888"
+                                   Margin="28,0,0,8"/>
+
+                        <CheckBox IsChecked="{Binding ShiftSwapEnabled}"
+                                  Content="Schicht-Tausch-System"
+                                  FontSize="13"/>
+                        <TextBlock Text="Erlaubt Mitarbeitern Schichten untereinander zu tauschen"
+                                   FontSize="11"
+                                   Foreground="#888888"
+                                   Margin="28,0,0,8"/>
+
+                        <CheckBox IsChecked="{Binding ConflictAssistantEnabled}"
+                                  Content="Konflikt-Assistent"
+                                  FontSize="13"/>
+                        <TextBlock Text="Erweiterte Konflikt-Erkennung (Urlaub, Überlastung, Skills)"
+                                   FontSize="11"
+                                   Foreground="#888888"
+                                   Margin="28,0,0,8"/>
+
+                        <CheckBox IsChecked="{Binding TemplateLibraryEnabled}"
+                                  Content="Template-Bibliothek"
+                                  FontSize="13"/>
+                        <TextBlock Text="Speichern und Wiederverwenden erfolgreicher Planungen"
+                                   FontSize="11"
+                                   Foreground="#888888"
+                                   Margin="28,0,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- TIER 3: Professional -->
+                <Border Background="White"
+                        BorderBrush="#E0E0E0"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        Padding="20">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="📊 Tier 3: Professional Features"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Foreground="#9C27B0"/>
+
+                        <CheckBox IsChecked="{Binding WorkloadHeatmapEnabled}"
+                                  Content="Workload-Heatmap"
+                                  FontSize="13"/>
+                        <TextBlock Text="Visuelle Darstellung der Team-Belastung über Zeit"
+                                   FontSize="11"
+                                   Foreground="#888888"
+                                   Margin="28,0,0,8"/>
+
+                        <CheckBox IsChecked="{Binding SkillsMatchingEnabled}"
+                                  Content="Skills/Qualifikations-Matching"
+                                  FontSize="13"/>
+                        <TextBlock Text="Automatische Prüfung ob Ressource für Gruppe qualifiziert ist"
+                                   FontSize="11"
+                                   Foreground="#888888"
+                                   Margin="28,0,0,8"/>
+
+                        <CheckBox IsChecked="{Binding MultiTeamCoordinationEnabled}"
+                                  Content="Multi-Team-Koordination"
+                                  FontSize="13"/>
+                        <TextBlock Text="Team-übergreifende Planung und Abhängigkeiten"
+                                   FontSize="11"
+                                   Foreground="#888888"
+                                   Margin="28,0,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- TIER 4: Integration -->
+                <Border Background="White"
+                        BorderBrush="#E0E0E0"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        Padding="20">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="📱 Tier 4: Integration Features"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Foreground="#FF6F00"/>
+
+                        <CheckBox IsChecked="{Binding NotificationSystemEnabled}"
+                                  Content="Benachrichtigungs-System"
+                                  FontSize="13"/>
+                        <TextBlock Text="Email-Benachrichtigungen bei Zuweisungen und Änderungen"
+                                   FontSize="11"
+                                   Foreground="#888888"
+                                   Margin="28,0,0,8"/>
+
+                        <CheckBox IsChecked="{Binding CalendarIntegrationEnabled}"
+                                  Content="Kalender-Integration (ICS Export)"
+                                  FontSize="13"/>
+                        <TextBlock Text="Export für Outlook, Google Calendar, etc."
+                                   FontSize="11"
+                                   Foreground="#888888"
+                                   Margin="28,0,0,8"/>
+
+                        <CheckBox IsChecked="{Binding MobileViewEnabled}"
+                                  Content="Mobile View (Read-Only)"
+                                  FontSize="13"/>
+                        <TextBlock Text="Smartphone-optimierte Ansicht für Bereitschaftskalender"
+                                   FontSize="11"
+                                   Foreground="#888888"
+                                   Margin="28,0,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- TIER 5: Advanced Intelligence -->
+                <Border Background="White"
+                        BorderBrush="#E0E0E0"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        Padding="20">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="🧠 Tier 5: Advanced Intelligence"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Foreground="#D32F2F"/>
+
+                        <CheckBox IsChecked="{Binding FairnessRulesEnabled}"
+                                  Content="Fairness-Algorithmus mit Regeln"
+                                  FontSize="13"/>
+                        <TextBlock Text="Konfigurierbare Constraints (max 2 Wochenenden, etc.)"
+                                   FontSize="11"
+                                   Foreground="#888888"
+                                   Margin="28,0,0,8"/>
+
+                        <CheckBox IsChecked="{Binding WhatIfScenariosEnabled}"
+                                  Content="What-If Szenarien"
+                                  FontSize="13"/>
+                        <TextBlock Text="Mehrere Draft-Versionen und Vergleichsansicht"
+                                   FontSize="11"
+                                   Foreground="#888888"
+                                   Margin="28,0,0,0"/>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ============================================================================ -->
+        <!-- FOOTER: Action Buttons -->
+        <!-- ============================================================================ -->
+        <Border Grid.Row="2"
+                Background="White"
+                BorderBrush="#E0E0E0"
+                BorderThickness="1"
+                CornerRadius="12"
+                Padding="16"
+                Margin="0,20,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Status Message -->
+                <TextBlock Grid.Column="0"
+                           Text="{Binding StatusMessage}"
+                           FontSize="12"
+                           Foreground="#666666"
+                           VerticalAlignment="Center"/>
+
+                <!-- Action Buttons -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12">
+                    <Button Content="Zurücksetzen"
+                            Command="{Binding ResetToDefaultsCommand}"
+                            Width="120"
+                            Height="36"
+                            Background="#F0F0F0"
+                            Foreground="#555555"
+                            CornerRadius="10"
+                            FontSize="12"/>
+
+                    <Button Content="💾 Speichern"
+                            Command="{Binding SaveSettingsCommand}"
+                            Width="120"
+                            Height="36"
+                            Background="{StaticResource YunexGreen}"
+                            Foreground="White"
+                            CornerRadius="10"
+                            FontSize="12"
+                            FontWeight="SemiBold"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

@@ -1,0 +1,144 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:BereitschaftsPlaner.Avalonia.ViewModels"
+        x:Class="BereitschaftsPlaner.Avalonia.Views.VacationCalendarWindow"
+        x:DataType="vm:VacationCalendarViewModel"
+        Width="900"
+        Height="650"
+        Title="Urlaubs-/Verfügbarkeitskalender"
+        Icon="/Assets/icon.ico"
+        Background="#FAFAFA"
+        WindowStartupLocation="CenterOwner">
+
+    <Design.DataContext>
+        <vm:VacationCalendarViewModel/>
+    </Design.DataContext>
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Spacing="8" Margin="0,0,0,20">
+            <TextBlock Text="🏖️ Urlaubs-/Verfügbarkeitskalender"
+                       FontSize="24"
+                       FontWeight="Bold"/>
+            <TextBlock Text="Verwalten Sie Urlaub und Nicht-Verfügbarkeiten"
+                       FontSize="13"
+                       Foreground="#666666"/>
+        </StackPanel>
+
+        <!-- Content -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="350"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left: Add Form -->
+            <Border Grid.Column="0" Background="White" BorderBrush="#E0E0E0" BorderThickness="1"
+                    CornerRadius="12" Padding="20" Margin="0,0,16,0">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="➕ Urlaub hinzufügen" FontSize="16" FontWeight="SemiBold"/>
+
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Person:" FontSize="12"/>
+                        <ComboBox ItemsSource="{Binding AvailableResources}"
+                                  SelectedItem="{Binding SelectedResource}"
+                                  DisplayMemberBinding="{Binding Name}"
+                                  HorizontalAlignment="Stretch"/>
+                    </StackPanel>
+
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Von:" FontSize="12"/>
+                        <DatePicker SelectedDate="{Binding StartDate}" HorizontalAlignment="Stretch"/>
+                    </StackPanel>
+
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Bis:" FontSize="12"/>
+                        <DatePicker SelectedDate="{Binding EndDate}" HorizontalAlignment="Stretch"/>
+                    </StackPanel>
+
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Typ:" FontSize="12"/>
+                        <ComboBox SelectedIndex="0" HorizontalAlignment="Stretch">
+                            <ComboBoxItem Content="🏖️ Urlaub" Tag="0"/>
+                            <ComboBoxItem Content="🤒 Krank" Tag="1"/>
+                            <ComboBoxItem Content="📚 Fortbildung" Tag="2"/>
+                            <ComboBoxItem Content="🚫 Sonstiges" Tag="3"/>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Notiz (optional):" FontSize="12"/>
+                        <TextBox Text="{Binding Note}" Watermark="z.B. 'Sommerurlaub Italien'"/>
+                    </StackPanel>
+
+                    <Button Content="➕ Hinzufügen"
+                            Command="{Binding AddVacationCommand}"
+                            Background="{StaticResource YunexGreen}"
+                            Foreground="White"
+                            Height="40"
+                            CornerRadius="10"
+                            FontWeight="SemiBold"
+                            HorizontalAlignment="Stretch"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Right: List -->
+            <Border Grid.Column="1" Background="White" BorderBrush="#E0E0E0" BorderThickness="1"
+                    CornerRadius="12" Padding="20">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="📅 Eingetragene Urlaubstage" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,16"/>
+
+                    <DataGrid Grid.Row="1"
+                              ItemsSource="{Binding VacationDays}"
+                              AutoGenerateColumns="False"
+                              CanUserReorderColumns="False"
+                              CanUserResizeColumns="True"
+                              GridLinesVisibility="Horizontal"
+                              IsReadOnly="True"
+                              RowHeight="40">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Typ" Binding="{Binding TypeIcon}" Width="60"/>
+                            <DataGridTextColumn Header="Person" Binding="{Binding RessourceName}" Width="*"/>
+                            <DataGridTextColumn Header="Datum" Binding="{Binding Date, StringFormat='{}{0:dd.MM.yyyy}'}" Width="120"/>
+                            <DataGridTextColumn Header="Notiz" Binding="{Binding Note}" Width="*"/>
+                            <DataGridTemplateColumn Header="Aktion" Width="100">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="🗑️"
+                                                Command="{Binding $parent[DataGrid].((vm:VacationCalendarViewModel)DataContext).DeleteSelectedCommand}"
+                                                CommandParameter="{Binding}"
+                                                Background="#FFE5E5"
+                                                Foreground="#D32F2F"
+                                                CornerRadius="6"
+                                                Padding="8,4"
+                                                FontSize="12"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Footer -->
+        <Border Grid.Row="2" Background="White" BorderBrush="#E0E0E0" BorderThickness="1"
+                CornerRadius="12" Padding="16" Margin="0,20,0,0">
+            <Grid>
+                <TextBlock Text="{Binding StatusMessage}" Foreground="{Binding StatusColor}"
+                           FontSize="12" VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

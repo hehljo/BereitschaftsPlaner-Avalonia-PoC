@@ -24,6 +24,9 @@ public class AppSettings
 
     // Zeitprofile Configuration
     public ZeitprofileSettings Zeitprofile { get; set; } = new();
+
+    // Feature Flags (enable/disable advanced features)
+    public FeatureFlags Features { get; set; } = new();
 }
 
 /// <summary>
@@ -36,4 +39,35 @@ public class ZeitprofileSettings
 
     // Group to profile assignments (Key = GruppenName, Value = ProfilID)
     public Dictionary<string, string> GruppenZuweisungen { get; set; } = new();
+}
+
+/// <summary>
+/// Feature flags for optional advanced features
+/// </summary>
+public class FeatureFlags
+{
+    // Tier 1: Core Features
+    public bool AutoFillEnabled { get; set; } = true;
+    public bool FairnessDashboardEnabled { get; set; } = true;
+    public bool VacationCalendarEnabled { get; set; } = true;
+
+    // Tier 2: Quality-of-Life
+    public bool HistoricalAnalysisEnabled { get; set; } = true;
+    public bool ShiftSwapEnabled { get; set; } = false; // Requires approval workflow
+    public bool ConflictAssistantEnabled { get; set; } = true;
+    public bool TemplatLibraryEnabled { get; set; } = true;
+
+    // Tier 3: Professional
+    public bool WorkloadHeatmapEnabled { get; set; } = true;
+    public bool SkillsMatchingEnabled { get; set; } = false; // Requires skills database
+    public bool MultiTeamCoordinationEnabled { get; set; } = false; // Multi-org feature
+
+    // Tier 4: Integration
+    public bool NotificationSystemEnabled { get; set; } = false; // Requires email config
+    public bool CalendarIntegrationEnabled { get; set; } = true; // ICS export
+    public bool MobileViewEnabled { get; set; } = false; // Future feature
+
+    // Tier 5: Advanced Intelligence
+    public bool FairnessRulesEnabled { get; set; } = true;
+    public bool WhatIfScenariosEnabled { get; set; } = true;
 }

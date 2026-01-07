@@ -530,6 +530,16 @@ public partial class MainWindowViewModel : ViewModelBase
         await backupWindow.ShowDialog(App.MainWindow!);
     }
 
+    /// <summary>
+    /// Open Settings Window
+    /// </summary>
+    [RelayCommand]
+    private async Task OpenSettings()
+    {
+        var settingsWindow = new Views.SettingsWindow();
+        await settingsWindow.ShowDialog(App.MainWindow!);
+    }
+
     // ============================================================================
     // NAVIGATION (Sidebar)
     // ============================================================================
