@@ -90,6 +90,79 @@ jobs:
           Write-Host "No config files found, skipping"
         }
 
+    - name: Test App Start & Screenshot
+      shell: pwsh
+      run: |
+        Write-Host "Testing application startup..."
+
+        # Find the executable
+        $exePath = Get-ChildItem -Path ./publish/win-x64 -Filter "*.exe" -Recurse | Select-Object -First 1
+        if (-not $exePath) {
+          Write-Host "ERROR: Executable not found!"
+          exit 1
+        }
+
+        Write-Host "Found executable: $($exePath.FullName)"
+
+        # Start the app in the background
+        $process = Start-Process -FilePath $exePath.FullName -PassThru -WindowStyle Normal
+        Write-Host "App started with PID: $($process.Id)"
+
+        # Wait for app to initialize (10 seconds)
+        Write-Host "Waiting for app to initialize..."
+        Start-Sleep -Seconds 10
+
+        # Take screenshot using Windows built-in Screenshot.cmd (PowerShell alternative)
+        Add-Type -AssemblyName System.Windows.Forms
+        Add-Type -AssemblyName System.Drawing
+
+        $screenshotPath = "./app-screenshot.png"
+        $bounds = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+        $bitmap = New-Object System.Drawing.Bitmap $bounds.Width, $bounds.Height
+        $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+        $graphics.CopyFromScreen($bounds.Location, [System.Drawing.Point]::Empty, $bounds.Size)
+        $bitmap.Save($screenshotPath, [System.Drawing.Imaging.ImageFormat]::Png)
+
+        Write-Host "Screenshot saved to: $screenshotPath"
+
+        # Check if process is still running
+        if (-not $process.HasExited) {
+          Write-Host "✅ App is running successfully!"
+
+          # Gracefully close the app
+          $process.CloseMainWindow() | Out-Null
+          Start-Sleep -Seconds 2
+
+          # Force kill if still running
+          if (-not $process.HasExited) {
+            $process.Kill()
+            Write-Host "App force-closed"
+          } else {
+            Write-Host "App closed gracefully"
+          }
+        } else {
+          Write-Host "⚠️ App exited prematurely with code: $($process.ExitCode)"
+          exit 1
+        }
+
+        # Verify screenshot exists
+        if (Test-Path $screenshotPath) {
+          $size = (Get-Item $screenshotPath).Length / 1KB
+          Write-Host "Screenshot captured successfully (${size} KB)"
+        } else {
+          Write-Host "WARNING: Screenshot not created"
+        }
+      continue-on-error: true
+
+    - name: Upload Screenshot
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-screenshot
+        path: app-screenshot.png
+        retention-days: 7
+        if-no-files-found: warn
+
     - name: List Published Files
       shell: pwsh
       run: |
