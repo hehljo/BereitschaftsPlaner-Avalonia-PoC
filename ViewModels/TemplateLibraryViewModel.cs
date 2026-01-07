@@ -1,7 +1,9 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
 using BereitschaftsPlaner.Avalonia.Models;
 using BereitschaftsPlaner.Avalonia.Services.Planning;
 using BereitschaftsPlaner.Avalonia.Views;
