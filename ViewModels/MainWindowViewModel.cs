@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using BereitschaftsPlaner.Avalonia.Models;
-using BereitschaftsPlaner.Avalonia.Services;
+using SettingsService = BereitschaftsPlaner.Avalonia.Services.Data.SettingsService;
 using BereitschaftsPlaner.Avalonia.Services.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
