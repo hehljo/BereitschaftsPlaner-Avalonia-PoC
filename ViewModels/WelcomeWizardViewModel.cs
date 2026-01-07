@@ -19,6 +19,7 @@ public partial class WelcomeWizardViewModel : ViewModelBase
 
     public bool IsFirstStep => CurrentStep == 0;
     public bool IsLastStep => CurrentStep == Steps.Count - 1;
+    public string NextButtonText => IsLastStep ? "Fertig" : "Weiter";
 
     public WelcomeWizardViewModel()
     {
@@ -131,6 +132,7 @@ public partial class WelcomeWizardViewModel : ViewModelBase
 
         OnPropertyChanged(nameof(IsFirstStep));
         OnPropertyChanged(nameof(IsLastStep));
+        OnPropertyChanged(nameof(NextButtonText));
     }
 
     [RelayCommand]

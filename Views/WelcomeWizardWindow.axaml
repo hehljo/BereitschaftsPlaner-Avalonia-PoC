@@ -94,7 +94,7 @@
                             Width="120"/>
 
                     <!-- Next/Finish Button -->
-                    <Button Content="{Binding IsLastStep, Converter={x:Static ObjectConverters.BoolToValue}, ConverterParameter='Fertig|Weiter ▶'}"
+                    <Button Content="{Binding NextButtonText}"
                             Command="{Binding NextStepCommand}"
                             Click="NextButton_Click"
                             Background="{StaticResource YunexGreen}"

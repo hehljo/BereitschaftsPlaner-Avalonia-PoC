@@ -11,7 +11,7 @@ namespace BereitschaftsPlaner.Avalonia.Services;
 public class OnboardingService
 {
     private readonly string _settingsPath;
-    private OnboardingState _state;
+    private OnboardingState _state = new();
 
     public OnboardingService()
     {
