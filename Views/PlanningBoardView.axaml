@@ -86,6 +86,28 @@
                         FontWeight="SemiBold"
                         ToolTip.Tip="Fairness-Analyse anzeigen"/>
 
+                <Button Content="💾 Speichern"
+                        Command="{Binding SaveTemplateCommand}"
+                        Width="110"
+                        Height="36"
+                        Background="#9C27B0"
+                        Foreground="White"
+                        CornerRadius="10"
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        ToolTip.Tip="Aktuelle Planung als Template speichern"/>
+
+                <Button Content="📂 Laden"
+                        Command="{Binding LoadTemplateCommand}"
+                        Width="100"
+                        Height="36"
+                        Background="#9C27B0"
+                        Foreground="White"
+                        CornerRadius="10"
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        ToolTip.Tip="Template anwenden"/>
+
                 <Button Content="📤 Export"
                         Command="{Binding ExportToExcelCommand}"
                         Width="100"

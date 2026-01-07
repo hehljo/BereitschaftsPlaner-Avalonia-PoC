@@ -584,6 +584,183 @@ public partial class PlanningBoardViewModel : ViewModelBase
         _ = infoDialog.ShowDialog<bool>(App.MainWindow!);
     }
 
+    /// <summary>
+    /// Save current planning as template
+    /// </summary>
+    [RelayCommand]
+    private async void SaveTemplate()
+    {
+        if (!Assignments.Any())
+        {
+            SetStatus("⚠️ Keine Zuordnungen zum Speichern vorhanden", Brushes.Orange);
+            return;
+        }
+
+        // Create input dialog
+        var inputWindow = new Avalonia.Controls.Window
+        {
+            Title = "Template speichern",
+            Width = 450,
+            Height = 250,
+            WindowStartupLocation = Avalonia.Controls.WindowStartupLocation.CenterOwner
+        };
+
+        var stackPanel = new Avalonia.Controls.StackPanel { Margin = new(20) };
+
+        var nameTextBox = new Avalonia.Controls.TextBox
+        {
+            Watermark = "Template-Name",
+            Margin = new(0, 5)
+        };
+
+        var descriptionTextBox = new Avalonia.Controls.TextBox
+        {
+            Watermark = "Beschreibung (optional)",
+            Margin = new(0, 5),
+            Height = 60,
+            TextWrapping = Avalonia.Media.TextWrapping.Wrap,
+            AcceptsReturn = true
+        };
+
+        var categoryComboBox = new Avalonia.Controls.ComboBox
+        {
+            Margin = new(0, 5),
+            ItemsSource = new[] { "Standard", "Sommer", "Winter", "Urlaubszeit", "Andere" },
+            SelectedIndex = 0
+        };
+
+        var buttonsPanel = new Avalonia.Controls.StackPanel
+        {
+            Orientation = Avalonia.Layout.Orientation.Horizontal,
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right
+        };
+
+        var saveButton = new Avalonia.Controls.Button { Content = "Speichern", Width = 100, Margin = new(5, 10, 0, 0) };
+        var cancelButton = new Avalonia.Controls.Button { Content = "Abbrechen", Width = 100, Margin = new(5, 10, 0, 0) };
+
+        bool confirmed = false;
+
+        saveButton.Click += (s, e) =>
+        {
+            if (string.IsNullOrWhiteSpace(nameTextBox.Text))
+            {
+                SetStatus("⚠️ Bitte einen Namen eingeben", Brushes.Orange);
+                return;
+            }
+            confirmed = true;
+            inputWindow.Close();
+        };
+
+        cancelButton.Click += (s, e) => inputWindow.Close();
+
+        buttonsPanel.Children.Add(saveButton);
+        buttonsPanel.Children.Add(cancelButton);
+
+        stackPanel.Children.Add(new Avalonia.Controls.TextBlock { Text = "Template-Name:" });
+        stackPanel.Children.Add(nameTextBox);
+        stackPanel.Children.Add(new Avalonia.Controls.TextBlock { Text = "Beschreibung:", Margin = new(0, 10, 0, 0) });
+        stackPanel.Children.Add(descriptionTextBox);
+        stackPanel.Children.Add(new Avalonia.Controls.TextBlock { Text = "Kategorie:", Margin = new(0, 10, 0, 0) });
+        stackPanel.Children.Add(categoryComboBox);
+        stackPanel.Children.Add(buttonsPanel);
+
+        inputWindow.Content = stackPanel;
+
+        await inputWindow.ShowDialog(App.MainWindow!);
+
+        if (!confirmed || string.IsNullOrWhiteSpace(nameTextBox.Text))
+            return;
+
+        try
+        {
+            // Create template
+            var template = new PlanningTemplate
+            {
+                Name = nameTextBox.Text,
+                Description = string.IsNullOrWhiteSpace(descriptionTextBox.Text) ? null : descriptionTextBox.Text,
+                Category = categoryComboBox.SelectedItem?.ToString() ?? "Standard",
+                SourceMonth = SelectedMonth,
+                Typ = SelectedTyp,
+                Assignments = new Dictionary<int, AssignmentData>()
+            };
+
+            // Copy assignments
+            foreach (var assignment in Assignments)
+            {
+                var dayOfMonth = assignment.Date.Day;
+                if (!template.Assignments.ContainsKey(dayOfMonth))
+                {
+                    template.Assignments[dayOfMonth] = new AssignmentData
+                    {
+                        GruppeName = assignment.GruppeName,
+                        RessourceName = assignment.RessourceName,
+                        StartZeit = assignment.StartZeit,
+                        EndZeit = assignment.EndZeit
+                    };
+                }
+            }
+
+            App.TemplateLibraryService.SaveTemplate(template);
+
+            SetStatus($"✅ Template '{template.Name}' gespeichert ({template.AssignmentCount} Zuordnungen)", Brushes.Green);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Fehler beim Speichern des Templates");
+            SetStatus($"❌ Fehler: {ex.Message}", Brushes.Red);
+        }
+    }
+
+    /// <summary>
+    /// Load template and apply to current month
+    /// </summary>
+    [RelayCommand]
+    private async void LoadTemplate()
+    {
+        var templateWindow = new Views.TemplateLibraryWindow(async (selectedTemplate) =>
+        {
+            try
+            {
+                // Apply template to current month
+                var newAssignments = App.TemplateLibraryService.ApplyTemplate(
+                    selectedTemplate,
+                    SelectedMonth,
+                    AvailableGroups.ToList()
+                );
+
+                // Merge with existing assignments (or replace?)
+                var confirmDialog = new Views.ConfirmDialog(
+                    "Template anwenden",
+                    $"Möchten Sie die vorhandenen Zuordnungen ERSETZEN oder HINZUFÜGEN?\n\nTemplate: {selectedTemplate.Name}\nZuordnungen: {newAssignments.Count}",
+                    "Ersetzen",
+                    "Hinzufügen"
+                );
+
+                var replace = await confirmDialog.ShowDialog<bool>(App.MainWindow!);
+
+                if (replace)
+                {
+                    Assignments.Clear();
+                }
+
+                foreach (var assignment in newAssignments)
+                {
+                    Assignments.Add(assignment);
+                }
+
+                GenerateMonthView();
+                SetStatus($"✅ Template '{selectedTemplate.Name}' angewendet ({newAssignments.Count} Zuordnungen)", Brushes.Green);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Fehler beim Anwenden des Templates");
+                SetStatus($"❌ Fehler: {ex.Message}", Brushes.Red);
+            }
+        });
+
+        await templateWindow.ShowDialog(App.MainWindow!);
+    }
+
     private void SetStatus(string message, IBrush color)
     {
         StatusMessage = message;

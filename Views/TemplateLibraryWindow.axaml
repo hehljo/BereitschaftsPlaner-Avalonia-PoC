@@ -1,0 +1,127 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:BereitschaftsPlaner.Avalonia.ViewModels"
+        mc:Ignorable="d"
+        x:Class="BereitschaftsPlaner.Avalonia.Views.TemplateLibraryWindow"
+        x:DataType="vm:TemplateLibraryViewModel"
+        Title="📚 Template-Bibliothek"
+        Width="900"
+        Height="600"
+        WindowStartupLocation="CenterOwner"
+        Background="#F5F5F5">
+
+    <Window.Resources>
+        <ControlTheme x:Key="YunexButton" TargetType="Button">
+            <Setter Property="Background" Value="#00CC7A"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </ControlTheme>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Spacing="10">
+            <TextBlock Text="📚 Template-Bibliothek"
+                       FontSize="24"
+                       FontWeight="Bold"
+                       Foreground="#333333"/>
+
+            <TextBlock Text="Speichern Sie erfolgreiche Planungen als Vorlagen und verwenden Sie sie für zukünftige Monate"
+                       FontSize="14"
+                       Foreground="#666666"
+                       TextWrapping="Wrap"/>
+
+            <!-- Category Filter -->
+            <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,10,0,0">
+                <TextBlock Text="Kategorie:"
+                           VerticalAlignment="Center"
+                           FontWeight="Medium"/>
+                <ComboBox ItemsSource="{Binding Categories}"
+                          SelectedItem="{Binding SelectedCategory}"
+                          Width="200"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- Templates List -->
+        <Border Grid.Row="1"
+                Background="White"
+                CornerRadius="12"
+                Margin="0,20,0,0"
+                BoxShadow="0 2 8 0 #10000000">
+            <DataGrid ItemsSource="{Binding Templates}"
+                      SelectedItem="{Binding SelectedTemplate}"
+                      IsReadOnly="True"
+                      GridLinesVisibility="None"
+                      Background="Transparent"
+                      CanUserReorderColumns="False"
+                      CanUserResizeColumns="True"
+                      SelectionMode="Single"
+                      AutoGenerateColumns="False">
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name"
+                                        Binding="{Binding Name}"
+                                        Width="2*"/>
+
+                    <DataGridTextColumn Header="Kategorie"
+                                        Binding="{Binding Category}"
+                                        Width="*"/>
+
+                    <DataGridTextColumn Header="Typ"
+                                        Binding="{Binding Typ}"
+                                        Width="60"/>
+
+                    <DataGridTextColumn Header="Zuordnungen"
+                                        Binding="{Binding AssignmentCount}"
+                                        Width="100"/>
+
+                    <DataGridTextColumn Header="Erstellt"
+                                        Binding="{Binding CreatedAt, StringFormat={}{0:dd.MM.yyyy}}"
+                                        Width="100"/>
+
+                    <DataGridTextColumn Header="Quell-Monat"
+                                        Binding="{Binding SourceMonth, StringFormat={}{0:MMMM yyyy}}"
+                                        Width="120"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- Action Buttons -->
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="10"
+                    Margin="0,20,0,0">
+
+            <Button Content="🔍 Vorschau"
+                    Command="{Binding ShowPreviewCommand}"
+                    Theme="{StaticResource YunexButton}"
+                    Background="#1E88E5"/>
+
+            <Button Content="✏️ Umbenennen"
+                    Command="{Binding RenameTemplateCommand}"
+                    Theme="{StaticResource YunexButton}"
+                    Background="#FFA726"/>
+
+            <Button Content="🗑️ Löschen"
+                    Command="{Binding DeleteTemplateCommand}"
+                    Theme="{StaticResource YunexButton}"
+                    Background="#EF5350"/>
+
+            <Button Content="✅ Anwenden"
+                    Command="{Binding ApplyTemplateCommand}"
+                    Theme="{StaticResource YunexButton}"/>
+        </StackPanel>
+    </Grid>
+</Window>
