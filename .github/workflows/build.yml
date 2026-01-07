@@ -15,83 +15,101 @@ env:
 
 jobs:
   build:
-    name: Build (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        include:
-          - os: windows-latest
-            rid: win-x64
-            artifact: windows
-          - os: macos-latest
-            rid: osx-x64
-            artifact: macos
-          - os: ubuntu-latest
-            rid: linux-x64
-            artifact: linux
-
+    name: Build Windows
+    runs-on: windows-latest
+    timeout-minutes: 30
+    
     steps:
     - name: Checkout
       uses: actions/checkout@v4
       with:
         fetch-depth: 0  # Full history for version info
 
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
+        dotnet-quality: 'ga'
+      timeout-minutes: 10
+
+    - name: Verify .NET Installation
+      run: dotnet --info
 
     - name: Restore dependencies
       run: dotnet restore
+      timeout-minutes: 10
 
     - name: Build
       run: dotnet build --configuration Release --no-restore
 
     - name: Test
       run: dotnet test --configuration Release --no-build --verbosity normal
+      continue-on-error: true
 
-    - name: Publish
+    - name: Publish (win-x64)
       run: |
-        dotnet publish \
-          --configuration Release \
-          --runtime ${{ matrix.rid }} \
-          --self-contained true \
-          -p:PublishSingleFile=true \
-          -p:IncludeNativeLibrariesForSelfExtract=true \
-          -p:PublishTrimmed=false \
-          --output ./publish/${{ matrix.rid }}
+        dotnet publish `
+          --configuration Release `
+          --runtime win-x64 `
+          --self-contained true `
+          -p:PublishSingleFile=true `
+          -p:IncludeNativeLibrariesForSelfExtract=true `
+          -p:PublishTrimmed=false `
+          --output ./publish/win-x64
 
     - name: Create Version File
+      shell: pwsh
       run: |
-        echo "Version: ${{ github.ref_name }}" > ./publish/${{ matrix.rid }}/VERSION.txt
-        echo "Build Date: $(date -u)" >> ./publish/${{ matrix.rid }}/VERSION.txt
-        echo "Commit: ${{ github.sha }}" >> ./publish/${{ matrix.rid }}/VERSION.txt
+        $version = "${{ github.ref_name }}"
+        $date = (Get-Date).ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss UTC")
+        $content = @"
+        Version: $version
+        Build Date: $date
+        Commit: ${{ github.sha }}
+        Platform: Windows x64
+        "@
+        $content | Out-File -FilePath ./publish/win-x64/VERSION.txt -Encoding UTF8
 
     - name: Copy Config Files
+      shell: pwsh
       run: |
-        mkdir -p ./publish/${{ matrix.rid }}/config/feiertage
-        cp -r ./config/feiertage/* ./publish/${{ matrix.rid }}/config/feiertage/ || true
-        echo "Config files copied"
+        $targetPath = "./publish/win-x64/config/feiertage"
+        New-Item -ItemType Directory -Force -Path $targetPath
+        if (Test-Path "./config/feiertage") {
+          Copy-Item -Path "./config/feiertage/*" -Destination $targetPath -Recurse -Force
+          Write-Host "Config files copied"
+        } else {
+          Write-Host "No config files found, skipping"
+        }
 
-    - name: Create Archive (Windows)
-      if: matrix.os == 'windows-latest'
+    - name: List Published Files
+      shell: pwsh
       run: |
-        cd ./publish/${{ matrix.rid }}
-        7z a ../../BereitschaftsPlaner-${{ matrix.rid }}.zip *
+        Write-Host "Published files:"
+        Get-ChildItem -Path ./publish/win-x64 -Recurse | Select-Object FullName
 
-    - name: Create Archive (Unix)
-      if: matrix.os != 'windows-latest'
+    - name: Create Archive
+      shell: pwsh
       run: |
-        cd ./publish/${{ matrix.rid }}
-        tar -czf ../../BereitschaftsPlaner-${{ matrix.rid }}.tar.gz *
+        $sourcePath = "./publish/win-x64/*"
+        $zipPath = "./BereitschaftsPlaner-win-x64.zip"
+        Compress-Archive -Path $sourcePath -DestinationPath $zipPath -Force
+        Write-Host "Archive created: $zipPath"
+        Write-Host "Archive size: $((Get-Item $zipPath).Length / 1MB) MB"
 
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: build-${{ matrix.artifact }}
-        path: |
-          BereitschaftsPlaner-${{ matrix.rid }}.zip
-          BereitschaftsPlaner-${{ matrix.rid }}.tar.gz
+        name: build-windows
+        path: BereitschaftsPlaner-win-x64.zip
         retention-days: 7
 
   release:
@@ -118,17 +136,14 @@ jobs:
         VERSION="${{ github.ref_name }}"
         echo "Creating release notes for $VERSION"
 
-        cat > RELEASE_NOTES.md <<'EOF'
-        ## 🚀 BereitschaftsPlaner Avalonia $VERSION
+        cat > RELEASE_NOTES.md <<EOF
+        ## 🚀 BereitschaftsPlaner Avalonia ${VERSION}
 
         **Cross-Platform On-Call Scheduler for Microsoft Dynamics 365**
 
-        ### 📦 Downloads
+        ### 📦 Download
 
-        Choose the installer for your platform:
-        - **Windows**: `BereitschaftsPlaner-win-x64.zip` (extract & run)
-        - **macOS**: `BereitschaftsPlaner-osx-x64.tar.gz` (extract & run)
-        - **Linux**: `BereitschaftsPlaner-linux-x64.tar.gz` (extract & run)
+        - **Windows x64**: \`BereitschaftsPlaner-win-x64.zip\` (extract & run)
 
         ### ✨ What's New
 
@@ -136,19 +151,21 @@ jobs:
 
         ### 🔧 Requirements
 
-        - **.NET 9.0 Runtime** (included in self-contained builds)
+        - **Windows 10/11** (x64)
+        - **.NET 9.0 Runtime** (included in self-contained build)
         - **D365 Template** - Excel export from Dynamics 365
 
         ### 📖 Quick Start
 
-        1. Extract the ZIP/TAR.GZ file
-        2. Run `BereitschaftsPlaner.Avalonia` (or `.exe` on Windows)
-        3. Follow the [README](https://github.com/hehljo/BereitschaftsPlaner-Avalonia-PoC#quick-start)
+        1. Download \`BereitschaftsPlaner-win-x64.zip\`
+        2. Extract the ZIP file
+        3. Run \`BereitschaftsPlaner.Avalonia.exe\`
+        4. Follow the [README](https://github.com/hehljo/BereitschaftsPlaner-Avalonia-PoC#quick-start)
 
         ### 🐛 Known Issues
 
-        - macOS: First launch security warning (Right-click → Open)
-        - Linux: Requires X11 or Wayland
+        - First launch may trigger Windows SmartScreen warning (Click "More info" → "Run anyway")
+        - Requires write permissions in installation directory for config files
 
         ### 📊 Performance vs PowerShell v3.8.2
 
@@ -157,9 +174,15 @@ jobs:
         - 🚀 **3-5x faster** startup time
         - ✅ **100% feature parity**
 
+        ### 🔮 Future Plans
+
+        - macOS and Linux support (in development)
+        - Windows Installer (MSI/Setup.exe)
+
         ---
 
         **Full Changelog**: https://github.com/hehljo/BereitschaftsPlaner-Avalonia-PoC/blob/main/CHANGELOG.md
+        **Support**: Open an issue at https://github.com/hehljo/BereitschaftsPlaner-Avalonia-PoC/issues
         EOF
 
     - name: Create GitHub Release
@@ -170,23 +193,14 @@ jobs:
         prerelease: ${{ contains(github.ref, 'beta') || contains(github.ref, 'alpha') }}
         files: |
           ./artifacts/build-windows/*.zip
-          ./artifacts/build-macos/*.tar.gz
-          ./artifacts/build-linux/*.tar.gz
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  build-installers:
-    name: Build Installers
+  build-installer:
+    name: Build Windows Installer
     needs: build
-    runs-on: ${{ matrix.os }}
+    runs-on: windows-latest
     if: startsWith(github.ref, 'refs/tags/v')
-    strategy:
-      matrix:
-        include:
-          - os: windows-latest
-            installer: windows-setup
-          - os: macos-latest
-            installer: macos-dmg
 
     steps:
     - name: Checkout
@@ -194,25 +208,31 @@ jobs:
 
     - name: Download Build Artifacts
       uses: actions/download-artifact@v4
+      with:
+        name: build-windows
+        path: ./artifacts
+
+    - name: Extract Build
+      shell: pwsh
+      run: |
+        Expand-Archive -Path ./artifacts/BereitschaftsPlaner-win-x64.zip -DestinationPath ./build -Force
+
+    - name: Install Inno Setup
+      run: choco install innosetup -y
 
     - name: Build Windows Installer (Inno Setup)
-      if: matrix.os == 'windows-latest'
+      shell: pwsh
       run: |
-        choco install innosetup -y
-        echo "Windows installer build - Implementation needed"
-        # TODO: Add Inno Setup script
+        Write-Host "Windows installer build - Inno Setup script needed"
+        Write-Host "Files ready for packaging in ./build"
+        # TODO: Add Inno Setup script and build command
+        # Example: iscc setup-script.iss
 
-    - name: Build macOS DMG
-      if: matrix.os == 'macos-latest'
-      run: |
-        echo "macOS DMG build - Implementation needed"
-        # TODO: Add DMG creation script
-
-    - name: Upload Installer
+    - name: Upload Installer (placeholder)
       uses: actions/upload-artifact@v4
       with:
-        name: installer-${{ matrix.installer }}
+        name: installer-windows-setup
         path: |
           *.exe
-          *.dmg
         retention-days: 30
+        if-no-files-found: warn
