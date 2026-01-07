@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Globalization;
 using Avalonia.Media;
+using Avalonia.Platform.Storage;
 using BereitschaftsPlaner.Avalonia.Models;
 using BereitschaftsPlaner.Avalonia.Services;
 using BereitschaftsPlaner.Avalonia.Services.Data;
@@ -462,8 +463,6 @@ public partial class PlanningBoardViewModel : ViewModelBase
             }
 
             // Load vacation days for the month
-            var monthStart = new DateTime(SelectedMonth.Year, SelectedMonth.Month, 1);
-            var monthEnd = monthStart.AddMonths(1).AddDays(-1);
             var vacationDays = App.VacationCalendarService.GetVacationDictionary(monthStart, monthEnd);
 
             // Auto-fill
@@ -572,7 +571,7 @@ public partial class PlanningBoardViewModel : ViewModelBase
             "Fairness-Dashboard",
             message,
             "OK",
-            null
+            ""
         );
 
         _ = infoDialog.ShowDialog<bool>(App.MainWindow!);

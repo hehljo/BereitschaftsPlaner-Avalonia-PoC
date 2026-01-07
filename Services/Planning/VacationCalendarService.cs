@@ -13,13 +13,17 @@ namespace BereitschaftsPlaner.Avalonia.Services.Planning;
 /// </summary>
 public class VacationCalendarService
 {
-    private readonly ILiteCollection<VacationDay> _collection;
+    private readonly string _dbPath;
 
     public VacationCalendarService(DatabaseService dbService)
     {
-        _collection = dbService.Database.GetCollection<VacationDay>("vacationDays");
-        _collection.EnsureIndex(x => x.RessourceName);
-        _collection.EnsureIndex(x => x.Date);
+        _dbPath = dbService.DatabasePath;
+
+        // Ensure indexes on first run
+        using var db = new LiteDatabase(_dbPath);
+        var collection = db.GetCollection<VacationDay>("vacationDays");
+        collection.EnsureIndex(x => x.RessourceName);
+        collection.EnsureIndex(x => x.Date);
     }
 
     /// <summary>
@@ -29,8 +33,11 @@ public class VacationCalendarService
     {
         try
         {
+            using var db = new LiteDatabase(_dbPath);
+            var collection = db.GetCollection<VacationDay>("vacationDays");
+
             // Check if already exists
-            var existing = _collection.FindOne(x =>
+            var existing = collection.FindOne(x =>
                 x.RessourceName == vacationDay.RessourceName &&
                 x.Date.Date == vacationDay.Date.Date);
 
@@ -39,14 +46,14 @@ public class VacationCalendarService
                 // Update existing
                 existing.Type = vacationDay.Type;
                 existing.Note = vacationDay.Note;
-                _collection.Update(existing);
+                collection.Update(existing);
                 Log.Information("Updated vacation day for {Resource} on {Date}",
                     vacationDay.RessourceName, vacationDay.Date.Date);
             }
             else
             {
                 // Insert new
-                _collection.Insert(vacationDay);
+                collection.Insert(vacationDay);
                 Log.Information("Added vacation day for {Resource} on {Date}",
                     vacationDay.RessourceName, vacationDay.Date.Date);
             }
@@ -98,7 +105,9 @@ public class VacationCalendarService
     {
         try
         {
-            _collection.Delete(id);
+            using var db = new LiteDatabase(_dbPath);
+            var collection = db.GetCollection<VacationDay>("vacationDays");
+            collection.Delete(id);
             Log.Information("Removed vacation day: {Id}", id);
         }
         catch (Exception ex)
@@ -115,7 +124,9 @@ public class VacationCalendarService
     {
         try
         {
-            var deleted = _collection.DeleteMany(x =>
+            using var db = new LiteDatabase(_dbPath);
+            var collection = db.GetCollection<VacationDay>("vacationDays");
+            var deleted = collection.DeleteMany(x =>
                 x.RessourceName == ressourceName &&
                 x.Date.Date == date.Date);
 
@@ -136,7 +147,9 @@ public class VacationCalendarService
     {
         try
         {
-            return _collection
+            using var db = new LiteDatabase(_dbPath);
+            var collection = db.GetCollection<VacationDay>("vacationDays");
+            return collection
                 .Find(x => x.RessourceName == ressourceName)
                 .OrderBy(x => x.Date)
                 .ToList();
@@ -155,7 +168,9 @@ public class VacationCalendarService
     {
         try
         {
-            return _collection
+            using var db = new LiteDatabase(_dbPath);
+            var collection = db.GetCollection<VacationDay>("vacationDays");
+            return collection
                 .Find(x => x.Date.Date >= start.Date && x.Date.Date <= end.Date)
                 .OrderBy(x => x.Date)
                 .ThenBy(x => x.RessourceName)
@@ -175,7 +190,9 @@ public class VacationCalendarService
     {
         try
         {
-            IEnumerable<VacationDay> query = _collection.FindAll();
+            using var db = new LiteDatabase(_dbPath);
+            var collection = db.GetCollection<VacationDay>("vacationDays");
+            IEnumerable<VacationDay> query = collection.FindAll();
 
             if (start.HasValue && end.HasValue)
             {
@@ -203,7 +220,9 @@ public class VacationCalendarService
     {
         try
         {
-            var hasVacation = _collection.Exists(x =>
+            using var db = new LiteDatabase(_dbPath);
+            var collection = db.GetCollection<VacationDay>("vacationDays");
+            var hasVacation = collection.Exists(x =>
                 x.RessourceName == ressourceName &&
                 x.Date.Date == date.Date);
 
@@ -246,7 +265,9 @@ public class VacationCalendarService
     {
         try
         {
-            var count = _collection.DeleteAll();
+            using var db = new LiteDatabase(_dbPath);
+            var collection = db.GetCollection<VacationDay>("vacationDays");
+            var count = collection.DeleteAll();
             Log.Warning("Cleared all vacation days: {Count} deleted", count);
         }
         catch (Exception ex)
@@ -263,7 +284,9 @@ public class VacationCalendarService
     {
         try
         {
-            var count = _collection.DeleteMany(x => x.RessourceName == ressourceName);
+            using var db = new LiteDatabase(_dbPath);
+            var collection = db.GetCollection<VacationDay>("vacationDays");
+            var count = collection.DeleteMany(x => x.RessourceName == ressourceName);
             Log.Information("Cleared vacation days for {Resource}: {Count} deleted", ressourceName, count);
         }
         catch (Exception ex)

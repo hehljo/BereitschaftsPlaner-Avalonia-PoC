@@ -1,6 +1,6 @@
 using System;
 using BereitschaftsPlaner.Avalonia.Models;
-using BereitschaftsPlaner.Avalonia.Services;
+using BereitschaftsPlaner.Avalonia.Services.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Serilog;
@@ -127,35 +127,27 @@ public partial class SettingsViewModel : ViewModelBase
     {
         try
         {
-            _settingsService.UpdateSetting<AppSettings>(s =>
-            {
-                // Tier 1
-                s.Features.AutoFillEnabled = AutoFillEnabled;
-                s.Features.FairnessDashboardEnabled = FairnessDashboardEnabled;
-                s.Features.VacationCalendarEnabled = VacationCalendarEnabled;
+            // Update settings object
+            _settings.Features.AutoFillEnabled = AutoFillEnabled;
+            _settings.Features.FairnessDashboardEnabled = FairnessDashboardEnabled;
+            _settings.Features.VacationCalendarEnabled = VacationCalendarEnabled;
+            _settings.Features.HistoricalAnalysisEnabled = HistoricalAnalysisEnabled;
+            _settings.Features.ShiftSwapEnabled = ShiftSwapEnabled;
+            _settings.Features.ConflictAssistantEnabled = ConflictAssistantEnabled;
+            _settings.Features.TemplatLibraryEnabled = TemplateLibraryEnabled;
+            _settings.Features.WorkloadHeatmapEnabled = WorkloadHeatmapEnabled;
+            _settings.Features.SkillsMatchingEnabled = SkillsMatchingEnabled;
+            _settings.Features.MultiTeamCoordinationEnabled = MultiTeamCoordinationEnabled;
+            _settings.Features.NotificationSystemEnabled = NotificationSystemEnabled;
+            _settings.Features.CalendarIntegrationEnabled = CalendarIntegrationEnabled;
+            _settings.Features.MobileViewEnabled = MobileViewEnabled;
+            _settings.Features.FairnessRulesEnabled = FairnessRulesEnabled;
+            _settings.Features.WhatIfScenariosEnabled = WhatIfScenariosEnabled;
 
-                // Tier 2
-                s.Features.HistoricalAnalysisEnabled = HistoricalAnalysisEnabled;
-                s.Features.ShiftSwapEnabled = ShiftSwapEnabled;
-                s.Features.ConflictAssistantEnabled = ConflictAssistantEnabled;
-                s.Features.TemplatLibraryEnabled = TemplateLibraryEnabled;
+            // Save to file
+            _settingsService.SaveSettings(_settings);
 
-                // Tier 3
-                s.Features.WorkloadHeatmapEnabled = WorkloadHeatmapEnabled;
-                s.Features.SkillsMatchingEnabled = SkillsMatchingEnabled;
-                s.Features.MultiTeamCoordinationEnabled = MultiTeamCoordinationEnabled;
-
-                // Tier 4
-                s.Features.NotificationSystemEnabled = NotificationSystemEnabled;
-                s.Features.CalendarIntegrationEnabled = CalendarIntegrationEnabled;
-                s.Features.MobileViewEnabled = MobileViewEnabled;
-
-                // Tier 5
-                s.Features.FairnessRulesEnabled = FairnessRulesEnabled;
-                s.Features.WhatIfScenariosEnabled = WhatIfScenariosEnabled;
-            });
-
-            StatusMessage = "Einstellungen gespeichert";
+            StatusMessage = "✅ Einstellungen gespeichert";
             Log.Information("Feature flags saved successfully");
         }
         catch (Exception ex)
