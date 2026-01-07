@@ -26,6 +26,10 @@ public partial class GeneratorViewModel : ViewModelBase
         _zeitprofilService = App.ZeitprofilService;
         _excelService = new BereitschaftsExcelService();
 
+        // Initialize years and calendar weeks
+        InitializeYears();
+        LoadKalenderwochen();
+
         // Load data from database
         LoadDataFromDatabase();
 
@@ -33,12 +37,14 @@ public partial class GeneratorViewModel : ViewModelBase
         StartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
         EndDate = StartDate.AddMonths(1).AddDays(-1);
 
-        // Update statistics when dates change
+        // Update statistics when dates or selections change
         PropertyChanged += (s, e) =>
         {
             if (e.PropertyName == nameof(StartDate) ||
                 e.PropertyName == nameof(EndDate) ||
-                e.PropertyName == nameof(SelectedGruppen))
+                e.PropertyName == nameof(SelectedGruppen) ||
+                e.PropertyName == nameof(UseDateRange) ||
+                e.PropertyName == nameof(Kalenderwochen))
             {
                 UpdateStatistics();
             }
@@ -78,14 +84,38 @@ public partial class GeneratorViewModel : ViewModelBase
     private Ressource? _selectedRessource;
 
     // ============================================================================
-    // DATE RANGE
+    // DATE RANGE MODE
     // ============================================================================
+
+    [ObservableProperty]
+    private bool _useDateRange = true;
+
+    public bool UseCalendarWeeks
+    {
+        get => !UseDateRange;
+        set => UseDateRange = !value;
+    }
 
     [ObservableProperty]
     private DateTime _startDate;
 
     [ObservableProperty]
     private DateTime _endDate;
+
+    // ============================================================================
+    // CALENDAR WEEKS MODE
+    // ============================================================================
+
+    [ObservableProperty]
+    private int _selectedYear = DateTime.Now.Year;
+
+    [ObservableProperty]
+    private ObservableCollection<int> _availableYears = new();
+
+    [ObservableProperty]
+    private ObservableCollection<Kalenderwoche> _kalenderwochen = new();
+
+    public int SelectedKWCount => Kalenderwochen?.Count(kw => kw.IsSelected) ?? 0;
 
     // ============================================================================
     // STATISTICS & STATUS
@@ -105,6 +135,97 @@ public partial class GeneratorViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool _isGenerating = false;
+
+    // ============================================================================
+    // CALENDAR WEEKS INITIALIZATION
+    // ============================================================================
+
+    private void InitializeYears()
+    {
+        AvailableYears.Clear();
+        var currentYear = DateTime.Now.Year;
+        
+        for (int year = currentYear - 2; year <= currentYear + 2; year++)
+        {
+            AvailableYears.Add(year);
+        }
+        
+        SelectedYear = currentYear;
+    }
+
+    partial void OnSelectedYearChanged(int value)
+    {
+        LoadKalenderwochen();
+    }
+
+    private void LoadKalenderwochen()
+    {
+        Kalenderwochen.Clear();
+        
+        var weeksInYear = Kalenderwoche.GetWeeksInYear(SelectedYear);
+        
+        for (int week = 1; week <= weeksInYear; week++)
+        {
+            var kw = new Kalenderwoche(SelectedYear, week);
+            
+            // Subscribe to property changes to update count
+            kw.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(Kalenderwoche.IsSelected))
+                {
+                    OnPropertyChanged(nameof(SelectedKWCount));
+                    UpdateStatistics();
+                }
+            };
+            
+            Kalenderwochen.Add(kw);
+        }
+        
+        OnPropertyChanged(nameof(SelectedKWCount));
+    }
+
+    [RelayCommand]
+    private void ToggleAllKW()
+    {
+        var allSelected = Kalenderwochen.All(kw => kw.IsSelected);
+        
+        foreach (var kw in Kalenderwochen)
+        {
+            kw.IsSelected = !allSelected;
+        }
+        
+        OnPropertyChanged(nameof(SelectedKWCount));
+        UpdateStatistics();
+    }
+
+    [RelayCommand]
+    private void SelectQuarter(int quarter)
+    {
+        // Deselect all first
+        foreach (var kw in Kalenderwochen)
+        {
+            kw.IsSelected = false;
+        }
+        
+        // Determine week range for quarter
+        var (startWeek, endWeek) = quarter switch
+        {
+            1 => (1, 13),    // Q1: KW 1-13
+            2 => (14, 26),   // Q2: KW 14-26
+            3 => (27, 39),   // Q3: KW 27-39
+            4 => (40, 53),   // Q4: KW 40-53
+            _ => (1, 1)
+        };
+        
+        foreach (var kw in Kalenderwochen.Where(kw => kw.Woche >= startWeek && kw.Woche <= endWeek))
+        {
+            kw.IsSelected = true;
+        }
+        
+        OnPropertyChanged(nameof(SelectedKWCount));
+        UpdateStatistics();
+        SetStatus($"Quartal {quarter} ausgewählt", Brushes.Blue);
+    }
 
     // ============================================================================
     // DATA LOADING
@@ -254,21 +375,48 @@ public partial class GeneratorViewModel : ViewModelBase
     private void UpdateStatistics()
     {
         var anzahlGruppen = SelectedGruppen.Count;
-        var anzahlTage = (EndDate - StartDate).Days + 1;
 
-        if (anzahlTage < 1) anzahlTage = 0;
-
-        TotalEntries = anzahlGruppen * anzahlTage;
-
-        if (anzahlGruppen == 0)
+        if (UseDateRange)
         {
-            StatisticsText = "⚠️ Bitte mindestens eine Gruppe auswählen";
-            StatusColor = Brushes.Orange;
+            // Existing date range logic
+            var anzahlTage = (EndDate - StartDate).Days + 1;
+            if (anzahlTage < 1) anzahlTage = 0;
+
+            TotalEntries = anzahlGruppen * anzahlTage;
+
+            if (anzahlGruppen == 0)
+            {
+                StatisticsText = "⚠️ Bitte mindestens eine Gruppe auswählen";
+                StatusColor = Brushes.Orange;
+            }
+            else
+            {
+                StatisticsText = $"✅ {anzahlGruppen} Gruppen × {anzahlTage} Tage = ca. {TotalEntries} Einträge";
+                StatusColor = Brushes.Green;
+            }
         }
-        else
+        else // UseCalendarWeeks
         {
-            StatisticsText = $"✅ {anzahlGruppen} Gruppen × {anzahlTage} Tage = ca. {TotalEntries} Einträge";
-            StatusColor = Brushes.Green;
+            var selectedKWs = Kalenderwochen.Where(kw => kw.IsSelected).ToList();
+            var totalDays = selectedKWs.Sum(kw => (kw.EndDatum - kw.StartDatum).Days + 1);
+            
+            TotalEntries = anzahlGruppen * totalDays;
+
+            if (anzahlGruppen == 0)
+            {
+                StatisticsText = "⚠️ Bitte mindestens eine Gruppe auswählen";
+                StatusColor = Brushes.Orange;
+            }
+            else if (selectedKWs.Count == 0)
+            {
+                StatisticsText = "⚠️ Bitte mindestens eine Kalenderwoche auswählen";
+                StatusColor = Brushes.Orange;
+            }
+            else
+            {
+                StatisticsText = $"✅ {anzahlGruppen} Gruppen × {selectedKWs.Count} KW ({totalDays} Tage) = ca. {TotalEntries} Einträge";
+                StatusColor = Brushes.Green;
+            }
         }
     }
 
@@ -282,35 +430,61 @@ public partial class GeneratorViewModel : ViewModelBase
         // Validation
         if (SelectedGruppen.Count == 0)
         {
-            SetStatus("Bitte mindestens eine Gruppe auswählen!", Brushes.Orange);
+            SetStatus("❌ Bitte mindestens eine Gruppe auswählen!", Brushes.Orange);
             return;
         }
 
         if (SelectedRessource == null)
         {
-            SetStatus("Bitte eine Ressource auswählen!", Brushes.Orange);
+            SetStatus("❌ Bitte eine Ressource auswählen!", Brushes.Orange);
             return;
         }
 
-        if (EndDate < StartDate)
+        // Determine date range based on mode
+        DateTime actualStartDate;
+        DateTime actualEndDate;
+        
+        if (UseDateRange)
         {
-            SetStatus("Enddatum muss nach oder gleich Startdatum liegen!", Brushes.Orange);
-            return;
+            // Date range mode
+            if (EndDate < StartDate)
+            {
+                SetStatus("❌ Enddatum muss nach oder gleich Startdatum liegen!", Brushes.Orange);
+                return;
+            }
+            
+            actualStartDate = StartDate;
+            actualEndDate = EndDate;
+        }
+        else // UseCalendarWeeks
+        {
+            // Calendar weeks mode
+            var selectedKWs = Kalenderwochen.Where(kw => kw.IsSelected).OrderBy(kw => kw.Woche).ToList();
+            
+            if (selectedKWs.Count == 0)
+            {
+                SetStatus("❌ Bitte mindestens eine Kalenderwoche auswählen!", Brushes.Orange);
+                return;
+            }
+            
+            actualStartDate = selectedKWs.First().StartDatum;
+            actualEndDate = selectedKWs.Last().EndDatum;
         }
 
         // Get save location
         var mainWindow = App.MainWindow;
         if (mainWindow?.StorageProvider == null)
         {
-            SetStatus("Fehler: Hauptfenster nicht verfügbar", Brushes.Red);
+            SetStatus("❌ Fehler: Hauptfenster nicht verfügbar", Brushes.Red);
             return;
         }
 
+        var modeText = UseDateRange ? "Tage" : $"KW";
         var file = await mainWindow.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
             Title = "Bereitschaftsdienste speichern",
             DefaultExtension = "xlsx",
-            SuggestedFileName = $"Bereitschaften_{StartDate:yyyyMMdd}-{EndDate:yyyyMMdd}.xlsx",
+            SuggestedFileName = $"Bereitschaften_{actualStartDate:yyyyMMdd}-{actualEndDate:yyyyMMdd}.xlsx",
             FileTypeChoices = new[]
             {
                 new FilePickerFileType("Excel Dateien") { Patterns = new[] { "*.xlsx" } },
@@ -327,7 +501,7 @@ public partial class GeneratorViewModel : ViewModelBase
         var outputPath = file.Path.LocalPath;
 
         IsGenerating = true;
-        SetStatus("Generierung gestartet...", Brushes.Blue);
+        SetStatus("⚡ Generierung gestartet...", Brushes.Blue);
 
         try
         {
@@ -337,8 +511,8 @@ public partial class GeneratorViewModel : ViewModelBase
                     outputPath,
                     SelectedGruppen.ToList(),
                     SelectedRessource,
-                    StartDate,
-                    EndDate,
+                    actualStartDate,
+                    actualEndDate,
                     _zeitprofilService,
                     App.FeiertagsService,
                     progressCallback: (current, total, message) =>
@@ -346,7 +520,8 @@ public partial class GeneratorViewModel : ViewModelBase
                         // Update status on UI thread
                         Avalonia.Threading.Dispatcher.UIThread.Post(() =>
                         {
-                            SetStatus($"{message} ({current}/{total})", Brushes.Blue);
+                            var percentage = total > 0 ? (current * 100 / total) : 0;
+                            SetStatus($"⚡ {message} ({percentage}%)", Brushes.Blue);
                         });
                     }
                 );
@@ -354,7 +529,11 @@ public partial class GeneratorViewModel : ViewModelBase
 
             if (result.Success)
             {
-                SetStatus($"✅ {result.Message}\n📄 Gespeichert: {Path.GetFileName(outputPath)}", Brushes.Green);
+                var modeInfo = UseDateRange 
+                    ? $"Zeitraum: {actualStartDate:dd.MM.yyyy} - {actualEndDate:dd.MM.yyyy}"
+                    : $"Kalenderwochen: {SelectedKWCount} KW ausgewählt";
+                    
+                SetStatus($"✅ {result.Message}\n📄 {Path.GetFileName(outputPath)}\n📅 {modeInfo}", Brushes.Green);
             }
             else
             {
@@ -363,7 +542,7 @@ public partial class GeneratorViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            SetStatus($"Fehler bei Generierung: {ex.Message}", Brushes.Red);
+            SetStatus($"❌ Fehler bei Generierung: {ex.Message}", Brushes.Red);
         }
         finally
         {
@@ -372,7 +551,7 @@ public partial class GeneratorViewModel : ViewModelBase
     }
 
     // ============================================================================
-    // QUICK ACTIONS
+    // QUICK ACTIONS - DATE RANGE
     // ============================================================================
 
     [RelayCommand]
@@ -380,7 +559,7 @@ public partial class GeneratorViewModel : ViewModelBase
     {
         StartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
         EndDate = StartDate.AddMonths(1).AddDays(-1);
-        SetStatus("Datumsbereich: Aktueller Monat", Brushes.Blue);
+        SetStatus("📅 Datumsbereich: Aktueller Monat", Brushes.Blue);
     }
 
     [RelayCommand]
@@ -389,7 +568,7 @@ public partial class GeneratorViewModel : ViewModelBase
         var nextMonth = DateTime.Now.AddMonths(1);
         StartDate = new DateTime(nextMonth.Year, nextMonth.Month, 1);
         EndDate = StartDate.AddMonths(1).AddDays(-1);
-        SetStatus("Datumsbereich: Nächster Monat", Brushes.Blue);
+        SetStatus("📅 Datumsbereich: Nächster Monat", Brushes.Blue);
     }
 
     [RelayCommand]
@@ -399,7 +578,7 @@ public partial class GeneratorViewModel : ViewModelBase
         var quarter = (now.Month - 1) / 3;
         StartDate = new DateTime(now.Year, quarter * 3 + 1, 1);
         EndDate = StartDate.AddMonths(3).AddDays(-1);
-        SetStatus("Datumsbereich: Aktuelles Quartal", Brushes.Blue);
+        SetStatus("📅 Datumsbereich: Aktuelles Quartal", Brushes.Blue);
     }
 
     // ============================================================================

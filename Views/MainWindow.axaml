@@ -873,109 +873,252 @@
                                        FontFamily="{StaticResource HeadlineFont}"/>
                         </Border>
 
-                        <!-- Date Range und Resource Selection -->
-                        <Border Grid.Row="1"
-                                BorderBrush="{StaticResource YunexSteel}"
-                                BorderThickness="1"
-                                CornerRadius="{StaticResource RadiusMedium}"
-                                Padding="{StaticResource SpacingMd}"
-                                Margin="0,0,0,10">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
+                        <!-- Date Range & Resource Selection -->
+<Border Grid.Row="1"
+        BorderBrush="{StaticResource YunexSteel}"
+        BorderThickness="1"
+        CornerRadius="{StaticResource RadiusMedium}"
+        Padding="{StaticResource SpacingMd}"
+        Margin="0,0,0,10">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-                                <!-- Title -->
-                                <TextBlock Grid.Row="0"
-                                           Text="📅 Datumsbereich und Ressource"
-                                           FontFamily="{StaticResource HeadlineFont}"
-                                           FontSize="{StaticResource FontSizeH4}"
-                                           Foreground="{StaticResource YunexRoyalBlue}"
-                                           Margin="0,0,0,10"/>
+        <!-- Title -->
+        <TextBlock Grid.Row="0"
+                   Text="📅 Zeitraum-Auswahl"
+                   FontFamily="{StaticResource HeadlineFont}"
+                   FontSize="{StaticResource FontSizeH4}"
+                   Foreground="{StaticResource YunexRoyalBlue}"
+                   Margin="0,0,0,10"/>
 
-                                <!-- Date Range -->
-                                <Grid Grid.Row="1" Margin="0,0,0,10">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="200"/>
-                                        <ColumnDefinition Width="20"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="200"/>
-                                        <ColumnDefinition Width="20"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
+        <!-- Mode Selection -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="15" Margin="0,0,0,15">
+            <RadioButton Content="📆 Einzelne Tage (Von/Bis)"
+                         IsChecked="{Binding UseDateRange}"
+                         GroupName="DateMode"
+                         FontWeight="Bold"/>
+            <RadioButton Content="📊 Kalenderwochen"
+                         IsChecked="{Binding UseCalendarWeeks}"
+                         GroupName="DateMode"
+                         FontWeight="Bold"/>
+        </StackPanel>
 
-                                    <TextBlock Grid.Column="0"
-                                               Text="Von:"
-                                               VerticalAlignment="Center"
-                                               FontWeight="Bold"
-                                               Margin="0,0,10,0"/>
+        <!-- DATE RANGE MODE -->
+        <Grid Grid.Row="2" 
+              Margin="0,0,0,10"
+              IsVisible="{Binding UseDateRange}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-                                    <DatePicker Grid.Column="1"
-                                                SelectedDate="{Binding StartDate}"/>
+            <TextBlock Grid.Column="0"
+                       Text="Von:"
+                       VerticalAlignment="Center"
+                       FontWeight="Bold"
+                       Margin="0,0,10,0"/>
 
-                                    <TextBlock Grid.Column="3"
-                                               Text="Bis:"
-                                               VerticalAlignment="Center"
-                                               FontWeight="Bold"
-                                               Margin="0,0,10,0"/>
+            <DatePicker Grid.Column="1"
+                        SelectedDate="{Binding StartDate}"/>
 
-                                    <DatePicker Grid.Column="4"
-                                                SelectedDate="{Binding EndDate}"/>
+            <TextBlock Grid.Column="3"
+                       Text="Bis:"
+                       VerticalAlignment="Center"
+                       FontWeight="Bold"
+                       Margin="0,0,10,0"/>
 
-                                    <!-- Quick Actions -->
-                                    <StackPanel Grid.Column="6" Orientation="Horizontal" Spacing="5">
-                                        <Button Content="Aktueller Monat"
-                                                Command="{Binding SetDateRangeCurrentMonthCommand}"
-                                                Background="{StaticResource YunexPurple}"
-                                                Foreground="White"
-                                                Height="28"
-                                                Padding="10,5"
-                                                FontSize="{StaticResource FontSizeSmall}"
-                                                CornerRadius="{StaticResource RadiusSmall}"/>
-                                        <Button Content="Nächster Monat"
-                                                Command="{Binding SetDateRangeNextMonthCommand}"
-                                                Background="{StaticResource YunexPurple}"
-                                                Foreground="White"
-                                                Height="28"
-                                                Padding="10,5"
-                                                FontSize="{StaticResource FontSizeSmall}"
-                                                CornerRadius="{StaticResource RadiusSmall}"/>
-                                        <Button Content="Aktuelles Quartal"
-                                                Command="{Binding SetDateRangeCurrentQuarterCommand}"
-                                                Background="{StaticResource YunexPurple}"
-                                                Foreground="White"
-                                                Height="28"
-                                                Padding="10,5"
-                                                FontSize="{StaticResource FontSizeSmall}"
-                                                CornerRadius="{StaticResource RadiusSmall}"/>
-                                    </StackPanel>
-                                </Grid>
+            <DatePicker Grid.Column="4"
+                        SelectedDate="{Binding EndDate}"/>
 
-                                <!-- Resource Selection -->
-                                <Grid Grid.Row="2">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
+            <!-- Quick Actions -->
+            <StackPanel Grid.Column="6" Orientation="Horizontal" Spacing="5">
+                <Button Content="Aktueller Monat"
+                        Command="{Binding SetDateRangeCurrentMonthCommand}"
+                        Background="{StaticResource YunexPurple}"
+                        Foreground="White"
+                        Height="28"
+                        Padding="10,5"
+                        FontSize="{StaticResource FontSizeSmall}"
+                        CornerRadius="{StaticResource RadiusSmall}"/>
+                <Button Content="Nächster Monat"
+                        Command="{Binding SetDateRangeNextMonthCommand}"
+                        Background="{StaticResource YunexPurple}"
+                        Foreground="White"
+                        Height="28"
+                        Padding="10,5"
+                        FontSize="{StaticResource FontSizeSmall}"
+                        CornerRadius="{StaticResource RadiusSmall}"/>
+                <Button Content="Aktuelles Quartal"
+                        Command="{Binding SetDateRangeCurrentQuarterCommand}"
+                        Background="{StaticResource YunexPurple}"
+                        Foreground="White"
+                        Height="28"
+                        Padding="10,5"
+                        FontSize="{StaticResource FontSizeSmall}"
+                        CornerRadius="{StaticResource RadiusSmall}"/>
+            </StackPanel>
+        </Grid>
 
-                                    <TextBlock Grid.Column="0"
-                                               Text="Ressource (Verantwortlich):"
-                                               VerticalAlignment="Center"
-                                               FontWeight="Bold"
-                                               Margin="0,0,10,0"/>
+        <!-- CALENDAR WEEKS MODE -->
+        <Grid Grid.Row="2" 
+              Margin="0,0,0,10"
+              IsVisible="{Binding UseCalendarWeeks}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-                                    <ComboBox Grid.Column="1"
-                                              ItemsSource="{Binding Ressourcen}"
-                                              SelectedItem="{Binding SelectedRessource}"
-                                              DisplayMemberPath="Name"
-                                              MinWidth="300"
-                                              HorizontalAlignment="Left"/>
-                                </Grid>
-                            </Grid>
-                        </Border>
+            <!-- Year Selection & Quick Actions -->
+            <Grid Grid.Row="0" Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0"
+                           Text="Jahr:"
+                           VerticalAlignment="Center"
+                           FontWeight="Bold"
+                           Margin="0,0,10,0"/>
+
+                <ComboBox Grid.Column="1"
+                          ItemsSource="{Binding AvailableYears}"
+                          SelectedItem="{Binding SelectedYear}"/>
+
+                <TextBlock Grid.Column="3"
+                           Text="Schnellauswahl:"
+                           VerticalAlignment="Center"
+                           FontWeight="Bold"
+                           Margin="0,0,10,0"/>
+
+                <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="5">
+                    <Button Content="Q1 (KW 1-13)"
+                            Command="{Binding SelectQuarterCommand}"
+                            CommandParameter="1"
+                            Background="{StaticResource YunexPurple}"
+                            Foreground="White"
+                            Height="28"
+                            Padding="10,5"
+                            FontSize="{StaticResource FontSizeSmall}"
+                            CornerRadius="{StaticResource RadiusSmall}"/>
+                    <Button Content="Q2 (KW 14-26)"
+                            Command="{Binding SelectQuarterCommand}"
+                            CommandParameter="2"
+                            Background="{StaticResource YunexPurple}"
+                            Foreground="White"
+                            Height="28"
+                            Padding="10,5"
+                            FontSize="{StaticResource FontSizeSmall}"
+                            CornerRadius="{StaticResource RadiusSmall}"/>
+                    <Button Content="Q3 (KW 27-39)"
+                            Command="{Binding SelectQuarterCommand}"
+                            CommandParameter="3"
+                            Background="{StaticResource YunexPurple}"
+                            Foreground="White"
+                            Height="28"
+                            Padding="10,5"
+                            FontSize="{StaticResource FontSizeSmall}"
+                            CornerRadius="{StaticResource RadiusSmall}"/>
+                    <Button Content="Q4 (KW 40-53)"
+                            Command="{Binding SelectQuarterCommand}"
+                            CommandParameter="4"
+                            Background="{StaticResource YunexPurple}"
+                            Foreground="White"
+                            Height="28"
+                            Padding="10,5"
+                            FontSize="{StaticResource FontSizeSmall}"
+                            CornerRadius="{StaticResource RadiusSmall}"/>
+                    <Button Content="Alle um/abwählen"
+                            Command="{Binding ToggleAllKWCommand}"
+                            Background="{StaticResource YunexCyan}"
+                            Foreground="White"
+                            Height="28"
+                            Padding="10,5"
+                            FontSize="{StaticResource FontSizeSmall}"
+                            CornerRadius="{StaticResource RadiusSmall}"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Info -->
+            <TextBlock Grid.Row="1"
+                       Text="{Binding SelectedKWCount, StringFormat='✓ {0} Kalenderwoche(n) ausgewählt'}"
+                       FontWeight="Bold"
+                       Foreground="{StaticResource YunexGreen}"
+                       Margin="0,0,0,10"/>
+
+            <!-- Calendar Weeks Grid -->
+            <Border Grid.Row="2"
+                    BorderBrush="{StaticResource YunexSteel}"
+                    BorderThickness="1"
+                    CornerRadius="{StaticResource RadiusSmall}"
+                    MaxHeight="200">
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding Kalenderwochen}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsSelected}"
+                                          Margin="5"
+                                          Width="100">
+                                    <CheckBox.Content>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding DisplayText}" 
+                                                       FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding DateRange}" 
+                                                       FontSize="10"
+                                                       Foreground="{StaticResource YunexGray}"/>
+                                        </StackPanel>
+                                    </CheckBox.Content>
+                                </CheckBox>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+
+        <!-- Resource Selection (always visible) -->
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0"
+                       Text="Ressource (Verantwortlich):"
+                       VerticalAlignment="Center"
+                       FontWeight="Bold"
+                       Margin="0,0,10,0"/>
+
+            <ComboBox Grid.Column="1"
+                      ItemsSource="{Binding Ressourcen}"
+                      SelectedItem="{Binding SelectedRessource}"
+                      DisplayMemberPath="Name"
+                      MinWidth="300"
+                      HorizontalAlignment="Left"/>
+        </Grid>
+    </Grid>
+</Border>
+
 
                         <!-- 2-Column: Filter + Selection -->
                         <Grid Grid.Row="2" Margin="0,0,0,10">

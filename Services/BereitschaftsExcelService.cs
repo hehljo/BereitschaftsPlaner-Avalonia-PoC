@@ -5,6 +5,7 @@ using System.Linq;
 using BereitschaftsPlaner.Avalonia.Models;
 using BereitschaftsPlaner.Avalonia.ViewModels;
 using ClosedXML.Excel;
+using System.Threading.Tasks;
 
 namespace BereitschaftsPlaner.Avalonia.Services;
 
@@ -487,7 +488,7 @@ public class BereitschaftsExcelService
         var end = TimeSpan.Parse(endZeit);
 
         // If end time is before start time, it's next day
-        var endDate = end < start ? startDate.AddDays(1) : startDate;
+        var endDate = end <= start ? startDate.AddDays(1) : startDate;
 
         return $"{endDate:dd.MM.yyyy} {endZeit}";
     }
@@ -501,7 +502,7 @@ public class BereitschaftsExcelService
         var end = TimeSpan.Parse(endZeit);
 
         // If end time is before start time, it's next day
-        var duration = end < start ? (TimeSpan.FromHours(24) - start + end) : (end - start);
+        var duration = end <= start ? (TimeSpan.FromHours(24) - start + end) : (end - start);
 
         return (int)duration.TotalMinutes;
     }
