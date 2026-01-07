@@ -147,6 +147,58 @@ dotnet run --configuration Release
 
 ---
 
+## 📂 Data & Log Locations
+
+All application data is stored in platform-specific folders:
+
+### Windows
+```
+%APPDATA%\BereitschaftsPlaner\
+├── bereitschaftsplaner.db          # LiteDB database
+├── settings.json                   # App settings (theme, environment)
+├── Logs\
+│   └── app-YYYYMMDD.log           # Daily log files (Serilog)
+└── backups\
+    └── bereitschaftsplaner_YYYYMMDD_HHMMSS.db  # Automatic backups
+```
+**Full Path**: `C:\Users\<USERNAME>\AppData\Roaming\BereitschaftsPlaner\`
+
+### macOS
+```
+~/Library/Application Support/BereitschaftsPlaner/
+├── bereitschaftsplaner.db
+├── settings.json
+├── Logs/
+│   └── app-YYYYMMDD.log
+└── backups/
+    └── bereitschaftsplaner_YYYYMMDD_HHMMSS.db
+```
+
+### Linux
+```
+~/.config/BereitschaftsPlaner/
+├── bereitschaftsplaner.db
+├── settings.json
+├── Logs/
+│   └── app-YYYYMMDD.log
+└── backups/
+    └── bereitschaftsplaner_YYYYMMDD_HHMMSS.db
+```
+
+### Quick Access (Windows)
+Press `Win + R` and paste:
+```
+%APPDATA%\BereitschaftsPlaner
+```
+
+### File Purposes
+- **bereitschaftsplaner.db** - All imported resources, groups, and schedules
+- **settings.json** - User preferences (dark mode, environment, time profiles)
+- **Logs/app-YYYYMMDD.log** - Daily application logs (errors, imports, operations)
+- **backups/** - Automatic database backups before updates and manual resets
+
+---
+
 ## 🏗️ Architecture
 
 ### Technology Stack
@@ -255,6 +307,14 @@ This software is proprietary and confidential. Unauthorized copying, distributio
 - **macOS**: First launch may show security warning (Right-click → Open)
 - **Linux**: Requires X11 or Wayland display server
 - **Template**: Must be created from D365 export (metadata required)
+
+### Troubleshooting
+If you encounter issues, check the log files:
+- **Windows**: `%APPDATA%\BereitschaftsPlaner\Logs\app-YYYYMMDD.log`
+- **macOS**: `~/Library/Application Support/BereitschaftsPlaner/Logs/app-YYYYMMDD.log`
+- **Linux**: `~/.config/BereitschaftsPlaner/Logs/app-YYYYMMDD.log`
+
+See [📂 Data & Log Locations](#-data--log-locations) for more details.
 
 ---
 
