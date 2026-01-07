@@ -57,6 +57,12 @@ public partial class PlanningBoardViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isBD = true; // BD mode vs TD mode
 
+    public bool IsTD
+    {
+        get => !IsBD;
+        set => IsBD = !value;
+    }
+
     [ObservableProperty]
     private int _exportSplitLines = 50; // Lines per export file
 
@@ -408,6 +414,7 @@ public partial class PlanningBoardViewModel : ViewModelBase
     partial void OnIsBDChanged(bool value)
     {
         SelectedTyp = value ? "BD" : "TD";
+        OnPropertyChanged(nameof(IsTD)); // Notify IsTD property changed
     }
 
     /// <summary>
@@ -606,4 +613,8 @@ public partial class DayCell : ObservableObject
     public string WeekNumber => $"KW {Kalenderwoche.GetWeekNumber(Date)}";
 
     public bool HasAssignments => Assignments.Any();
+
+    public Avalonia.Media.FontWeight DayFontWeight => IsToday ? Avalonia.Media.FontWeight.Bold : Avalonia.Media.FontWeight.Medium;
+
+    public string DayForeground => IsCurrentMonth ? "#333333" : "#BBBBBB";
 }

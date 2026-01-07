@@ -147,7 +147,7 @@
                                            Margin="28,0,0,0"/>
 
                                 <RadioButton Content="☀️ Tagesdienst (TD)"
-                                             IsChecked="{Binding IsBD, Converter={x:Static ObjectConverters.Not}}"
+                                             IsChecked="{Binding IsTD}"
                                              FontSize="12"
                                              GroupName="Modus"
                                              Margin="0,8,0,0"/>
@@ -382,8 +382,8 @@
                                         <Grid Grid.Row="0">
                                             <TextBlock Text="{Binding DayNumber}"
                                                        FontSize="14"
-                                                       FontWeight="{Binding IsToday, Converter={x:Static ObjectConverters.BoolToValue}, ConverterParameter='Bold|Medium'}"
-                                                       Foreground="{Binding IsCurrentMonth, Converter={x:Static ObjectConverters.BoolToValue}, ConverterParameter='#333333|#BBBBBB'}"
+                                                       FontWeight="{Binding DayFontWeight}"
+                                                       Foreground="{Binding DayForeground}"
                                                        HorizontalAlignment="Left"
                                                        VerticalAlignment="Top"/>
 
@@ -401,7 +401,7 @@
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <Border Background="{Binding GroupColor}"
-                                                            BorderBrush="{Binding HasConflict, Converter={x:Static ObjectConverters.BoolToValue}, ConverterParameter='#FF0000|Transparent'}"
+                                                            BorderBrush="{Binding ConflictBorderBrush}"
                                                             BorderThickness="2"
                                                             CornerRadius="4"
                                                             Padding="4,2"

@@ -58,4 +58,9 @@ public partial class PlanningAssignment : ObservableObject
     /// Unique identifier for this assignment
     /// </summary>
     public string AssignmentId => $"{Date:yyyyMMdd}_{GruppeName}_{Typ}";
+
+    /// <summary>
+    /// Border brush for conflict indication
+    /// </summary>
+    public string ConflictBorderBrush => HasConflict ? "#FF0000" : "Transparent";
 }
