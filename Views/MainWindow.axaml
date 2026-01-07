@@ -514,7 +514,7 @@
                             Padding="{StaticResource SpacingMd}"
                             CornerRadius="{StaticResource RadiusMedium}"
                             Margin="0,0,0,15">
-                        <TextBlock Text="⏰ Zeitprofile: Bereitschaftsdienst &amp; Tagesdienst konfigurieren"
+                        <TextBlock Text="⏰ Zeitprofile: Bereitschaftsdienst und Tagesdienst konfigurieren"
                                    Foreground="White"
                                    FontSize="{StaticResource FontSizeH3}"
                                    FontFamily="{StaticResource HeadlineFont}"/>
@@ -889,7 +889,7 @@
 
                                 <!-- Title -->
                                 <TextBlock Grid.Row="0"
-                                           Text="📅 Datumsbereich &amp; Ressource"
+                                           Text="📅 Datumsbereich und Ressource"
                                            FontFamily="{StaticResource HeadlineFont}"
                                            FontSize="{StaticResource FontSizeH4}"
                                            Foreground="{StaticResource YunexRoyalBlue}"
