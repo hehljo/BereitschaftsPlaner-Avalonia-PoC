@@ -1,0 +1,178 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- 1. BENTO CARD (Container) -->
+    <Style Selector="Border.BentoCard">
+        <Setter Property="Background" Value="{DynamicResource CardBrush}"/>
+        <Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="Padding" Value="24"/>
+        <Setter Property="BoxShadow" Value="0 10 40 0 #09000000"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BoxShadowTransition Property="BoxShadow" Duration="0:0:0.3"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.3"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Border.BentoCard:pointerover">
+        <Setter Property="BoxShadow" Value="0 15 50 0 #12000000"/>
+        <Setter Property="RenderTransform" Value="translateY(-2px)"/>
+    </Style>
+
+    <!-- 2. TYPOGRAPHY -->
+    <Style Selector="TextBlock.H1">
+        <Setter Property="FontFamily" Value="{DynamicResource SerifFont}"/>
+        <Setter Property="FontSize" Value="42"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextDarkBrush}"/>
+        <Setter Property="LetterSpacing" Value="-1.0"/>
+    </Style>
+
+    <Style Selector="TextBlock.H2">
+        <Setter Property="FontFamily" Value="{DynamicResource SerifFont}"/>
+        <Setter Property="FontSize" Value="28"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextDarkBrush}"/>
+        <Setter Property="LetterSpacing" Value="-0.5"/>
+    </Style>
+
+    <Style Selector="TextBlock.Label">
+        <Setter Property="FontFamily" Value="{DynamicResource SansFont}"/>
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}"/>
+        <Setter Property="LetterSpacing" Value="1.5"/>
+        <Setter Property="TextTransform" Value="Uppercase"/>
+    </Style>
+
+    <Style Selector="TextBlock.Body">
+        <Setter Property="FontFamily" Value="{DynamicResource SansFont}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextDarkBrush}"/>
+        <Setter Property="LineHeight" Value="22"/>
+    </Style>
+
+    <!-- 3. TRUST BUTTON -->
+    <Style Selector="Button.TrustAction">
+        <Setter Property="Background" Value="{DynamicResource AccentDeepBrush}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Padding" Value="32, 14"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="FontFamily" Value="{DynamicResource SansFont}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="Button.TrustAction:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="#1A2530"/>
+    </Style>
+
+    <!-- Secondary Button -->
+    <Style Selector="Button.SecondaryAction">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextDarkBrush}"/>
+        <Setter Property="Padding" Value="20, 10"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="FontFamily" Value="{DynamicResource SansFont}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="#E0E0E0"/>
+    </Style>
+    <Style Selector="Button.SecondaryAction:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="#FAFAFA"/>
+    </Style>
+
+    <!-- 4. LUXURY SCROLLBARS -->
+    <Style Selector="ScrollBar">
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    <Style Selector="ScrollBar:vertical">
+        <Setter Property="Width" Value="6"/>
+    </Style>
+    <Style Selector="ScrollBar:horizontal">
+        <Setter Property="Height" Value="6"/>
+    </Style>
+    <Style Selector="ScrollBar /template/ Thumb">
+        <Setter Property="Background" Value="#E0E0E0"/>
+        <Setter Property="CornerRadius" Value="3"/>
+    </Style>
+    <Style Selector="ScrollBar:pointerover /template/ Thumb">
+        <Setter Property="Background" Value="{DynamicResource GoldAccentBrush}"/>
+    </Style>
+
+    <!-- 5. EDITORIAL DATAGRID -->
+    <Style Selector="DataGrid">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+        <Setter Property="HorizontalGridLinesBrush" Value="#F0F0F0"/>
+        <Setter Property="RowBackground" Value="Transparent"/>
+        <Setter Property="HeadersVisibility" Value="Column"/>
+        <Setter Property="FontFamily" Value="{DynamicResource SansFont}"/>
+    </Style>
+    <Style Selector="DataGridColumnHeader">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="Padding" Value="12,0,0,12"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="Transparent" BorderThickness="0,0,0,1" BorderBrush="#E0E0E0">
+                    <ContentPresenter Content="{TemplateBinding Content}" VerticalAlignment="Bottom" Margin="{TemplateBinding Padding}"/>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="DataGridCell">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Padding" Value="12"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextDarkBrush}"/>
+    </Style>
+    <Style Selector="DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
+        <Setter Property="Fill" Value="#FAFAFA"/>
+    </Style>
+
+    <!-- 6. INPUT CONTROLS -->
+    <Style Selector="TextBox">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextDarkBrush}"/>
+        <Setter Property="BorderBrush" Value="#E0E0E0"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="Padding" Value="12,10"/>
+        <Setter Property="FontFamily" Value="{DynamicResource SansFont}"/>
+        <Setter Property="FontSize" Value="14"/>
+    </Style>
+    <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentDeepBrush}"/>
+    </Style>
+
+    <Style Selector="ComboBox">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextDarkBrush}"/>
+        <Setter Property="BorderBrush" Value="#E0E0E0"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="Padding" Value="12,8"/>
+        <Setter Property="FontFamily" Value="{DynamicResource SansFont}"/>
+        <Setter Property="FontSize" Value="14"/>
+    </Style>
+
+    <!-- 7. NAV ITEMS -->
+    <Style Selector="Border.NavItem">
+        <Setter Property="Padding" Value="16,12"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+    <Style Selector="Border.NavItem:pointerover">
+        <Setter Property="Background" Value="#FAFAFA"/>
+    </Style>
+    <Style Selector="Border.NavItemActive">
+        <Setter Property="Padding" Value="16,12"/>
+        <Setter Property="Background" Value="{DynamicResource CardBrush}"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="BoxShadow" Value="0 2 8 0 #0A000000"/>
+    </Style>
+
+</Styles>

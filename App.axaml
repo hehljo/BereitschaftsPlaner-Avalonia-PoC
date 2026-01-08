@@ -2,8 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="BereitschaftsPlaner.Avalonia.App"
              xmlns:local="using:BereitschaftsPlaner.Avalonia"
-             RequestedThemeVariant="Default">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+             RequestedThemeVariant="Light">
 
     <Application.DataTemplates>
         <local:ViewLocator/>
@@ -11,10 +10,25 @@
 
     <Application.Styles>
         <FluentTheme />
+        <StyleInclude Source="/Styles/LuxuryStyles.axaml"/>
     </Application.Styles>
 
-    <!-- Yunex Traffic Brand Resources - Official Design System -->
+    <!-- QUIET LUXURY DESIGN SYSTEM - Executive Palette -->
     <Application.Resources>
+        <!-- EXECUTIVE PALETTE "Quiet Luxury" -->
+        <SolidColorBrush x:Key="SurfaceBrush">#F9F8F6</SolidColorBrush>   <!-- Alabaster (App Background) -->
+        <SolidColorBrush x:Key="CardBrush">#FFFFFF</SolidColorBrush>      <!-- Pure White (Cards) -->
+        <SolidColorBrush x:Key="TextDarkBrush">#141414</SolidColorBrush>  <!-- Onyx (Primary Text) -->
+        <SolidColorBrush x:Key="TextMutedBrush">#6E6E6E</SolidColorBrush> <!-- Stone (Secondary Text) -->
+        <SolidColorBrush x:Key="AccentDeepBrush">#2C3E50</SolidColorBrush><!-- Midnight Blue (Primary Action) -->
+        <SolidColorBrush x:Key="GoldAccentBrush">#C5A059</SolidColorBrush><!-- Matte Gold (Highlights) -->
+        <SolidColorBrush x:Key="ErrorBrush">#9E2A2B</SolidColorBrush>     <!-- Muted Red (Errors) -->
+
+        <!-- FONTS -->
+        <FontFamily x:Key="SerifFont">Palatino Linotype, Georgia, Times New Roman, Serif</FontFamily>
+        <FontFamily x:Key="SansFont">Inter, Segoe UI, Helvetica, Sans-Serif</FontFamily>
+
+        <!-- Legacy Yunex Colors (for backward compatibility) -->
         <!-- PRIMARY COLORS (from yunextraffic.com) -->
         <SolidColorBrush x:Key="YunexGreen">#00E38C</SolidColorBrush>        <!-- Primary Brand Color -->
         <SolidColorBrush x:Key="YunexBlue">#1E2ED9</SolidColorBrush>         <!-- Dark Blue -->

@@ -38,7 +38,7 @@
 
                 <!-- Logo/Title Area -->
                 <Border Grid.Row="0"
-                        Background="{StaticResource YunexGreen}"
+                        Background="{DynamicResource AccentDeepBrush}"
                         Padding="16">
                     <StackPanel Spacing="4">
                         <TextBlock Text="Bereitschafts-Planer"
@@ -213,9 +213,9 @@
                                 FontSize="12"
                                 Height="32"
                                 Padding="12,0"
-                                CornerRadius="8"
-                                Background="#F0F0F0"
-                                Foreground="#555555"
+                                CornerRadius="6"
+                                Background="Transparent" BorderBrush="#F0F0F0" BorderThickness="1"
+                                Foreground="{DynamicResource TextMutedBrush}"
                                 FontWeight="Medium"
                                 ToolTip.Tip="Feature-Einstellungen">
                             <Button.Styles>
@@ -231,9 +231,9 @@
                                 FontSize="12"
                                 Height="32"
                                 Padding="12,0"
-                                CornerRadius="8"
-                                Background="#F0F0F0"
-                                Foreground="#555555"
+                                CornerRadius="6"
+                                Background="Transparent" BorderBrush="#F0F0F0" BorderThickness="1"
+                                Foreground="{DynamicResource TextMutedBrush}"
                                 FontWeight="Medium"
                                 ToolTip.Tip="Backup erstellen und wiederherstellen">
                             <Button.Styles>
@@ -286,7 +286,7 @@
 
                     <!-- Info Banner -->
                     <Border Grid.Row="0"
-                            Background="{StaticResource YunexOrange}"
+                            Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource AccentDeepBrush}" BorderThickness="0,0,0,2"
                             Padding="{StaticResource SpacingMd}"
                             CornerRadius="{StaticResource RadiusMedium}"
                             Margin="0,0,0,15">
@@ -350,7 +350,7 @@
                                     <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10">
                                         <Button Content="Excel importieren"
                                                 Command="{Binding ImportExcelCommand}"
-                                                Background="{StaticResource YunexGreen}"
+                                                Background="{DynamicResource AccentDeepBrush}"
                                                 Foreground="White"
                                                 Width="150"
                                                 Height="35"
@@ -458,7 +458,7 @@
                                     <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10">
                                         <Button Content="Excel importieren"
                                                 Command="{Binding ImportGruppenCommand}"
-                                                Background="{StaticResource YunexGreen}"
+                                                Background="{DynamicResource AccentDeepBrush}"
                                                 Foreground="White"
                                                 Width="150"
                                                 Height="35"
@@ -604,7 +604,7 @@
                                 <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="5">
                                     <Button Content="💾 Speichern"
                                             Command="{Binding ZeitprofileVM.SaveSelectedProfilCommand}"
-                                            Background="{StaticResource YunexGreen}"
+                                            Background="{DynamicResource AccentDeepBrush}"
                                             Foreground="White"
                                             Width="120"
                                             Height="32"
@@ -620,7 +620,7 @@
 
                                     <Button Content="🗑️ Löschen"
                                             Command="{Binding ZeitprofileVM.DeleteSelectedProfilCommand}"
-                                            Background="{StaticResource YunexOrange}"
+                                            Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource AccentDeepBrush}" BorderThickness="0,0,0,2"
                                             Foreground="White"
                                             Width="120"
                                             Height="32"
@@ -1242,7 +1242,7 @@
                                                             CommandParameter="{Binding}"
                                                             Width="30"
                                                             Height="30"
-                                                            Background="{StaticResource YunexGreen}"
+                                                            Background="{DynamicResource AccentDeepBrush}"
                                                             Foreground="White"
                                                             CornerRadius="15"
                                                             FontSize="14"
@@ -1305,7 +1305,7 @@
                                                             CommandParameter="{Binding}"
                                                             Width="30"
                                                             Height="30"
-                                                            Background="{StaticResource YunexOrange}"
+                                                            Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource AccentDeepBrush}" BorderThickness="0,0,0,2"
                                                             Foreground="White"
                                                             CornerRadius="15"
                                                             FontSize="14"
@@ -1325,7 +1325,7 @@
                                     <Button Grid.Row="2"
                                             Content="Alle entfernen"
                                             Command="{Binding ClearSelectionCommand}"
-                                            Background="{StaticResource YunexOrange}"
+                                            Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource AccentDeepBrush}" BorderThickness="0,0,0,2"
                                             Foreground="White"
                                             HorizontalAlignment="Stretch"
                                             Height="35"
@@ -1455,7 +1455,7 @@
                                     <Button Grid.Column="2"
                                             Content="📥 Laden"
                                             Command="{Binding LoadExcelCommand}"
-                                            Background="{StaticResource YunexGreen}"
+                                            Background="{DynamicResource AccentDeepBrush}"
                                             Foreground="White"
                                             FontFamily="{StaticResource HeadlineFont}"
                                             Width="140"
@@ -1570,7 +1570,7 @@
                                                 CornerRadius="{StaticResource RadiusSmall}"/>
                                         <Button Content="Filter zurücksetzen"
                                                 Command="{Binding ClearAllFiltersCommand}"
-                                                Background="{StaticResource YunexOrange}"
+                                                Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource AccentDeepBrush}" BorderThickness="0,0,0,2"
                                                 Foreground="White"
                                                 Height="28"
                                                 Padding="10,5"
@@ -1675,7 +1675,7 @@
                                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
                                     <Button Content="🗑️ Löschen"
                                             Command="{Binding DeleteSelectedCommand}"
-                                            Background="{StaticResource YunexOrange}"
+                                            Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource AccentDeepBrush}" BorderThickness="0,0,0,2"
                                             Foreground="White"
                                             Width="140"
                                             Height="40"
@@ -1695,7 +1695,7 @@
 
                                     <Button Content="💾 Speichern"
                                             Command="{Binding SaveExcelCommand}"
-                                            Background="{StaticResource YunexGreen}"
+                                            Background="{DynamicResource AccentDeepBrush}"
                                             Foreground="White"
                                             Width="160"
                                             Height="40"
