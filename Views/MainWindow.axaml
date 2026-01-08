@@ -1376,7 +1376,13 @@
                 </ScrollViewer>
 
                 <!-- ============================================================================ -->
-                <!-- VIEW 4: EDITOR (SelectedNavIndex == 3) -->
+                <!-- VIEW 4: PLANNING BOARD (SelectedNavIndex == 3) -->
+                <!-- ============================================================================ -->
+                <ContentControl Content="{Binding PlanningBoardView}"
+                                IsVisible="{Binding IsPlanningView}"/>
+
+                <!-- ============================================================================ -->
+                <!-- VIEW 5: EDITOR (SelectedNavIndex == 4) -->
                 <!-- ============================================================================ -->
                 <ScrollViewer IsVisible="{Binding IsEditorView}">
                     <Grid Margin="10"
@@ -1702,12 +1708,6 @@
                         </Border>
                     </Grid>
                 </ScrollViewer>
-
-                <!-- ============================================================================ -->
-                <!-- VIEW 5: PLANNING BOARD (SelectedNavIndex == 4) -->
-                <!-- ============================================================================ -->
-                <ContentControl Content="{Binding PlanningBoardView}"
-                                IsVisible="{Binding IsPlanningView}"/>
             </Grid>
         </Grid>
     </Grid>
