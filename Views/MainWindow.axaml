@@ -905,9 +905,9 @@
                 <!-- ============================================================================ -->
                 <!-- VIEW 3: GENERATOR (SelectedNavIndex == 2) -->
                 <!-- ============================================================================ -->
-                <ScrollViewer IsVisible="{Binding IsGeneratorView}"
-                              DataContext="{Binding GeneratorVM}">
-                    <Grid Margin="10">
+                <ScrollViewer IsVisible="{Binding IsGeneratorView}">
+                    <Grid Margin="10"
+                          DataContext="{Binding GeneratorVM}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>  <!-- Info Banner -->
                             <RowDefinition Height="Auto"/>  <!-- Date Range und Resource -->
@@ -1378,9 +1378,9 @@
                 <!-- ============================================================================ -->
                 <!-- VIEW 4: EDITOR (SelectedNavIndex == 3) -->
                 <!-- ============================================================================ -->
-                <ScrollViewer IsVisible="{Binding IsEditorView}"
-                              DataContext="{Binding EditorVM}">
-                    <Grid Margin="10">
+                <ScrollViewer IsVisible="{Binding IsEditorView}">
+                    <Grid Margin="10"
+                          DataContext="{Binding EditorVM}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>  <!-- Info Banner -->
                             <RowDefinition Height="Auto"/>  <!-- File Selection -->
