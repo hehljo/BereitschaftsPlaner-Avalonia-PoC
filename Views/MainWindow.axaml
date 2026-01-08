@@ -77,10 +77,7 @@
                                 <Setter Property="Background" Value="{StaticResource YunexLightGray}"/>
                             </Style>
                         </Button.Styles>
-                        <StackPanel Orientation="Horizontal" Spacing="12">
-                            <TextBlock Text="📥" FontSize="20" VerticalAlignment="Center"/>
-                            <TextBlock Text="Import" FontSize="14" FontWeight="Medium" VerticalAlignment="Center"/>
-                        </StackPanel>
+                        <TextBlock Text="Import" FontSize="14" FontWeight="Medium" VerticalAlignment="Center"/>
                     </Button>
 
                     <!-- Zeitprofile -->
@@ -101,10 +98,7 @@
                                 <Setter Property="Foreground" Value="{StaticResource YunexBlue}"/>
                             </Style>
                         </Button.Styles>
-                        <StackPanel Orientation="Horizontal" Spacing="12">
-                            <TextBlock Text="⏰" FontSize="20" VerticalAlignment="Center"/>
-                            <TextBlock Text="Zeitprofile" FontSize="14" FontWeight="Medium" VerticalAlignment="Center"/>
-                        </StackPanel>
+                        <TextBlock Text="Zeitprofile" FontSize="14" FontWeight="Medium" VerticalAlignment="Center"/>
                     </Button>
 
                     <!-- Generator -->
@@ -125,10 +119,7 @@
                                 <Setter Property="Foreground" Value="{StaticResource YunexBlue}"/>
                             </Style>
                         </Button.Styles>
-                        <StackPanel Orientation="Horizontal" Spacing="12">
-                            <TextBlock Text="⚡" FontSize="20" VerticalAlignment="Center"/>
-                            <TextBlock Text="Generator" FontSize="14" FontWeight="Medium" VerticalAlignment="Center"/>
-                        </StackPanel>
+                        <TextBlock Text="Generator" FontSize="14" FontWeight="Medium" VerticalAlignment="Center"/>
                     </Button>
 
                     <!-- Planning Board -->
@@ -149,10 +140,7 @@
                                 <Setter Property="Foreground" Value="{StaticResource YunexBlue}"/>
                             </Style>
                         </Button.Styles>
-                        <StackPanel Orientation="Horizontal" Spacing="12">
-                            <TextBlock Text="📅" FontSize="20" VerticalAlignment="Center"/>
-                            <TextBlock Text="Planung" FontSize="14" FontWeight="Medium" VerticalAlignment="Center"/>
-                        </StackPanel>
+                        <TextBlock Text="Planung" FontSize="14" FontWeight="Medium" VerticalAlignment="Center"/>
                     </Button>
 
                     <!-- Editor -->
@@ -173,10 +161,7 @@
                                 <Setter Property="Foreground" Value="{StaticResource YunexBlue}"/>
                             </Style>
                         </Button.Styles>
-                        <StackPanel Orientation="Horizontal" Spacing="12">
-                            <TextBlock Text="✏️" FontSize="20" VerticalAlignment="Center"/>
-                            <TextBlock Text="Editor" FontSize="14" FontWeight="Medium" VerticalAlignment="Center"/>
-                        </StackPanel>
+                        <TextBlock Text="Editor" FontSize="14" FontWeight="Medium" VerticalAlignment="Center"/>
                     </Button>
                 </StackPanel>
 
@@ -224,7 +209,7 @@
                     <!-- Top Bar Buttons -->
                     <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" Margin="0,0,16,0">
                         <Button Command="{Binding OpenSettingsCommand}"
-                                Content="⚙️ Features"
+                                Content="Features"
                                 FontSize="12"
                                 Height="32"
                                 Padding="12,0"
@@ -242,7 +227,7 @@
                         </Button>
 
                         <Button Command="{Binding OpenBackupManagementCommand}"
-                                Content="💾 Backup"
+                                Content="Backup"
                                 FontSize="12"
                                 Height="32"
                                 Padding="12,0"
@@ -275,9 +260,9 @@
 
                     <!-- Dark Mode Toggle -->
                     <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="8">
-                        <TextBlock Text="🌙"
+                        <TextBlock Text="Theme:"
                                    VerticalAlignment="Center"
-                                   FontSize="16"/>
+                                   FontSize="{StaticResource FontSizeSmall}"/>
                         <ToggleSwitch IsChecked="{Binding IsDarkMode}"
                                       OffContent="Light"
                                       OnContent="Dark"
@@ -291,7 +276,7 @@
                 <!-- ============================================================================ -->
                 <!-- VIEW 1: IMPORT (SelectedNavIndex == 0) -->
                 <!-- ============================================================================ -->
-                <ScrollViewer IsVisible="{Binding SelectedNavIndex, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=0}">
+                <ScrollViewer IsVisible="{Binding IsImportView}">
                 <Grid Margin="10">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>  <!-- Info Banner -->
@@ -561,7 +546,7 @@
                 <!-- ============================================================================ -->
                 <!-- VIEW 2: ZEITPROFILE (SelectedNavIndex == 1) -->
                 <!-- ============================================================================ -->
-                <ScrollViewer IsVisible="{Binding SelectedNavIndex, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=1}">
+                <ScrollViewer IsVisible="{Binding IsZeitprofileView}">
                 <Grid Margin="10">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>  <!-- Info Banner -->
@@ -920,7 +905,7 @@
                 <!-- ============================================================================ -->
                 <!-- VIEW 3: GENERATOR (SelectedNavIndex == 2) -->
                 <!-- ============================================================================ -->
-                <ScrollViewer IsVisible="{Binding SelectedNavIndex, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=2}"
+                <ScrollViewer IsVisible="{Binding IsGeneratorView}"
                               DataContext="{Binding GeneratorVM}">
                     <Grid Margin="10">
                         <Grid.RowDefinitions>
@@ -1393,7 +1378,7 @@
                 <!-- ============================================================================ -->
                 <!-- VIEW 4: EDITOR (SelectedNavIndex == 3) -->
                 <!-- ============================================================================ -->
-                <ScrollViewer IsVisible="{Binding SelectedNavIndex, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=3}"
+                <ScrollViewer IsVisible="{Binding IsEditorView}"
                               DataContext="{Binding EditorVM}">
                     <Grid Margin="10">
                         <Grid.RowDefinitions>
@@ -1722,7 +1707,7 @@
                 <!-- VIEW 5: PLANNING BOARD (SelectedNavIndex == 4) -->
                 <!-- ============================================================================ -->
                 <ContentControl Content="{Binding PlanningBoardView}"
-                                IsVisible="{Binding SelectedNavIndex, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=4}"/>
+                                IsVisible="{Binding IsPlanningView}"/>
             </Grid>
         </Grid>
     </Grid>

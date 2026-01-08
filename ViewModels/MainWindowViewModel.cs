@@ -547,6 +547,22 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private int _selectedNavIndex = 0; // 0=Import, 1=Zeitprofile, 2=Generator, 3=Planning, 4=Editor
 
+    // View visibility properties
+    public bool IsImportView => SelectedNavIndex == 0;
+    public bool IsZeitprofileView => SelectedNavIndex == 1;
+    public bool IsGeneratorView => SelectedNavIndex == 2;
+    public bool IsPlanningView => SelectedNavIndex == 3;
+    public bool IsEditorView => SelectedNavIndex == 4;
+
+    partial void OnSelectedNavIndexChanged(int value)
+    {
+        OnPropertyChanged(nameof(IsImportView));
+        OnPropertyChanged(nameof(IsZeitprofileView));
+        OnPropertyChanged(nameof(IsGeneratorView));
+        OnPropertyChanged(nameof(IsPlanningView));
+        OnPropertyChanged(nameof(IsEditorView));
+    }
+
     [RelayCommand]
     private void NavigateToImport()
     {

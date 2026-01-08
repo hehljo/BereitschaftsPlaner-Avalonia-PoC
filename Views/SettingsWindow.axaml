@@ -8,7 +8,6 @@
         MinWidth="700"
         MinHeight="600"
         Title="Feature-Einstellungen"
-        Icon="/Assets/icon.ico"
         Background="#FAFAFA"
         WindowStartupLocation="CenterOwner">
 
