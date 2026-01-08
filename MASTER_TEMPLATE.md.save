@@ -1,0 +1,500 @@
+Selbstverständlich. Ich werde das gesamte Konzept in eine **Single-File-Solution** (im Sinne einer universellen Dokumentation und Code-Sammlung) kondensieren, die du als "Master-Template" für alle deine Avalonia-Projekte nutzen kannst.
+
+Dieses Dokument dient als **Copy-Paste-Bibliothek**. Es enthält die XAML-Styles, die Projektstruktur und den C#-Code für Animationen.
+
+Du kannst diesen Text in eine Datei namens `AvaloniaLuxuryTemplate.md` oder direkt in deine Knowledge-Base speichern.
+
+***
+
+# Universal Avalonia "Quiet Luxury" Template (2026 Edition)
+**Design System: "The Executive"**
+*Author: AI Senior Frontend Engineer*
+
+Dieses Template transformiert jede Standard-Avalonia-App in eine High-End-Software mit Editorial-Charakter. Es nutzt native Avalonia-Features ohne externe Bloatware-Libraries.
+
+***
+
+## 1. Installations-Basis (Projekt-Setup)
+
+Installiere diese Pakete in deinem `.csproj` (falls noch nicht vorhanden), um SVG-Icons und fortgeschrittene Styles zu unterstützen:
+
+```xml
+<ItemGroup>
+    <!-- Essentiell für moderne Themes -->
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.0" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.0" />
+</ItemGroup>
+```
+
+***
+
+## 2. Das Globale Theme (`App.axaml`)
+
+Dies ist der "Container", der deine Farben und Schriftarten definiert.
+**Pfad:** `App.axaml`
+
+```xml
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="YourNamespace.App"
+             RequestedThemeVariant="Light">
+    <!-- "Light" ist Pflicht für den Editorial/Papier-Look -->
+
+    <Application.Resources>
+        <!-- 
+           PALETTE: "Serious & Elegant" 
+           Inspiriert von hochwertigem Briefpapier und Tinte.
+        -->
+        <SolidColorBrush x:Key="SurfaceBrush">#F9F8F6</SolidColorBrush>   <!-- Alabaster (Hintergrund) -->
+        <SolidColorBrush x:Key="CardBrush">#FFFFFF</SolidColorBrush>      <!-- Reinweiß (Objekte) -->
+        <SolidColorBrush x:Key="TextDarkBrush">#141414</SolidColorBrush>  <!-- Onyx (Text) -->
+        <SolidColorBrush x:Key="TextMutedBrush">#6E6E6E</SolidColorBrush> <!-- Stein (Subtext) -->
+        <SolidColorBrush x:Key="AccentDeepBrush">#2C3E50</SolidColorBrush><!-- Midnight Blue (Interaktion) -->
+        <SolidColorBrush x:Key="GoldAccentBrush">#C5A059</SolidColorBrush><!-- Mattes Gold (Fokus/Linien) -->
+        
+        <!-- FONT STACK (System Fallbacks integriert) -->
+        <!-- Für Headlines: Serif (Klassisch) -->
+        <FontFamily x:Key="SerifFont">Palatino Linotype, Georgia, Times New Roman, Serif</FontFamily>
+        <!-- Für UI/Data: Sans (Modern) -->
+        <FontFamily x:Key="SansFont">Inter, Segoe UI, Helvetica, Sans-Serif</FontFamily>
+    </Application.Resources>
+
+    <Application.Styles>
+        <FluentTheme />
+        <StyleInclude Source="/Styles/LuxuryStyles.axaml"/>
+    </Application.Styles>
+</Application>
+```
+
+***
+
+## 3. Die Design-DNA (`LuxuryStyles.axaml`)
+
+Erstelle eine neue Datei `Styles/LuxuryStyles.axaml`. Hier definieren wir das visuelle Verhalten (Buttons, Cards, Animationen).
+
+**Key Features:**
+*   **Bento-Cards:** Schwebend mit weichem Schatten.
+*   **Micro-Animations:** Buttons heben sich sanft an.
+*   **Typografie:** Große Kontraste.
+
+```xml
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ========================================== -->
+    <!-- 1. BENTO CARD (Der Container für alles)    -->
+    <!-- ========================================== -->
+    <Style Selector="Border.BentoCard">
+        <Setter Property="Background" Value="{DynamicResource CardBrush}"/>
+        <Setter Property="CornerRadius" Value="6"/> <!-- Nicht zu rund, seriös bleiben -->
+        <Setter Property="Padding" Value="30"/>
+        <!-- Der "Quiet Luxury" Schatten: Groß, weich, fast unsichtbar -->
+        <Setter Property="BoxShadow" Value="0 10 40 0 #09000000"/> 
+        
+        <!-- ANIMATION: Sanftes Einblenden beim Laden -->
+        <Setter Property="Transitions">
+            <Transitions>
+                <BoxShadowTransition Property="BoxShadow" Duration="0:0:0.4" Easing="CubicEaseOut"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.4" Easing="CubicEaseOut"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    
+    <!-- Hover State: Subtiler "Lift"-Effekt -->
+    <Style Selector="Border.BentoCard:pointerover">
+        <Setter Property="BoxShadow" Value="0 20 50 0 #12000000"/>
+        <Setter Property="RenderTransform" Value="translateY(-3px)"/>
+    </Style>
+
+    <!-- ========================================== -->
+    <!-- 2. TYPOGRAFIE (Editorial Style)            -->
+    <!-- ========================================== -->
+    
+    <!-- H1: Die dominante Headline -->
+    <Style Selector="TextBlock.H1">
+        <Setter Property="FontFamily" Value="{DynamicResource SerifFont}"/>
+        <Setter Property="FontSize" Value="52"/>
+        <Setter Property="FontWeight" Value="Regular"/> <!-- Light/Regular wirkt edler als Bold -->
+        <Setter Property="Foreground" Value="{DynamicResource TextDarkBrush}"/>
+        <Setter Property="LetterSpacing" Value="-1.5"/> <!-- Tight Tracking für Modernität -->
+        <Setter Property="LineHeight" Value="60"/>
+    </Style>
+
+    <!-- Label: Technische Bezeichnungen -->
+    <Style Selector="TextBlock.Label">
+        <Setter Property="FontFamily" Value="{DynamicResource SansFont}"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}"/>
+        <Setter Property="LetterSpacing" Value="2"/> <!-- Weites Tracking -->
+        <Setter Property="TextTransform" Value="Uppercase"/>
+    </Style>
+
+    <!-- ========================================== -->
+    <!-- 3. TRUST BUTTON (Primary Action)           -->
+    <!-- ========================================== -->
+    <Style Selector="Button.TrustAction">
+        <Setter Property="Background" Value="{DynamicResource AccentDeepBrush}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontFamily" Value="{DynamicResource SansFont}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Padding" Value="40, 18"/> <!-- Viel Platz = Luxus -->
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.2"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    
+    <Style Selector="Button.TrustAction:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="#1A2530"/> <!-- Dunkleres Blau -->
+        <Setter Property="BorderBrush" Value="{DynamicResource GoldAccentBrush}"/>
+        <Setter Property="BorderThickness" Value="0,0,0,0"/> <!-- Optional: Goldener Rand -->
+    </Style>
+    
+    <Style Selector="Button.TrustAction:pressed">
+        <Setter Property="RenderTransform" Value="scale(0.98)"/>
+    </Style>
+
+    <!-- ========================================== -->
+    <!-- 4. GHOST INPUTS (Formularfelder)           -->
+    <!-- ========================================== -->
+    <Style Selector="TextBox.Ghost">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/> <!-- Nur Unterstrich -->
+        <Setter Property="BorderBrush" Value="#E0E0E0"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontFamily" Value="{DynamicResource SerifFont}"/>
+        <Setter Property="Padding" Value="0,10"/>
+    </Style>
+    <Style Selector="TextBox.Ghost:focus /template/ Border#PART_BorderElement">
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentDeepBrush}"/>
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+
+</Styles>
+```
+
+***
+
+## 4. Das Layout-Template (`MainWindow.axaml`)
+
+Dieses Layout nutzt ein Grid-System, das links eine schlanke Navigation und rechts eine große Arbeitsfläche bietet. Wir entfernen die Standard-Windows-Leiste für einen App-Look.
+
+```xml
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="YourNamespace.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Executive Planner"
+        Background="{DynamicResource SurfaceBrush}"
+        
+        <!-- MODERN WINDOW CHROME -->
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        WindowStartupLocation="CenterScreen"
+        Width="1400" Height="900">
+
+    <!-- HAUPT GRID -->
+    <!-- Spalte 0: Margin (Whitespace) -->
+    <!-- Spalte 1: Sidebar (280px) -->
+    <!-- Spalte 2: Content (Auto) -->
+    <Grid ColumnDefinitions="40, 280, *, 40" RowDefinitions="40, *, 40">
+
+        <!-- ======================================== -->
+        <!-- LEFT SIDEBAR: Navigation & Brand         -->
+        <!-- ======================================== -->
+        <StackPanel Grid.Column="1" Grid.Row="1" Spacing="50" VerticalAlignment="Top">
+            
+            <!-- BRANDING -->
+            <StackPanel Spacing="5">
+                <TextBlock Text="NEXUS." Classes="H1" FontSize="36"/>
+                <TextBlock Text="Dynamics 365 Connector" Classes="Label" FontSize="9"/>
+            </StackPanel>
+
+            <!-- NAVIGATION (Bento Mini-Cards) -->
+            <StackPanel Spacing="15">
+                <TextBlock Text="MODUL" Classes="Label" Margin="0,0,0,10"/>
+                
+                <!-- Active Item -->
+                <Border Classes="BentoCard" Padding="20, 15">
+                    <StackPanel Orientation="Horizontal" Spacing="15">
+                         <!-- Icon (Path) -->
+                         <PathIcon Data="M19,19H5V8H19M16,1V3H8V1H6V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3H18V1M17,12H12V17H17V12Z" 
+                                   Width="16" Foreground="{DynamicResource AccentDeepBrush}"/>
+                         <TextBlock Text="Planung" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Inactive Item (Transparenter Background) -->
+                <Border Padding="20, 15" Background="Transparent" CornerRadius="6">
+                    <StackPanel Orientation="Horizontal" Spacing="15" Opacity="0.5">
+                         <PathIcon Data="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" 
+                                   Width="16"/>
+                         <TextBlock Text="Berichte" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- SYSTEM STATUS -->
+            <StackPanel Spacing="10" VerticalAlignment="Bottom">
+                <TextBlock Text="SYSTEM STATUS" Classes="Label"/>
+                <Border Background="#EAEAEA" Height="1" Margin="0,5"/>
+                <DockPanel>
+                    <Ellipse Width="8" Height="8" Fill="#4CAF50" DockPanel.Dock="Left" Margin="0,0,10,0"/>
+                    <TextBlock Text="API Verbunden" FontSize="12" Foreground="{DynamicResource TextMutedBrush}"/>
+                </DockPanel>
+            </StackPanel>
+
+        </StackPanel>
+
+        <!-- ======================================== -->
+        <!-- MAIN CONTENT: The Stage                  -->
+        <!-- ======================================== -->
+        <Grid Grid.Column="2" Grid.Row="1" RowDefinitions="Auto, *, Auto" Margin="60,0,0,0">
+            
+            <!-- HEADER -->
+            <StackPanel Grid.Row="0" Margin="0,0,0,40">
+                <TextBlock Text="Bereitschaft Q1" Classes="H1"/>
+                <TextBlock Text="Importieren Sie Daten oder bearbeiten Sie die Timeline." 
+                           Classes="Label" 
+                           Foreground="#888" 
+                           TextTransform="None" 
+                           FontSize="14" 
+                           Margin="2,10,0,0"/>
+            </StackPanel>
+
+            <!-- WORKSPACE (Das große Bento-Grid) -->
+            <Border Grid.Row="1" Classes="BentoCard" Margin="0,0,0,30">
+                <Grid RowDefinitions="Auto, *">
+                    <!-- Toolbar inside Card -->
+                    <DockPanel Grid.Row="0" Margin="0,0,0,20">
+                        <StackPanel Orientation="Horizontal" Spacing="20">
+                            <Button Content="Import CSV" Classes="TrustAction" Background="Transparent" Foreground="{DynamicResource TextDarkBrush}" Padding="10"/>
+                            <Button Content="Filter" Classes="TrustAction" Background="Transparent" Foreground="{DynamicResource TextDarkBrush}" Padding="10"/>
+                        </StackPanel>
+                        <TextBox Classes="Ghost" Width="200" Watermark="Suche..." HorizontalAlignment="Right"/>
+                    </DockPanel>
+                    
+                    <!-- Content Placeholder -->
+                    <Border Grid.Row="1" BorderBrush="#EEE" BorderThickness="1" CornerRadius="4" Background="#FAFAFA">
+                        <TextBlock Text="Hier Daten-Grid einfügen" 
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center" 
+                                   Foreground="#CCC"/>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- FOOTER ACTION AREA -->
+            <Grid Grid.Row="2" ColumnDefinitions="*, Auto">
+                <!-- Validation Info -->
+                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                    <TextBlock Text="VALIDIERUNG" Classes="Label"/>
+                    <TextBlock Text="Alle Datensätze sind konform." FontFamily="{DynamicResource SerifFont}" FontSize="16" Margin="0,5,0,0"/>
+                </StackPanel>
+                
+                <!-- Primary Action -->
+                <Button Grid.Column="1" Classes="TrustAction">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <TextBlock Text="Export an Dynamics 365"/>
+                        <PathIcon Data="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" Width="14"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+
+        </Grid>
+
+    </Grid>
+</Window>
+```
+
+***
+
+## 5. Animation Utility (Optionaler C# Code)
+
+Für noch weichere Animationen (Page Transitions), die man im XAML schwer definieren kann, kannst du diese Helper-Klasse nutzen.
+
+```csharp
+using Avalonia.Animation;
+using Avalonia.Animation.Easings;
+using Avalonia.Styling;
+using System;
+
+namespace YourNamespace.Utils
+{
+    public static class AnimationPresets
+    {
+        // Beispiel für eine Transition, die man Elementen zuweisen kann
+        public static readonly CrossFade PageTransition = new CrossFade(TimeSpan.FromMilliseconds(400));
+        
+        // Easing Function für den "Luxury Feel" (langsam am Ende)
+        public static readonly Easing CubicOut = new CubicEaseOut();
+    }
+}
+```
+
+## Zusammenfassung für die Nutzung
+
+1.  Kopiere `App.axaml` und `LuxuryStyles.axaml` in jedes neue Projekt.
+2.  Ersetze `MainWindow` mit dem Layout-Code oben.
+3.  Passe nur den **Inhalt** der großen Bento-Card an (Grid.Row="1").
+4.  Der Look bleibt immer konsistent, hochwertig und wirkt niemals "zusammengeschustert".
+
+
+Ja, absolut. Als Senior Engineer muss ich ehrlich sein: Das bisherige Template ist visuell stark („Hui“), aber im produktiven Alltag einer Desktop-App fehlen noch entscheidende **UX-Mechaniken** und **Feinschliffe**, damit es sich nicht nur wie ein *Mockup*, sondern wie eine echte, solide Applikation anfühlt.
+
+Hier sind die **4 fehlenden Optimierungen**, um das Level von „Hübsch“ auf „Production-Grade“ zu heben.
+
+### 1. Das "Frameless Window" Problem lösen (Window Dragging)
+Wir haben `ExtendClientAreaToDecorationsHint="True"` gesetzt. Das sieht toll aus, hat aber einen fatalen Nebeneffekt: **Der Nutzer kann das Fenster nirgendwo anfassen und verschieben**, weil die Titelleiste fehlt.
+
+**Lösung:** Wir müssen eine dedizierte "Drag-Zone" definieren oder den Hintergrund klick-durchlässig machen.
+
+Füge dies im `MainWindow.axaml` ganz oben (über dem Grid) oder als Teil des Grids ein:
+
+```xml
+<!-- In MainWindow.axaml -->
+<Grid RowDefinitions="30, *">
+    <!-- DRAG ZONE: Unsichtbarer Balken oben zum Verschieben -->
+    <!-- IsHitTestVisible="False" sorgt dafür, dass Klicks 'durchfallen' 
+         auf die native Window-Shell, was das Verschieben ermöglicht. -->
+    <Panel Grid.Row="0" Background="Transparent" IsHitTestVisible="False" />
+    
+    <!-- Der Rest der App -->
+    <Grid Grid.Row="1" ... >
+        <!-- Inhalt -->
+    </Grid>
+</Grid>
+```
+*Ohne diesen Hack fühlt sich die App "kaputt" an, weil sie am Bildschirm festklebt.*
+
+***
+
+### 2. Der "DataGrid" Luxus-Style
+Du planst Bereitschaften. Du wirst das `DataGrid` nutzen. Das Standard-Avalonia-DataGrid sieht aus wie Excel 95 und zerstört sofort jeden "Quiet Luxury" Vibe. Wir müssen es zwingen, "editorial" auszusehen.
+
+Füge diesen Style zu `LuxuryStyles.axaml` hinzu:
+
+```xml
+<!-- DATA GRID STYLING -->
+<Style Selector="DataGrid">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="GridLinesVisibility" Value="Horizontal"/> <!-- Nur horizontale Linien -->
+    <Setter Property="HorizontalGridLinesBrush" Value="#EEEEEE"/>
+    <Setter Property="VerticalGridLinesBrush" Value="Transparent"/>
+    <Setter Property="RowBackground" Value="Transparent"/>
+    <Setter Property="HeadersVisibility" Value="Column"/>
+</Style>
+
+<!-- Header Stylen (Wie Magazin-Spalten) -->
+<Style Selector="DataGridColumnHeader">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}"/>
+    <Setter Property="FontWeight" Value="Bold"/>
+    <Setter Property="FontSize" Value="10"/>
+    <Setter Property="Padding" Value="10,0,0,10"/>
+    <Setter Property="Template">
+        <ControlTemplate>
+            <Border Background="Transparent" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource AccentDeepBrush}">
+                <ContentPresenter Content="{TemplateBinding Content}" VerticalAlignment="Bottom"/>
+            </Border>
+        </ControlTemplate>
+    </Setter>
+</Style>
+
+<!-- Zellen Stylen -->
+<Style Selector="DataGridCell">
+    <Setter Property="FontSize" Value="13"/>
+    <Setter Property="Padding" Value="10"/>
+</Style>
+```
+
+***
+
+### 3. Custom Scrollbars (Wichtig für Windows)
+Auf macOS werden Scrollbars ausgeblendet, aber auf Windows hast du standardmäßig dicke graue Balken mitten in deinem schönen Design.
+
+Füge dies zu `LuxuryStyles.axaml` hinzu, um sie minimalistisch zu machen:
+
+```xml
+<Style Selector="ScrollBar">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Width" Value="8"/> <!-- Sehr dünn -->
+</Style>
+
+<Style Selector="ScrollBar /template/ Thumb">
+    <Setter Property="Background" Value="#D0D0D0"/>
+    <Setter Property="CornerRadius" Value="4"/>
+</Style>
+
+<Style Selector="ScrollBar:pointerover /template/ Thumb">
+    <Setter Property="Background" Value="{DynamicResource GoldAccentBrush}"/> <!-- Luxus-Detail bei Hover -->
+</Style>
+```
+
+***
+
+### 4. Elegante "Toast" Notifications (Feedback)
+Wenn der Export zu Dynamics365 läuft, darf keine plumpe `MessageBox.Show("Erfolg!")` aufpoppen. Das wirkt billig.
+Wir brauchen eine "Snackbar" / "Toast", die unten elegant einschwebt.
+
+**Im `MainWindow.axaml` (als Overlay ganz unten im Code, über allem anderen):**
+
+```xml
+<!-- TOAST NOTIFICATION OVERLAY -->
+<Border HorizontalAlignment="Center" 
+        VerticalAlignment="Bottom" 
+        Margin="0,0,0,30" 
+        CornerRadius="4" 
+        Background="{DynamicResource TextDarkBrush}" 
+        Padding="20,12"
+        BoxShadow="0 4 12 0 #33000000"
+        IsVisible="{Binding ShowNotification}"> <!-- Via ViewModel steuern -->
+    
+    <StackPanel Orientation="Horizontal" Spacing="12">
+        <PathIcon Data="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z" 
+                  Foreground="{DynamicResource GoldAccentBrush}" 
+                  Width="14"/>
+        <TextBlock Text="{Binding NotificationMessage}" 
+                   Foreground="White" 
+                   FontSize="13" 
+                   FontFamily="{DynamicResource SansFont}"/>
+    </StackPanel>
+    
+    <!-- Animation für das Einblenden -->
+    <Border.Transitions>
+        <Transitions>
+            <DoubleTransition Property="Opacity" Duration="0:0:0.3"/>
+            <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.3" Easing="CubicEaseOut"/>
+        </Transitions>
+    </Border.Transitions>
+    <Border.Styles>
+        <Style Selector="Border[IsVisible=True]">
+            <Setter Property="Opacity" Value="1"/>
+            <Setter Property="RenderTransform" Value="translateY(0)"/>
+        </Style>
+        <Style Selector="Border[IsVisible=False]">
+            <Setter Property="Opacity" Value="0"/>
+            <Setter Property="RenderTransform" Value="translateY(20px)"/>
+        </Style>
+    </Border.Styles>
+</Border>
+```
+
+### Zusammenfassung der Optimierung
+1.  **Window Dragging:** Damit die App bedienbar ist.
+2.  **DataGrid Styling:** Damit die Listen nicht wie Excel aussehen.
+3.  **Scrollbars:** Damit Windows UI nicht das Design bricht.
+4.  **Toasts:** Damit Erfolgsmeldungen (Export) professionell wirken.
+
+Nimm diese Blöcke mit in deine Master-Datei auf. Dann hast du wirklich ein **Universal Template**, das "Production Ready" ist.
+
+x
