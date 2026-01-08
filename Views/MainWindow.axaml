@@ -1237,8 +1237,8 @@
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel Orientation="Horizontal" Spacing="10">
-                                                    <Button Content="➕"
-                                                            Command="{Binding $parent[ScrollViewer].DataContext.AddGruppeCommand}"
+                                                    <Button Content="+"
+                                                            Command="{Binding $parent[Grid].DataContext.AddGruppeCommand}"
                                                             CommandParameter="{Binding}"
                                                             Width="30"
                                                             Height="30"
@@ -1300,8 +1300,8 @@
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel Orientation="Horizontal" Spacing="10">
-                                                    <Button Content="➖"
-                                                            Command="{Binding $parent[ScrollViewer].DataContext.RemoveGruppeCommand}"
+                                                    <Button Content="-"
+                                                            Command="{Binding $parent[Grid].DataContext.RemoveGruppeCommand}"
                                                             CommandParameter="{Binding}"
                                                             Width="30"
                                                             Height="30"
