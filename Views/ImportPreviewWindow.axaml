@@ -50,13 +50,21 @@
                 Margin="0,0,0,24">
             <StackPanel Spacing="16">
                 <TextBlock Text="DATENVORSCHAU" Classes="Label"/>
-                <DataGrid ItemsSource="{Binding PreviewData}"
-                          IsReadOnly="True"
-                          BorderThickness="0"
-                          AutoGenerateColumns="True"
-                          CanUserResizeColumns="True"
-                          CanUserSortColumns="True"
-                          MinHeight="300"/>
+                <ScrollViewer MaxHeight="300" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding PreviewData}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{DynamicResource BorderBrush}"
+                                        BorderThickness="0,0,0,1"
+                                        Padding="12,8">
+                                    <TextBlock Text="{Binding}"
+                                               Classes="Body"
+                                               TextWrapping="Wrap"/>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
                 <TextBlock Text="{Binding PreviewData.Count, StringFormat={}{0} Einträge}"
                            Classes="Body"
                            Foreground="{DynamicResource TextMutedBrush}"

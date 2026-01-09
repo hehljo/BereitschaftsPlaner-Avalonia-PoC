@@ -27,6 +27,17 @@ public partial class MainWindowViewModel : ViewModelBase
         _dbService = App.DatabaseService;
         _settingsService = App.SettingsService;
 
+        // Subscribe to collection changes for debugging
+        _ressourcen.CollectionChanged += (s, e) =>
+        {
+            Serilog.Log.Debug($"MainWindowViewModel.Ressourcen.CollectionChanged: Action={e.Action}, NewItems={e.NewItems?.Count ?? 0}, OldItems={e.OldItems?.Count ?? 0}");
+        };
+
+        _bereitschaftsGruppen.CollectionChanged += (s, e) =>
+        {
+            Serilog.Log.Debug($"MainWindowViewModel.BereitschaftsGruppen.CollectionChanged: Action={e.Action}, NewItems={e.NewItems?.Count ?? 0}, OldItems={e.OldItems?.Count ?? 0}");
+        };
+
         // Initialize sub-ViewModels
         GeneratorVM = new GeneratorViewModel();
         EditorVM = new EditorViewModel();
@@ -53,11 +64,37 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private string _gruppenFilePath = string.Empty;
 
-    [ObservableProperty]
     private ObservableCollection<Ressource> _ressourcen = new();
 
-    [ObservableProperty]
+    public ObservableCollection<Ressource> Ressourcen
+    {
+        get
+        {
+            Serilog.Log.Debug($"MainWindowViewModel.Ressourcen GET: Count={_ressourcen.Count}");
+            return _ressourcen;
+        }
+        set
+        {
+            Serilog.Log.Debug($"MainWindowViewModel.Ressourcen SET: NewCount={value?.Count ?? 0}");
+            SetProperty(ref _ressourcen, value);
+        }
+    }
+
     private ObservableCollection<BereitschaftsGruppe> _bereitschaftsGruppen = new();
+
+    public ObservableCollection<BereitschaftsGruppe> BereitschaftsGruppen
+    {
+        get
+        {
+            Serilog.Log.Debug($"MainWindowViewModel.BereitschaftsGruppen GET: Count={_bereitschaftsGruppen.Count}");
+            return _bereitschaftsGruppen;
+        }
+        set
+        {
+            Serilog.Log.Debug($"MainWindowViewModel.BereitschaftsGruppen SET: NewCount={value?.Count ?? 0}");
+            SetProperty(ref _bereitschaftsGruppen, value);
+        }
+    }
 
     [ObservableProperty]
     private string _statusMessage = "Bereit";
