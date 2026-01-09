@@ -3,14 +3,15 @@
         xmlns:vm="using:BereitschaftsPlaner.Avalonia.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="750"
+        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
         x:Class="BereitschaftsPlaner.Avalonia.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="Bereitschafts-Planer | Yunex Traffic"
-        Width="1100" Height="750"
-        FontFamily="{StaticResource BodyFont}"
-        FontSize="{StaticResource FontSizeBody}">
+        Width="1200" Height="800"
+        Background="{DynamicResource SurfaceBrush}"
+        FontFamily="{DynamicResource SansFont}"
+        FontSize="14">
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
@@ -18,162 +19,69 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>  <!-- Sidebar -->
-            <ColumnDefinition Width="*"/>    <!-- Content -->
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <!-- ============================================================================ -->
-        <!-- SIDEBAR NAVIGATION -->
+        <!-- SIDEBAR - Minimal Clean Navigation -->
         <!-- ============================================================================ -->
         <Border Grid.Column="0"
-                Background="{DynamicResource SidebarBackground}"
-                BorderBrush="{StaticResource YunexLightGray}"
+                Background="{DynamicResource CardBrush}"
+                BorderBrush="#F0F0F0"
                 BorderThickness="0,0,1,0">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>  <!-- Logo/Title -->
-                    <RowDefinition Height="*"/>     <!-- Navigation -->
-                    <RowDefinition Height="Auto"/>  <!-- Footer -->
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Logo/Title Area -->
-                <Border Grid.Row="0"
-                        Background="{DynamicResource AccentDeepBrush}"
-                        Padding="16">
+                <!-- Logo Area - Minimal -->
+                <Border Grid.Row="0" Padding="24,32,24,24">
                     <StackPanel Spacing="4">
                         <TextBlock Text="Bereitschafts-Planer"
-                                   FontFamily="{StaticResource HeadlineFont}"
-                                   FontSize="16"
-                                   FontWeight="Bold"
-                                   Foreground="White"
+                                   Classes="H2"
+                                   FontSize="20"
                                    TextWrapping="Wrap"/>
                         <TextBlock Text="Yunex Traffic"
-                                   FontSize="12"
-                                   Foreground="White"
-                                   Opacity="0.9"/>
+                                   Classes="Label"
+                                   Opacity="0.6"/>
                     </StackPanel>
                 </Border>
 
-                <!-- Navigation Buttons -->
-                <StackPanel Grid.Row="1" Margin="0,20,0,0" Spacing="4">
-                    <!-- Import -->
-                    <Button Command="{Binding NavigateToImportCommand}"
-                            HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Left"
-                            Padding="16,12"
-                            CornerRadius="0"
-                            Background="Transparent"
-                            BorderThickness="0">
-                        <Button.Styles>
-                            <Style Selector="Button">
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="Foreground" Value="{StaticResource YunexGray}"/>
-                            </Style>
-                            <Style Selector="Button:pointerover">
-                                <Setter Property="Background" Value="{StaticResource SidebarItemHover}"/>
-                                <Setter Property="Foreground" Value="{StaticResource YunexBlue}"/>
-                            </Style>
-                            <Style Selector="Button[IsPressed=true]">
-                                <Setter Property="Background" Value="{StaticResource YunexLightGray}"/>
-                            </Style>
-                        </Button.Styles>
-                        <TextBlock Text="Import" FontSize="14" FontWeight="Medium" VerticalAlignment="Center"/>
-                    </Button>
+                <!-- Navigation Items -->
+                <StackPanel Grid.Row="1" Margin="16,0" Spacing="4">
+                    <Border Classes="NavItem" Tapped="{Binding NavigateToImportCommand}">
+                        <TextBlock Text="Import" Classes="Body" FontWeight="Medium"/>
+                    </Border>
 
-                    <!-- Zeitprofile -->
-                    <Button Command="{Binding NavigateToZeitprofileCommand}"
-                            HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Left"
-                            Padding="16,12"
-                            CornerRadius="0"
-                            Background="Transparent"
-                            BorderThickness="0">
-                        <Button.Styles>
-                            <Style Selector="Button">
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="Foreground" Value="{StaticResource YunexGray}"/>
-                            </Style>
-                            <Style Selector="Button:pointerover">
-                                <Setter Property="Background" Value="{StaticResource SidebarItemHover}"/>
-                                <Setter Property="Foreground" Value="{StaticResource YunexBlue}"/>
-                            </Style>
-                        </Button.Styles>
-                        <TextBlock Text="Zeitprofile" FontSize="14" FontWeight="Medium" VerticalAlignment="Center"/>
-                    </Button>
+                    <Border Classes="NavItem" Tapped="{Binding NavigateToZeitprofileCommand}">
+                        <TextBlock Text="Zeitprofile" Classes="Body" FontWeight="Medium"/>
+                    </Border>
 
-                    <!-- Generator -->
-                    <Button Command="{Binding NavigateToGeneratorCommand}"
-                            HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Left"
-                            Padding="16,12"
-                            CornerRadius="0"
-                            Background="Transparent"
-                            BorderThickness="0">
-                        <Button.Styles>
-                            <Style Selector="Button">
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="Foreground" Value="{StaticResource YunexGray}"/>
-                            </Style>
-                            <Style Selector="Button:pointerover">
-                                <Setter Property="Background" Value="{StaticResource SidebarItemHover}"/>
-                                <Setter Property="Foreground" Value="{StaticResource YunexBlue}"/>
-                            </Style>
-                        </Button.Styles>
-                        <TextBlock Text="Generator" FontSize="14" FontWeight="Medium" VerticalAlignment="Center"/>
-                    </Button>
+                    <Border Classes="NavItem" Tapped="{Binding NavigateToGeneratorCommand}">
+                        <TextBlock Text="Generator" Classes="Body" FontWeight="Medium"/>
+                    </Border>
 
-                    <!-- Planning Board -->
-                    <Button Command="{Binding NavigateToPlanningCommand}"
-                            HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Left"
-                            Padding="16,12"
-                            CornerRadius="0"
-                            Background="Transparent"
-                            BorderThickness="0">
-                        <Button.Styles>
-                            <Style Selector="Button">
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="Foreground" Value="{StaticResource YunexGray}"/>
-                            </Style>
-                            <Style Selector="Button:pointerover">
-                                <Setter Property="Background" Value="{StaticResource SidebarItemHover}"/>
-                                <Setter Property="Foreground" Value="{StaticResource YunexBlue}"/>
-                            </Style>
-                        </Button.Styles>
-                        <TextBlock Text="Planung" FontSize="14" FontWeight="Medium" VerticalAlignment="Center"/>
-                    </Button>
+                    <Border Classes="NavItem" Tapped="{Binding NavigateToPlanningCommand}">
+                        <TextBlock Text="Planung" Classes="Body" FontWeight="Medium"/>
+                    </Border>
 
-                    <!-- Editor -->
-                    <Button Command="{Binding NavigateToEditorCommand}"
-                            HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Left"
-                            Padding="16,12"
-                            CornerRadius="0"
-                            Background="Transparent"
-                            BorderThickness="0">
-                        <Button.Styles>
-                            <Style Selector="Button">
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="Foreground" Value="{StaticResource YunexGray}"/>
-                            </Style>
-                            <Style Selector="Button:pointerover">
-                                <Setter Property="Background" Value="{StaticResource SidebarItemHover}"/>
-                                <Setter Property="Foreground" Value="{StaticResource YunexBlue}"/>
-                            </Style>
-                        </Button.Styles>
-                        <TextBlock Text="Editor" FontSize="14" FontWeight="Medium" VerticalAlignment="Center"/>
-                    </Button>
+                    <Border Classes="NavItem" Tapped="{Binding NavigateToEditorCommand}">
+                        <TextBlock Text="Editor" Classes="Body" FontWeight="Medium"/>
+                    </Border>
                 </StackPanel>
 
-                <!-- Footer (Copyright) -->
+                <!-- Footer -->
                 <Border Grid.Row="2"
-                        Padding="16"
-                        BorderBrush="{StaticResource YunexLightGray}"
+                        Padding="24,16"
+                        BorderBrush="#F0F0F0"
                         BorderThickness="0,1,0,0">
                     <TextBlock Text="© 2025 Johannes Hehl"
-                               FontSize="11"
-                               Foreground="{StaticResource YunexGray}"
-                               TextWrapping="Wrap"/>
+                               Classes="Label"
+                               TextWrapping="Wrap"
+                               Opacity="0.5"/>
                 </Border>
             </Grid>
         </Border>
@@ -181,18 +89,18 @@
         <!-- ============================================================================ -->
         <!-- CONTENT AREA -->
         <!-- ============================================================================ -->
-        <Grid Grid.Column="1">
+        <Grid Grid.Column="1" Background="{DynamicResource SurfaceBrush}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>  <!-- Top Bar -->
-                <RowDefinition Height="*"/>     <!-- View Content -->
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- Top Bar: Dark Mode + Environment Switcher -->
+            <!-- Top Bar - Clean Minimal -->
             <Border Grid.Row="0"
-                    Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
-                    BorderBrush="{StaticResource YunexSteel}"
+                    Background="{DynamicResource CardBrush}"
+                    BorderBrush="#F0F0F0"
                     BorderThickness="0,0,0,1"
-                    Padding="{StaticResource SpacingSm}">
+                    Padding="24,16">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -201,1514 +109,968 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- Empty space for title (can add breadcrumb later) -->
                     <TextBlock Grid.Column="0"
                                Text=""
                                VerticalAlignment="Center"/>
 
-                    <!-- Top Bar Buttons -->
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" Margin="0,0,16,0">
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" Margin="0,0,24,0">
                         <Button Command="{Binding OpenSettingsCommand}"
-                                Content="Features"
-                                FontSize="12"
-                                Height="32"
-                                Padding="12,0"
-                                CornerRadius="6"
-                                Background="Transparent" BorderBrush="#F0F0F0" BorderThickness="1"
-                                Foreground="{DynamicResource TextMutedBrush}"
-                                FontWeight="Medium"
-                                ToolTip.Tip="Feature-Einstellungen">
-                            <Button.Styles>
-                                <Style Selector="Button:pointerover">
-                                    <Setter Property="Background" Value="#E5E5E5"/>
-                                    <Setter Property="Opacity" Value="0.95"/>
-                                </Style>
-                            </Button.Styles>
-                        </Button>
+                                Classes="SecondaryAction"
+                                Content="Features"/>
 
                         <Button Command="{Binding OpenBackupManagementCommand}"
-                                Content="Backup"
-                                FontSize="12"
-                                Height="32"
-                                Padding="12,0"
-                                CornerRadius="6"
-                                Background="Transparent" BorderBrush="#F0F0F0" BorderThickness="1"
-                                Foreground="{DynamicResource TextMutedBrush}"
-                                FontWeight="Medium"
-                                ToolTip.Tip="Backup erstellen und wiederherstellen">
-                            <Button.Styles>
-                                <Style Selector="Button:pointerover">
-                                    <Setter Property="Background" Value="#E5E5E5"/>
-                                    <Setter Property="Opacity" Value="0.95"/>
-                                </Style>
-                            </Button.Styles>
-                        </Button>
+                                Classes="SecondaryAction"
+                                Content="Backup"/>
                     </StackPanel>
 
-                    <!-- Environment Switcher -->
-                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" Margin="0,0,16,0">
-                        <TextBlock Text="Umgebung:"
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="12" Margin="0,0,24,0">
+                        <TextBlock Text="Umgebung"
+                                   Classes="Label"
                                    VerticalAlignment="Center"
-                                   FontSize="{StaticResource FontSizeSmall}"/>
+                                   Margin="0,0,8,0"/>
                         <ComboBox SelectedIndex="{Binding EnvironmentIndex}"
-                                  MinWidth="120"
-                                  FontSize="{StaticResource FontSizeSmall}">
+                                  MinWidth="110"
+                                  FontSize="13">
                             <ComboBoxItem Content="Production"/>
                             <ComboBoxItem Content="QA"/>
                         </ComboBox>
                     </StackPanel>
 
-                    <!-- Dark Mode Toggle -->
-                    <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="8">
-                        <TextBlock Text="Theme:"
+                    <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="12">
+                        <TextBlock Text="Theme"
+                                   Classes="Label"
                                    VerticalAlignment="Center"
-                                   FontSize="{StaticResource FontSizeSmall}"/>
+                                   Margin="0,0,8,0"/>
                         <ToggleSwitch IsChecked="{Binding IsDarkMode}"
                                       OffContent="Light"
                                       OnContent="Dark"
-                                      FontSize="{StaticResource FontSizeSmall}"/>
+                                      FontSize="13"/>
                     </StackPanel>
                 </Grid>
             </Border>
 
-            <!-- View Content (switches based on SelectedNavIndex) -->
-            <Grid Grid.Row="1">
-                <!-- ============================================================================ -->
-                <!-- VIEW 1: IMPORT (SelectedNavIndex == 0) -->
-                <!-- ============================================================================ -->
-                <ScrollViewer IsVisible="{Binding IsImportView}">
-                <Grid Margin="10">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>  <!-- Info Banner -->
-                        <RowDefinition Height="*"/>     <!-- 2-Column Content -->
-                        <RowDefinition Height="Auto"/>  <!-- Footer -->
-                    </Grid.RowDefinitions>
-
-                    <!-- Info Banner -->
-                    <Border Grid.Row="0"
-                            Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource AccentDeepBrush}" BorderThickness="0,0,0,2"
-                            Padding="{StaticResource SpacingMd}"
-                            CornerRadius="{StaticResource RadiusMedium}"
-                            Margin="0,0,0,15">
-                        <TextBlock Text="Setup: Ressourcen und Bereitschaftsgruppen importieren"
-                                   Foreground="White"
-                                   FontSize="{StaticResource FontSizeH3}"
-                                   FontFamily="{StaticResource HeadlineFont}"/>
-                    </Border>
-
-                    <!-- 2-Column Layout: Ressourcen + Gruppen -->
-                    <Grid Grid.Row="1">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="10"/>  <!-- Spacer -->
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <!-- LEFT: Ressourcen -->
-                        <StackPanel Grid.Column="0" Spacing="10">
-                            <TextBlock Text="📋 Ressourcen (Mitarbeiter)"
-                                       FontFamily="{StaticResource HeadlineFont}"
-                                       FontSize="{StaticResource FontSizeH4}"
-                                       Foreground="{StaticResource YunexRoyalBlue}"/>
-
-                            <!-- File Selection Ressourcen -->
-                            <Border BorderBrush="{StaticResource YunexSteel}"
-                                    BorderThickness="1"
-                                    CornerRadius="{StaticResource RadiusMedium}"
-                                    Padding="{StaticResource SpacingMd}"
-                                    Margin="0,0,0,10">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-
-                                    <TextBlock Grid.Row="0" Text="Excel-Datei auswählen:" FontWeight="Bold" Margin="0,0,0,5"/>
-
-                                    <Grid Grid.Row="1" Margin="0,0,0,10">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <TextBox Grid.Column="0"
-                                                 Text="{Binding ExcelFilePath}"
-                                                 IsReadOnly="True"
-                                                 Watermark="Keine Datei ausgewählt..."
-                                                 Margin="0,0,10,0"/>
-
-                                        <Button Grid.Column="1"
-                                                Content="Durchsuchen"
-                                                Command="{Binding BrowseFileCommand}"
-                                                Width="120"
-                                                Background="{StaticResource YunexRoyalBlue}"
-                                                Foreground="White"
-                                                CornerRadius="{StaticResource RadiusSmall}"/>
-                                    </Grid>
-
-                                    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10">
-                                        <Button Content="Excel importieren"
-                                                Command="{Binding ImportExcelCommand}"
-                                                Background="{DynamicResource AccentDeepBrush}"
-                                                Foreground="White"
-                                                Width="150"
-                                                Height="35"
-                                                FontFamily="{StaticResource HeadlineFont}"
-                                                CornerRadius="{StaticResource RadiusSmall}"/>
-
-                                        <Button Content="JSON speichern"
-                                                Command="{Binding SaveJsonCommand}"
-                                                Background="{StaticResource YunexPurple}"
-                                                Foreground="White"
-                                                Width="150"
-                                                Height="35"
-                                                FontFamily="{StaticResource HeadlineFont}"
-                                                CornerRadius="{StaticResource RadiusSmall}"
-                                                IsEnabled="{Binding HasData}"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-
-                            <!-- Ressourcen Data Grid -->
-                            <Border BorderBrush="{StaticResource YunexSteel}"
-                                    BorderThickness="1"
-                                    CornerRadius="{StaticResource RadiusMedium}"
-                                    Padding="{StaticResource SpacingSm}">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="250"/>
-                                    </Grid.RowDefinitions>
-
-                                    <TextBlock Grid.Row="0"
-                                               Text="{Binding DataGridTitle}"
-                                               FontFamily="{StaticResource HeadlineFont}"
-                                               FontSize="{StaticResource FontSizeH4}"
-                                               Margin="0,0,0,10"/>
-
-                                    <DataGrid Grid.Row="1"
-                                              ItemsSource="{Binding Ressourcen}"
-                                              AutoGenerateColumns="False"
-                                              IsReadOnly="True"
-                                              GridLinesVisibility="All"
-                                              BorderThickness="1"
-                                              BorderBrush="{StaticResource YunexSteel}">
-                                        <DataGrid.Columns>
-                                            <DataGridTextColumn Header="Ressourcenname" Binding="{Binding Name}" Width="*"/>
-                                            <DataGridTextColumn Header="Bezirk" Binding="{Binding Bezirk}" Width="*"/>
-                                        </DataGrid.Columns>
-                                    </DataGrid>
-
-                                    <!-- Placeholder when no data -->
-                                    <TextBlock Grid.Row="1"
-                                               Text="Keine Daten vorhanden. Bitte Excel-Datei importieren."
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Foreground="#999999"
-                                               FontStyle="Italic"
-                                               IsVisible="{Binding !HasData}"/>
-                                </Grid>
-                            </Border>
-                        </StackPanel>
-
-                        <!-- RIGHT: Bereitschaftsgruppen -->
-                        <StackPanel Grid.Column="2" Spacing="10">
-                            <TextBlock Text="👥 Bereitschaftsgruppen"
-                                       FontFamily="{StaticResource HeadlineFont}"
-                                       FontSize="{StaticResource FontSizeH4}"
-                                       Foreground="{StaticResource YunexPurple}"/>
-
-                            <!-- File Selection Gruppen -->
-                            <Border BorderBrush="{StaticResource YunexSteel}"
-                                    BorderThickness="1"
-                                    CornerRadius="{StaticResource RadiusMedium}"
-                                    Padding="{StaticResource SpacingMd}"
-                                    Margin="0,0,0,10">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-
-                                    <TextBlock Grid.Row="0" Text="Excel-Datei auswählen:" FontWeight="Bold" Margin="0,0,0,5"/>
-
-                                    <Grid Grid.Row="1" Margin="0,0,0,10">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <TextBox Grid.Column="0"
-                                                 Text="{Binding GruppenFilePath}"
-                                                 IsReadOnly="True"
-                                                 Watermark="Keine Datei ausgewählt..."
-                                                 Margin="0,0,10,0"/>
-
-                                        <Button Grid.Column="1"
-                                                Content="Durchsuchen"
-                                                Command="{Binding BrowseGruppenFileCommand}"
-                                                Width="120"
-                                                Background="{StaticResource YunexRoyalBlue}"
-                                                Foreground="White"
-                                                CornerRadius="{StaticResource RadiusSmall}"/>
-                                    </Grid>
-
-                                    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10">
-                                        <Button Content="Excel importieren"
-                                                Command="{Binding ImportGruppenCommand}"
-                                                Background="{DynamicResource AccentDeepBrush}"
-                                                Foreground="White"
-                                                Width="150"
-                                                Height="35"
-                                                FontFamily="{StaticResource HeadlineFont}"
-                                                CornerRadius="{StaticResource RadiusSmall}"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-
-                            <!-- Gruppen Data Grid -->
-                            <Border BorderBrush="{StaticResource YunexSteel}"
-                                    BorderThickness="1"
-                                    CornerRadius="{StaticResource RadiusMedium}"
-                                    Padding="{StaticResource SpacingSm}">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="250"/>
-                                    </Grid.RowDefinitions>
-
-                                    <TextBlock Grid.Row="0"
-                                               Text="Importierte Bereitschaftsgruppen"
-                                               FontFamily="{StaticResource HeadlineFont}"
-                                               FontSize="{StaticResource FontSizeH4}"
-                                               Margin="0,0,0,10"/>
-
-                                    <DataGrid Grid.Row="1"
-                                              ItemsSource="{Binding BereitschaftsGruppen}"
-                                              AutoGenerateColumns="False"
-                                              IsReadOnly="True"
-                                              GridLinesVisibility="All"
-                                              BorderThickness="1"
-                                              BorderBrush="{StaticResource YunexSteel}">
-                                        <DataGrid.Columns>
-                                            <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
-                                            <DataGridTextColumn Header="Bezirk" Binding="{Binding Bezirk}" Width="*"/>
-                                            <DataGridTextColumn Header="Verantwortlich" Binding="{Binding VerantwortlichePerson}" Width="*"/>
-                                        </DataGrid.Columns>
-                                    </DataGrid>
-
-                                    <!-- Placeholder when no data -->
-                                    <TextBlock Grid.Row="1"
-                                               Text="Keine Daten vorhanden. Bitte Excel-Datei importieren."
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Foreground="#999999"
-                                               FontStyle="Italic"
-                                               IsVisible="{Binding !HasGruppenData}"/>
-                                </Grid>
-                            </Border>
-                        </StackPanel>
-                    </Grid>
-
-                    <!-- Info Footer -->
-                    <Border Grid.Row="2"
-                            Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
-                            BorderBrush="{StaticResource YunexSteel}"
-                            BorderThickness="1"
-                            Padding="{StaticResource SpacingSm}"
-                            CornerRadius="{StaticResource RadiusSmall}"
-                            Margin="0,10,0,0">
-                        <StackPanel>
-                            <TextBlock FontFamily="{StaticResource HeadlineFont}"
-                                       FontSize="{StaticResource FontSizeBody}"
-                                       Margin="0,0,0,5">
-                                <Run Text="Technologie-Stack:"/>
-                            </TextBlock>
-                            <TextBlock TextWrapping="Wrap"
-                                       FontSize="{StaticResource FontSizeSmall}">
-                                <Run Text="• Avalonia 11.3.10 (Cross-Platform UI)"/>
-                                <LineBreak/>
-                                <Run Text="• LiteDB 5.0.21 (NoSQL Database)"/>
-                                <LineBreak/>
-                                <Run Text="• ExcelDataReader (Plattformunabhängig)"/>
-                                <LineBreak/>
-                                <Run Text="• .NET 9.0 + MVVM Pattern"/>
-                                <LineBreak/>
-                                <Run Text="• Yunex Traffic Branding" Foreground="{StaticResource YunexOrange}"/>
-                            </TextBlock>
-                        </StackPanel>
-                    </Border>
-                </Grid>
-            </ScrollViewer>
-
-                <!-- ============================================================================ -->
-                <!-- VIEW 2: ZEITPROFILE (SelectedNavIndex == 1) -->
-                <!-- ============================================================================ -->
-                <ScrollViewer IsVisible="{Binding IsZeitprofileView}">
-                <Grid Margin="10">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>  <!-- Info Banner -->
-                        <RowDefinition Height="Auto"/>  <!-- Profile Selection -->
-                        <RowDefinition Height="Auto"/>  <!-- Profile Name -->
-                        <RowDefinition Height="Auto"/>  <!-- Wochenzeitplan -->
-                        <RowDefinition Height="Auto"/>  <!-- Feiertage -->
-                        <RowDefinition Height="Auto"/>  <!-- Gruppen Zuweisungen -->
-                    </Grid.RowDefinitions>
-
-                    <!-- Info Banner -->
-                    <Border Grid.Row="0"
-                            Background="{StaticResource YunexPurple}"
-                            Padding="{StaticResource SpacingMd}"
-                            CornerRadius="{StaticResource RadiusMedium}"
-                            Margin="0,0,0,15">
-                        <TextBlock Text="⏰ Zeitprofile: Bereitschaftsdienst und Tagesdienst konfigurieren"
-                                   Foreground="White"
-                                   FontSize="{StaticResource FontSizeH3}"
-                                   FontFamily="{StaticResource HeadlineFont}"/>
-                    </Border>
-
-                    <!-- Profil-Auswahl und Verwaltung -->
-                    <Border Grid.Row="1"
-                            BorderBrush="{StaticResource YunexSteel}"
-                            BorderThickness="1"
-                            CornerRadius="{StaticResource RadiusMedium}"
-                            Padding="{StaticResource SpacingMd}"
-                            Margin="0,0,0,10">
-                        <StackPanel Spacing="10">
-                            <TextBlock Text="📂 Profil-Verwaltung"
-                                       FontFamily="{StaticResource HeadlineFont}"
-                                       FontSize="{StaticResource FontSizeH4}"
-                                       Foreground="{StaticResource YunexRoyalBlue}"/>
-
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-
-                                <TextBlock Grid.Column="0"
-                                           Text="Aktives Profil:"
-                                           VerticalAlignment="Center"
-                                           FontWeight="Bold"
-                                           Margin="0,0,10,0"/>
-
-                                <ComboBox Grid.Column="1"
-                                          ItemsSource="{Binding ZeitprofileVM.Zeitprofile}"
-                                          SelectedItem="{Binding ZeitprofileVM.SelectedZeitprofil}"
-                                          MinWidth="300"
-                                          Margin="0,0,10,0"/>
-
-                                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="5">
-                                    <Button Content="💾 Speichern"
-                                            Command="{Binding ZeitprofileVM.SaveSelectedProfilCommand}"
-                                            Background="{DynamicResource AccentDeepBrush}"
-                                            Foreground="White"
-                                            Width="120"
-                                            Height="32"
-                                            CornerRadius="{StaticResource RadiusSmall}"/>
-
-                                    <Button Content="📋 Kopieren"
-                                            Command="{Binding ZeitprofileVM.CopySelectedProfilCommand}"
-                                            Background="{StaticResource YunexPurple}"
-                                            Foreground="White"
-                                            Width="120"
-                                            Height="32"
-                                            CornerRadius="{StaticResource RadiusSmall}"/>
-
-                                    <Button Content="🗑️ Löschen"
-                                            Command="{Binding ZeitprofileVM.DeleteSelectedProfilCommand}"
-                                            Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource AccentDeepBrush}" BorderThickness="0,0,0,2"
-                                            Foreground="White"
-                                            Width="120"
-                                            Height="32"
-                                            CornerRadius="{StaticResource RadiusSmall}"/>
-                                </StackPanel>
-                            </Grid>
-
-                            <!-- Neues Profil erstellen -->
-                            <Separator Background="{StaticResource YunexSteel}" Height="1" Margin="0,5,0,5"/>
-
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-
-                                <TextBlock Grid.Column="0"
-                                           Text="Neues Profil:"
-                                           VerticalAlignment="Center"
-                                           FontWeight="Bold"
-                                           Margin="0,0,10,0"/>
-
-                                <TextBox Grid.Column="1"
-                                         Text="{Binding ZeitprofileVM.NewProfilName}"
-                                         Watermark="Name für neues Profil eingeben..."
-                                         Margin="0,0,10,0"/>
-
-                                <Button Grid.Column="2"
-                                        Content="➕ Erstellen"
-                                        Command="{Binding ZeitprofileVM.CreateNewProfilCommand}"
-                                        Background="{StaticResource YunexRoyalBlue}"
-                                        Foreground="White"
-                                        Width="120"
-                                        Height="32"
-                                        CornerRadius="{StaticResource RadiusSmall}"/>
-
-                            <!-- Status Message -->
-                            <TextBlock Text="{Binding ZeitprofileVM.StatusMessage}"
-                                       Foreground="{Binding ZeitprofileVM.StatusColor}"
-                                       FontWeight="Bold"
-                                       FontSize="{StaticResource FontSizeSmall}"/>
-                            </Grid>
-
-                            <!-- Status Message -->
-                            <TextBlock Text="{Binding StatusMessage}"
-                                       Foreground="{Binding StatusColor}"
-                                       FontWeight="Bold"
-                                       FontSize="{StaticResource FontSizeSmall}"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Profil Name (wenn Profil ausgewählt) -->
-                    <Border Grid.Row="2"
-                            BorderBrush="{StaticResource YunexSteel}"
-                            BorderThickness="1"
-                            CornerRadius="{StaticResource RadiusMedium}"
-                            Padding="{StaticResource SpacingMd}"
-                            Margin="0,0,0,10"
-                            IsVisible="{Binding ZeitprofileVM.SelectedZeitprofil, Converter={x:Static ObjectConverters.IsNotNull}}">
-                        <StackPanel Spacing="10">
-                            <TextBlock Text="✏️ Profil-Details"
-                                       FontFamily="{StaticResource HeadlineFont}"
-                                       FontSize="{StaticResource FontSizeH4}"
-                                       Foreground="{StaticResource YunexRoyalBlue}"/>
-
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <TextBlock Grid.Column="0"
-                                           Text="Profil-Name:"
-                                           VerticalAlignment="Center"
-                                           FontWeight="Bold"
-                                           Margin="0,0,10,0"/>
-
-                                <TextBox Grid.Column="1"
-                                         Text="{Binding ZeitprofileVM.SelectedZeitprofil.Name}"
-                                         Watermark="Profilname"/>
-                            </Grid>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Wochenzeitplan: BD + TD -->
-                    <Border Grid.Row="3"
-                            BorderBrush="{StaticResource YunexSteel}"
-                            BorderThickness="1"
-                            CornerRadius="{StaticResource RadiusMedium}"
-                            Padding="{StaticResource SpacingMd}"
-                            Margin="0,0,0,10"
-                            IsVisible="{Binding ZeitprofileVM.SelectedZeitprofil, Converter={x:Static ObjectConverters.IsNotNull}}">
-                        <StackPanel Spacing="15">
-                            <TextBlock Text="📅 Wochenzeitplan"
-                                       FontFamily="{StaticResource HeadlineFont}"
-                                       FontSize="{StaticResource FontSizeH4}"
-                                       Foreground="{StaticResource YunexRoyalBlue}"/>
-
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="10"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <!-- LEFT: Bereitschaftstage (BD) -->
-                                <StackPanel Grid.Column="0" Spacing="10">
-                                    <TextBlock Text="🌙 Bereitschaftsdienst (BD)"
-                                               FontWeight="Bold"
-                                               FontSize="{StaticResource FontSizeBody}"
-                                               Foreground="{StaticResource YunexPurple}"/>
-
-                                    <DataGrid ItemsSource="{Binding ZeitprofileVM.SelectedZeitprofil.BereitschaftsTage}"
-                                              AutoGenerateColumns="False"
-                                              GridLinesVisibility="All"
-                                              BorderThickness="1"
-                                              BorderBrush="{StaticResource YunexSteel}"
-                                              Height="220">
-                                        <DataGrid.Columns>
-                                            <DataGridTextColumn Header="Tag" Binding="{Binding Tag}" Width="*" IsReadOnly="True"/>
-                                            <DataGridTextColumn Header="Von" Binding="{Binding Von}" Width="80"/>
-                                            <DataGridTextColumn Header="Bis" Binding="{Binding Bis}" Width="80"/>
-                                        </DataGrid.Columns>
-                                    </DataGrid>
-
-                                    <TextBlock Text="💡 Standard: Mo-So 16:00-07:30 (Folgetag)"
-                                               FontSize="{StaticResource FontSizeSmall}"
-                                               Foreground="{StaticResource YunexGray}"
-                                               FontStyle="Italic"/>
-                                </StackPanel>
-
-                                <!-- RIGHT: Tagesdienste (TD) -->
-                                <StackPanel Grid.Column="2" Spacing="10">
-                                    <TextBlock Text="☀️ Tagesdienst (TD)"
-                                               FontWeight="Bold"
-                                               FontSize="{StaticResource FontSizeBody}"
-                                               Foreground="{StaticResource YunexGreen}"/>
-
-                                    <DataGrid ItemsSource="{Binding ZeitprofileVM.SelectedZeitprofil.Tagesdienste}"
-                                              AutoGenerateColumns="False"
-                                              GridLinesVisibility="All"
-                                              BorderThickness="1"
-                                              BorderBrush="{StaticResource YunexSteel}"
-                                              Height="220">
-                                        <DataGrid.Columns>
-                                            <DataGridTextColumn Header="Tag" Binding="{Binding Tag}" Width="*" IsReadOnly="True"/>
-                                            <DataGridTextColumn Header="Von" Binding="{Binding Von}" Width="80"/>
-                                            <DataGridTextColumn Header="Bis" Binding="{Binding Bis}" Width="80"/>
-                                        </DataGrid.Columns>
-                                    </DataGrid>
-
-                                    <TextBlock Text="💡 Standard: Mo-Do 07:30-16:00, Fr 07:30-12:30"
-                                               FontSize="{StaticResource FontSizeSmall}"
-                                               Foreground="{StaticResource YunexGray}"
-                                               FontStyle="Italic"/>
-                                </StackPanel>
-                            </Grid>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Feiertags-Konfiguration -->
-                    <Border Grid.Row="4"
-                            BorderBrush="{StaticResource YunexSteel}"
-                            BorderThickness="1"
-                            CornerRadius="{StaticResource RadiusMedium}"
-                            Padding="{StaticResource SpacingMd}"
-                            Margin="0,0,0,10"
-                            IsVisible="{Binding ZeitprofileVM.SelectedZeitprofil, Converter={x:Static ObjectConverters.IsNotNull}}">
-                        <StackPanel Spacing="10">
-                            <TextBlock Text="🎉 Feiertags-Konfiguration"
-                                       FontFamily="{StaticResource HeadlineFont}"
-                                       FontSize="{StaticResource FontSizeH4}"
-                                       Foreground="{StaticResource YunexRoyalBlue}"/>
-
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="200"/>
-                                    <ColumnDefinition Width="20"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="200"/>
-                                    <ColumnDefinition Width="20"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="200"/>
-                                </Grid.ColumnDefinitions>
-
-                                <!-- Bundesland -->
-                                <TextBlock Grid.Column="0"
-                                           Text="Bundesland:"
-                                           VerticalAlignment="Center"
-                                           FontWeight="Bold"
-                                           Margin="0,0,10,0"/>
-
-                                <ComboBox Grid.Column="1"
-                                          SelectedValue="{Binding ZeitprofileVM.SelectedZeitprofil.Bundesland}">
-                                    <ComboBoxItem Content="BY - Bayern"/>
-                                    <ComboBoxItem Content="BW - Baden-Württemberg"/>
-                                    <ComboBoxItem Content="BE - Berlin"/>
-                                    <ComboBoxItem Content="BB - Brandenburg"/>
-                                    <ComboBoxItem Content="HB - Bremen"/>
-                                    <ComboBoxItem Content="HH - Hamburg"/>
-                                    <ComboBoxItem Content="HE - Hessen"/>
-                                    <ComboBoxItem Content="MV - Mecklenburg-Vorpommern"/>
-                                    <ComboBoxItem Content="NI - Niedersachsen"/>
-                                    <ComboBoxItem Content="NW - Nordrhein-Westfalen"/>
-                                    <ComboBoxItem Content="RP - Rheinland-Pfalz"/>
-                                    <ComboBoxItem Content="SL - Saarland"/>
-                                    <ComboBoxItem Content="SN - Sachsen"/>
-                                    <ComboBoxItem Content="ST - Sachsen-Anhalt"/>
-                                    <ComboBoxItem Content="SH - Schleswig-Holstein"/>
-                                    <ComboBoxItem Content="TH - Thüringen"/>
-                                </ComboBox>
-
-                                <!-- Region -->
-                                <TextBlock Grid.Column="3"
-                                           Text="Region:"
-                                           VerticalAlignment="Center"
-                                           FontWeight="Bold"
-                                           Margin="0,0,10,0"/>
-
-                                <TextBox Grid.Column="4"
-                                         Text="{Binding ZeitprofileVM.SelectedZeitprofil.Region}"
-                                         Watermark="z.B. Augsburg (optional)"/>
-
-                                <!-- Behandeln wie -->
-                                <TextBlock Grid.Column="6"
-                                           Text="Behandeln wie:"
-                                           VerticalAlignment="Center"
-                                           FontWeight="Bold"
-                                           Margin="0,0,10,0"/>
-
-                                <ComboBox Grid.Column="7"
-                                          SelectedValue="{Binding ZeitprofileVM.SelectedZeitprofil.BehandelnWie}">
-                                    <ComboBoxItem Content="Sonntag"/>
-                                    <ComboBoxItem Content="Samstag"/>
-                                </ComboBox>
-                            </Grid>
-
-                            <TextBlock Text="💡 Feiertage werden automatisch berechnet und wie der gewählte Wochentag behandelt"
-                                       FontSize="{StaticResource FontSizeSmall}"
-                                       Foreground="{StaticResource YunexGray}"
-                                       FontStyle="Italic"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Gruppen-Zuweisungen -->
-                    <Border Grid.Row="5"
-                            BorderBrush="{StaticResource YunexSteel}"
-                            BorderThickness="1"
-                            CornerRadius="{StaticResource RadiusMedium}"
-                            Padding="{StaticResource SpacingMd}"
-                            Margin="0,0,0,10"
-                            IsVisible="{Binding ZeitprofileVM.SelectedZeitprofil, Converter={x:Static ObjectConverters.IsNotNull}}">
-                        <StackPanel Spacing="10">
-                            <TextBlock Text="👥 Zugewiesene Bereitschaftsgruppen"
-                                       FontFamily="{StaticResource HeadlineFont}"
-                                       FontSize="{StaticResource FontSizeH4}"
-                                       Foreground="{StaticResource YunexRoyalBlue}"/>
-
-                            <DataGrid ItemsSource="{Binding ZeitprofileVM.SelectedZeitprofil.GruppenZuweisungen}"
-                                      AutoGenerateColumns="False"
-                                      IsReadOnly="True"
-                                      GridLinesVisibility="All"
-                                      BorderThickness="1"
-                                      BorderBrush="{StaticResource YunexSteel}"
-                                      Height="150">
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Gruppenname" Binding="{Binding GruppenName}" Width="*"/>
-                                </DataGrid.Columns>
-                            </DataGrid>
-
-                            <TextBlock Text="💡 Gruppenzuweisungen können in Tab 3 (Generator) verwaltet werden"
-                                       FontSize="{StaticResource FontSizeSmall}"
-                                       Foreground="{StaticResource YunexGray}"
-                                       FontStyle="Italic"/>
-                        </StackPanel>
-                    </Border>
-                </Grid>
-            </ScrollViewer>
-
-                <!-- ============================================================================ -->
-                <!-- VIEW 3: GENERATOR (SelectedNavIndex == 2) -->
-                <!-- ============================================================================ -->
-                <ScrollViewer IsVisible="{Binding IsGeneratorView}">
-                    <Grid Margin="10"
-                          DataContext="{Binding GeneratorVM}">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>  <!-- Info Banner -->
-                            <RowDefinition Height="Auto"/>  <!-- Date Range und Resource -->
-                            <RowDefinition Height="*"/>     <!-- 2-Column: Filter + Selection -->
-                            <RowDefinition Height="Auto"/>  <!-- Statistics und Actions -->
-                        </Grid.RowDefinitions>
-
-                        <!-- Info Banner -->
-                        <Border Grid.Row="0"
-                                Background="{StaticResource YunexCyan}"
-                                Padding="{StaticResource SpacingMd}"
-                                CornerRadius="{StaticResource RadiusMedium}"
-                                Margin="0,0,0,15">
-                            <TextBlock Text="⚡ Bereitschafts-Generator: Automatische Generierung"
-                                       Foreground="White"
-                                       FontSize="{StaticResource FontSizeH3}"
-                                       FontFamily="{StaticResource HeadlineFont}"/>
-                        </Border>
-
-                        <!-- Date Range & Resource Selection -->
-<Border Grid.Row="1"
-        BorderBrush="{StaticResource YunexSteel}"
-        BorderThickness="1"
-        CornerRadius="{StaticResource RadiusMedium}"
-        Padding="{StaticResource SpacingMd}"
-        Margin="0,0,0,10">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-
-        <!-- Title -->
-        <TextBlock Grid.Row="0"
-                   Text="📅 Zeitraum-Auswahl"
-                   FontFamily="{StaticResource HeadlineFont}"
-                   FontSize="{StaticResource FontSizeH4}"
-                   Foreground="{StaticResource YunexRoyalBlue}"
-                   Margin="0,0,0,10"/>
-
-        <!-- Mode Selection -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="15" Margin="0,0,0,15">
-            <RadioButton Content="📆 Einzelne Tage (Von/Bis)"
-                         IsChecked="{Binding UseDateRange}"
-                         GroupName="DateMode"
-                         FontWeight="Bold"/>
-            <RadioButton Content="📊 Kalenderwochen"
-                         IsChecked="{Binding UseCalendarWeeks}"
-                         GroupName="DateMode"
-                         FontWeight="Bold"/>
-        </StackPanel>
-
-        <!-- DATE RANGE MODE -->
-        <Grid Grid.Row="2" 
-              Margin="0,0,0,10"
-              IsVisible="{Binding UseDateRange}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="200"/>
-                <ColumnDefinition Width="20"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="200"/>
-                <ColumnDefinition Width="20"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <TextBlock Grid.Column="0"
-                       Text="Von:"
-                       VerticalAlignment="Center"
-                       FontWeight="Bold"
-                       Margin="0,0,10,0"/>
-
-            <DatePicker Grid.Column="1"
-                        SelectedDate="{Binding StartDate}"/>
-
-            <TextBlock Grid.Column="3"
-                       Text="Bis:"
-                       VerticalAlignment="Center"
-                       FontWeight="Bold"
-                       Margin="0,0,10,0"/>
-
-            <DatePicker Grid.Column="4"
-                        SelectedDate="{Binding EndDate}"/>
-
-            <!-- Quick Actions -->
-            <StackPanel Grid.Column="6" Orientation="Horizontal" Spacing="5">
-                <Button Content="Aktueller Monat"
-                        Command="{Binding SetDateRangeCurrentMonthCommand}"
-                        Background="{StaticResource YunexPurple}"
-                        Foreground="White"
-                        Height="28"
-                        Padding="10,5"
-                        FontSize="{StaticResource FontSizeSmall}"
-                        CornerRadius="{StaticResource RadiusSmall}"/>
-                <Button Content="Nächster Monat"
-                        Command="{Binding SetDateRangeNextMonthCommand}"
-                        Background="{StaticResource YunexPurple}"
-                        Foreground="White"
-                        Height="28"
-                        Padding="10,5"
-                        FontSize="{StaticResource FontSizeSmall}"
-                        CornerRadius="{StaticResource RadiusSmall}"/>
-                <Button Content="Aktuelles Quartal"
-                        Command="{Binding SetDateRangeCurrentQuarterCommand}"
-                        Background="{StaticResource YunexPurple}"
-                        Foreground="White"
-                        Height="28"
-                        Padding="10,5"
-                        FontSize="{StaticResource FontSizeSmall}"
-                        CornerRadius="{StaticResource RadiusSmall}"/>
-            </StackPanel>
-        </Grid>
-
-        <!-- CALENDAR WEEKS MODE -->
-        <Grid Grid.Row="2" 
-              Margin="0,0,0,10"
-              IsVisible="{Binding UseCalendarWeeks}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-
-            <!-- Year Selection & Quick Actions -->
-            <Grid Grid.Row="0" Margin="0,0,0,10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="150"/>
-                    <ColumnDefinition Width="30"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Column="0"
-                           Text="Jahr:"
-                           VerticalAlignment="Center"
-                           FontWeight="Bold"
-                           Margin="0,0,10,0"/>
-
-                <ComboBox Grid.Column="1"
-                          ItemsSource="{Binding AvailableYears}"
-                          SelectedItem="{Binding SelectedYear}"/>
-
-                <TextBlock Grid.Column="3"
-                           Text="Schnellauswahl:"
-                           VerticalAlignment="Center"
-                           FontWeight="Bold"
-                           Margin="0,0,10,0"/>
-
-                <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="5">
-                    <Button Content="Q1 (KW 1-13)"
-                            Command="{Binding SelectQuarterCommand}"
-                            CommandParameter="1"
-                            Background="{StaticResource YunexPurple}"
-                            Foreground="White"
-                            Height="28"
-                            Padding="10,5"
-                            FontSize="{StaticResource FontSizeSmall}"
-                            CornerRadius="{StaticResource RadiusSmall}"/>
-                    <Button Content="Q2 (KW 14-26)"
-                            Command="{Binding SelectQuarterCommand}"
-                            CommandParameter="2"
-                            Background="{StaticResource YunexPurple}"
-                            Foreground="White"
-                            Height="28"
-                            Padding="10,5"
-                            FontSize="{StaticResource FontSizeSmall}"
-                            CornerRadius="{StaticResource RadiusSmall}"/>
-                    <Button Content="Q3 (KW 27-39)"
-                            Command="{Binding SelectQuarterCommand}"
-                            CommandParameter="3"
-                            Background="{StaticResource YunexPurple}"
-                            Foreground="White"
-                            Height="28"
-                            Padding="10,5"
-                            FontSize="{StaticResource FontSizeSmall}"
-                            CornerRadius="{StaticResource RadiusSmall}"/>
-                    <Button Content="Q4 (KW 40-53)"
-                            Command="{Binding SelectQuarterCommand}"
-                            CommandParameter="4"
-                            Background="{StaticResource YunexPurple}"
-                            Foreground="White"
-                            Height="28"
-                            Padding="10,5"
-                            FontSize="{StaticResource FontSizeSmall}"
-                            CornerRadius="{StaticResource RadiusSmall}"/>
-                    <Button Content="Alle um/abwählen"
-                            Command="{Binding ToggleAllKWCommand}"
-                            Background="{StaticResource YunexCyan}"
-                            Foreground="White"
-                            Height="28"
-                            Padding="10,5"
-                            FontSize="{StaticResource FontSizeSmall}"
-                            CornerRadius="{StaticResource RadiusSmall}"/>
-                </StackPanel>
-            </Grid>
-
-            <!-- Info -->
-            <TextBlock Grid.Row="1"
-                       Text="{Binding SelectedKWCount, StringFormat='✓ {0} Kalenderwoche(n) ausgewählt'}"
-                       FontWeight="Bold"
-                       Foreground="{StaticResource YunexGreen}"
-                       Margin="0,0,0,10"/>
-
-            <!-- Calendar Weeks Grid -->
-            <Border Grid.Row="2"
-                    BorderBrush="{StaticResource YunexSteel}"
-                    BorderThickness="1"
-                    CornerRadius="{StaticResource RadiusSmall}"
-                    MaxHeight="200">
-                <ScrollViewer HorizontalScrollBarVisibility="Disabled"
-                              VerticalScrollBarVisibility="Auto">
-                    <ItemsControl ItemsSource="{Binding Kalenderwochen}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel Orientation="Horizontal"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <CheckBox IsChecked="{Binding IsSelected}"
-                                          Margin="5"
-                                          Width="100">
-                                    <CheckBox.Content>
-                                        <StackPanel>
-                                            <TextBlock Text="{Binding DisplayText}" 
-                                                       FontWeight="Bold"/>
-                                            <TextBlock Text="{Binding DateRange}" 
-                                                       FontSize="10"
-                                                       Foreground="{StaticResource YunexGray}"/>
-                                        </StackPanel>
-                                    </CheckBox.Content>
-                                </CheckBox>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
-            </Border>
-        </Grid>
-
-        <!-- Resource Selection (always visible) -->
-        <Grid Grid.Row="3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <TextBlock Grid.Column="0"
-                       Text="Ressource (Verantwortlich):"
-                       VerticalAlignment="Center"
-                       FontWeight="Bold"
-                       Margin="0,0,10,0"/>
-
-            <ComboBox Grid.Column="1"
-                      ItemsSource="{Binding Ressourcen}"
-                      SelectedItem="{Binding SelectedRessource}"
-                      MinWidth="300"
-                      HorizontalAlignment="Left"/>
-        </Grid>
-    </Grid>
-</Border>
-
-
-                        <!-- 2-Column: Filter + Selection -->
-                        <Grid Grid.Row="2" Margin="0,0,0,10">
+            <!-- View Content -->
+            <ScrollViewer Grid.Row="1"
+                          HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto">
+                <Grid Margin="40">
+
+                    <!-- ====================================================================== -->
+                    <!-- VIEW 1: IMPORT -->
+                    <!-- ====================================================================== -->
+                    <StackPanel IsVisible="{Binding IsImportView}" Spacing="32">
+                        <TextBlock Text="Setup" Classes="H1"/>
+                        <TextBlock Text="IMPORT VON RESSOURCEN UND BEREITSCHAFTSGRUPPEN" Classes="Label"/>
+
+                        <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="30"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-                            <!-- LEFT: Filter und Available Groups -->
-                            <Border Grid.Column="0"
-                                    BorderBrush="{StaticResource YunexSteel}"
-                                    BorderThickness="1"
-                                    CornerRadius="{StaticResource RadiusMedium}"
-                                    Padding="{StaticResource SpacingMd}">
+                            <!-- Ressourcen -->
+                            <StackPanel Grid.Column="0" Spacing="24">
+                                <TextBlock Text="Ressourcen" Classes="H2"/>
+
+                                <Border Classes="BentoCard">
+                                    <StackPanel Spacing="16">
+                                        <TextBlock Text="EXCEL-DATEI" Classes="Label"/>
+
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="12"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBox Grid.Column="0"
+                                                     Text="{Binding ExcelFilePath}"
+                                                     IsReadOnly="True"
+                                                     Watermark="Keine Datei ausgewählt"/>
+
+                                            <Button Grid.Column="2"
+                                                    Content="Durchsuchen"
+                                                    Classes="SecondaryAction"
+                                                    Command="{Binding BrowseFileCommand}"/>
+                                        </Grid>
+
+                                        <StackPanel Orientation="Horizontal" Spacing="12">
+                                            <Button Content="Excel importieren"
+                                                    Classes="TrustAction"
+                                                    Command="{Binding ImportExcelCommand}"/>
+
+                                            <Button Content="JSON speichern"
+                                                    Classes="SecondaryAction"
+                                                    Command="{Binding SaveJsonCommand}"
+                                                    IsEnabled="{Binding HasData}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Classes="BentoCard">
+                                    <StackPanel Spacing="16">
+                                        <TextBlock Text="{Binding DataGridTitle}" Classes="H2" FontSize="18"/>
+
+                                        <DataGrid ItemsSource="{Binding Ressourcen}"
+                                                  AutoGenerateColumns="False"
+                                                  IsReadOnly="True"
+                                                  Height="250">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Ressourcenname" Binding="{Binding Name}" Width="*"/>
+                                                <DataGridTextColumn Header="Bezirk" Binding="{Binding Bezirk}" Width="*"/>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+
+                                        <TextBlock Text="Keine Daten vorhanden"
+                                                   Classes="Body"
+                                                   Foreground="{DynamicResource TextMutedBrush}"
+                                                   HorizontalAlignment="Center"
+                                                   FontStyle="Italic"
+                                                   IsVisible="{Binding !HasData}"/>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+
+                            <!-- Bereitschaftsgruppen -->
+                            <StackPanel Grid.Column="2" Spacing="24">
+                                <TextBlock Text="Bereitschaftsgruppen" Classes="H2"/>
+
+                                <Border Classes="BentoCard">
+                                    <StackPanel Spacing="16">
+                                        <TextBlock Text="EXCEL-DATEI" Classes="Label"/>
+
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="12"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBox Grid.Column="0"
+                                                     Text="{Binding GruppenFilePath}"
+                                                     IsReadOnly="True"
+                                                     Watermark="Keine Datei ausgewählt"/>
+
+                                            <Button Grid.Column="2"
+                                                    Content="Durchsuchen"
+                                                    Classes="SecondaryAction"
+                                                    Command="{Binding BrowseGruppenFileCommand}"/>
+                                        </Grid>
+
+                                        <Button Content="Excel importieren"
+                                                Classes="TrustAction"
+                                                Command="{Binding ImportGruppenCommand}"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Classes="BentoCard">
+                                    <StackPanel Spacing="16">
+                                        <TextBlock Text="Importierte Gruppen" Classes="H2" FontSize="18"/>
+
+                                        <DataGrid ItemsSource="{Binding BereitschaftsGruppen}"
+                                                  AutoGenerateColumns="False"
+                                                  IsReadOnly="True"
+                                                  Height="250">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                                                <DataGridTextColumn Header="Bezirk" Binding="{Binding Bezirk}" Width="*"/>
+                                                <DataGridTextColumn Header="Verantwortlich" Binding="{Binding VerantwortlichePerson}" Width="*"/>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+
+                                        <TextBlock Text="Keine Daten vorhanden"
+                                                   Classes="Body"
+                                                   Foreground="{DynamicResource TextMutedBrush}"
+                                                   HorizontalAlignment="Center"
+                                                   FontStyle="Italic"
+                                                   IsVisible="{Binding !HasGruppenData}"/>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </Grid>
+
+                        <Border Classes="BentoCard" Background="#FAFAFA">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="TECHNOLOGIE-STACK" Classes="Label"/>
+                                <TextBlock TextWrapping="Wrap" Classes="Body" Foreground="{DynamicResource TextMutedBrush}">
+                                    <Run Text="Avalonia 11.3.10 (Cross-Platform UI) • "/><Run Text="LiteDB 5.0.21 (NoSQL Database) • "/><Run Text="ExcelDataReader (Plattformunabhängig) • "/><Run Text=".NET 9.0 + MVVM Pattern"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- ====================================================================== -->
+                    <!-- VIEW 2: ZEITPROFILE -->
+                    <!-- ====================================================================== -->
+                    <StackPanel IsVisible="{Binding IsZeitprofileView}" Spacing="32">
+                        <TextBlock Text="Zeitprofile" Classes="H1"/>
+                        <TextBlock Text="BEREITSCHAFTSDIENST UND TAGESDIENST KONFIGURIEREN" Classes="Label"/>
+
+                        <Border Classes="BentoCard">
+                            <StackPanel Spacing="20">
+                                <TextBlock Text="PROFIL-VERWALTUNG" Classes="Label"/>
+
                                 <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="12"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
 
-                                    <!-- Title -->
-                                    <TextBlock Grid.Row="0"
-                                               Text="📋 Verfügbare Gruppen"
-                                               FontFamily="{StaticResource HeadlineFont}"
-                                               FontSize="{StaticResource FontSizeH4}"
-                                               Foreground="{StaticResource YunexRoyalBlue}"
-                                               Margin="0,0,0,10"/>
+                                    <TextBlock Grid.Column="0"
+                                               Text="Aktives Profil"
+                                               Classes="Body"
+                                               FontWeight="Bold"
+                                               VerticalAlignment="Center"
+                                               Margin="0,0,16,0"/>
 
-                                    <!-- Bezirksfilter -->
-                                    <Grid Grid.Row="1" Margin="0,0,0,10">
+                                    <ComboBox Grid.Column="1"
+                                              ItemsSource="{Binding ZeitprofileVM.Zeitprofile}"
+                                              SelectedItem="{Binding ZeitprofileVM.SelectedZeitprofil}"
+                                              MinWidth="300"/>
+
+                                    <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="8">
+                                        <Button Content="Speichern"
+                                                Classes="TrustAction"
+                                                Command="{Binding ZeitprofileVM.SaveSelectedProfilCommand}"/>
+
+                                        <Button Content="Kopieren"
+                                                Classes="SecondaryAction"
+                                                Command="{Binding ZeitprofileVM.CopySelectedProfilCommand}"/>
+
+                                        <Button Content="Löschen"
+                                                Classes="SecondaryAction"
+                                                Command="{Binding ZeitprofileVM.DeleteSelectedProfilCommand}"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <Separator Background="#F0F0F0" Height="1" Margin="0,8"/>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="12"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Column="0"
+                                               Text="Neues Profil"
+                                               Classes="Body"
+                                               FontWeight="Bold"
+                                               VerticalAlignment="Center"
+                                               Margin="0,0,16,0"/>
+
+                                    <TextBox Grid.Column="1"
+                                             Text="{Binding ZeitprofileVM.NewProfilName}"
+                                             Watermark="Name für neues Profil"/>
+
+                                    <Button Grid.Column="3"
+                                            Content="Erstellen"
+                                            Classes="TrustAction"
+                                            Command="{Binding ZeitprofileVM.CreateNewProfilCommand}"/>
+                                </Grid>
+
+                                <TextBlock Text="{Binding ZeitprofileVM.StatusMessage}"
+                                           Foreground="{Binding ZeitprofileVM.StatusColor}"
+                                           Classes="Body"
+                                           FontWeight="Medium"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Classes="BentoCard"
+                                IsVisible="{Binding ZeitprofileVM.SelectedZeitprofil, Converter={x:Static ObjectConverters.IsNotNull}}">
+                            <StackPanel Spacing="20">
+                                <TextBlock Text="PROFIL-DETAILS" Classes="Label"/>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Column="0"
+                                               Text="Profil-Name"
+                                               Classes="Body"
+                                               FontWeight="Bold"
+                                               VerticalAlignment="Center"
+                                               Margin="0,0,16,0"/>
+
+                                    <TextBox Grid.Column="1"
+                                             Text="{Binding ZeitprofileVM.SelectedZeitprofil.Name}"
+                                             Watermark="Profilname"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Classes="BentoCard"
+                                IsVisible="{Binding ZeitprofileVM.SelectedZeitprofil, Converter={x:Static ObjectConverters.IsNotNull}}">
+                            <StackPanel Spacing="24">
+                                <TextBlock Text="WOCHENZEITPLAN" Classes="Label"/>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="30"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0" Spacing="12">
+                                        <TextBlock Text="Bereitschaftsdienst" Classes="H2" FontSize="18"/>
+
+                                        <DataGrid ItemsSource="{Binding ZeitprofileVM.SelectedZeitprofil.BereitschaftsTage}"
+                                                  AutoGenerateColumns="False"
+                                                  Height="220">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Tag" Binding="{Binding Tag}" Width="*" IsReadOnly="True"/>
+                                                <DataGridTextColumn Header="Von" Binding="{Binding Von}" Width="80"/>
+                                                <DataGridTextColumn Header="Bis" Binding="{Binding Bis}" Width="80"/>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+
+                                        <TextBlock Text="Standard: Mo-So 16:00-07:30"
+                                                   Classes="Body"
+                                                   Foreground="{DynamicResource TextMutedBrush}"
+                                                   FontStyle="Italic"
+                                                   FontSize="13"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="2" Spacing="12">
+                                        <TextBlock Text="Tagesdienst" Classes="H2" FontSize="18"/>
+
+                                        <DataGrid ItemsSource="{Binding ZeitprofileVM.SelectedZeitprofil.Tagesdienste}"
+                                                  AutoGenerateColumns="False"
+                                                  Height="220">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Tag" Binding="{Binding Tag}" Width="*" IsReadOnly="True"/>
+                                                <DataGridTextColumn Header="Von" Binding="{Binding Von}" Width="80"/>
+                                                <DataGridTextColumn Header="Bis" Binding="{Binding Bis}" Width="80"/>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+
+                                        <TextBlock Text="Standard: Mo-Do 07:30-16:00, Fr 07:30-12:30"
+                                                   Classes="Body"
+                                                   Foreground="{DynamicResource TextMutedBrush}"
+                                                   FontStyle="Italic"
+                                                   FontSize="13"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Classes="BentoCard"
+                                IsVisible="{Binding ZeitprofileVM.SelectedZeitprofil, Converter={x:Static ObjectConverters.IsNotNull}}">
+                            <StackPanel Spacing="20">
+                                <TextBlock Text="FEIERTAGS-KONFIGURATION" Classes="Label"/>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="24"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="24"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="200"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Column="0"
+                                               Text="Bundesland"
+                                               Classes="Body"
+                                               FontWeight="Bold"
+                                               VerticalAlignment="Center"
+                                               Margin="0,0,12,0"/>
+
+                                    <ComboBox Grid.Column="1"
+                                              SelectedValue="{Binding ZeitprofileVM.SelectedZeitprofil.Bundesland}">
+                                        <ComboBoxItem Content="BY - Bayern"/>
+                                        <ComboBoxItem Content="BW - Baden-Württemberg"/>
+                                        <ComboBoxItem Content="BE - Berlin"/>
+                                        <ComboBoxItem Content="BB - Brandenburg"/>
+                                        <ComboBoxItem Content="HB - Bremen"/>
+                                        <ComboBoxItem Content="HH - Hamburg"/>
+                                        <ComboBoxItem Content="HE - Hessen"/>
+                                        <ComboBoxItem Content="MV - Mecklenburg-Vorpommern"/>
+                                        <ComboBoxItem Content="NI - Niedersachsen"/>
+                                        <ComboBoxItem Content="NW - Nordrhein-Westfalen"/>
+                                        <ComboBoxItem Content="RP - Rheinland-Pfalz"/>
+                                        <ComboBoxItem Content="SL - Saarland"/>
+                                        <ComboBoxItem Content="SN - Sachsen"/>
+                                        <ComboBoxItem Content="ST - Sachsen-Anhalt"/>
+                                        <ComboBoxItem Content="SH - Schleswig-Holstein"/>
+                                        <ComboBoxItem Content="TH - Thüringen"/>
+                                    </ComboBox>
+
+                                    <TextBlock Grid.Column="3"
+                                               Text="Region"
+                                               Classes="Body"
+                                               FontWeight="Bold"
+                                               VerticalAlignment="Center"
+                                               Margin="0,0,12,0"/>
+
+                                    <TextBox Grid.Column="4"
+                                             Text="{Binding ZeitprofileVM.SelectedZeitprofil.Region}"
+                                             Watermark="z.B. Augsburg (optional)"/>
+
+                                    <TextBlock Grid.Column="6"
+                                               Text="Behandeln wie"
+                                               Classes="Body"
+                                               FontWeight="Bold"
+                                               VerticalAlignment="Center"
+                                               Margin="0,0,12,0"/>
+
+                                    <ComboBox Grid.Column="7"
+                                              SelectedValue="{Binding ZeitprofileVM.SelectedZeitprofil.BehandelnWie}">
+                                        <ComboBoxItem Content="Sonntag"/>
+                                        <ComboBoxItem Content="Samstag"/>
+                                    </ComboBox>
+                                </Grid>
+
+                                <TextBlock Text="Feiertage werden automatisch berechnet und wie der gewählte Wochentag behandelt"
+                                           Classes="Body"
+                                           Foreground="{DynamicResource TextMutedBrush}"
+                                           FontStyle="Italic"
+                                           FontSize="13"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Classes="BentoCard"
+                                IsVisible="{Binding ZeitprofileVM.SelectedZeitprofil, Converter={x:Static ObjectConverters.IsNotNull}}">
+                            <StackPanel Spacing="16">
+                                <TextBlock Text="ZUGEWIESENE BEREITSCHAFTSGRUPPEN" Classes="Label"/>
+
+                                <DataGrid ItemsSource="{Binding ZeitprofileVM.SelectedZeitprofil.GruppenZuweisungen}"
+                                          AutoGenerateColumns="False"
+                                          IsReadOnly="True"
+                                          Height="150">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Gruppenname" Binding="{Binding GruppenName}" Width="*"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+
+                                <TextBlock Text="Gruppenzuweisungen können im Generator verwaltet werden"
+                                           Classes="Body"
+                                           Foreground="{DynamicResource TextMutedBrush}"
+                                           FontStyle="Italic"
+                                           FontSize="13"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- ====================================================================== -->
+                    <!-- VIEW 3: GENERATOR -->
+                    <!-- ====================================================================== -->
+                    <Grid IsVisible="{Binding IsGeneratorView}"
+                          DataContext="{Binding GeneratorVM}">
+                        <StackPanel Spacing="32">
+                            <TextBlock Text="Generator" Classes="H1"/>
+                            <TextBlock Text="AUTOMATISCHE BEREITSCHAFTS-GENERIERUNG" Classes="Label"/>
+
+                            <Border Classes="BentoCard">
+                                <StackPanel Spacing="24">
+                                    <TextBlock Text="ZEITRAUM-AUSWAHL" Classes="Label"/>
+
+                                    <StackPanel Orientation="Horizontal" Spacing="24">
+                                        <RadioButton Content="Einzelne Tage (Von/Bis)"
+                                                     IsChecked="{Binding UseDateRange}"
+                                                     GroupName="DateMode"
+                                                     FontWeight="Medium"
+                                                     FontSize="14"/>
+                                        <RadioButton Content="Kalenderwochen"
+                                                     IsChecked="{Binding UseCalendarWeeks}"
+                                                     GroupName="DateMode"
+                                                     FontWeight="Medium"
+                                                     FontSize="14"/>
+                                    </StackPanel>
+
+                                    <Grid IsVisible="{Binding UseDateRange}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="200"/>
+                                            <ColumnDefinition Width="24"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="200"/>
+                                            <ColumnDefinition Width="24"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Column="0"
+                                                   Text="Von"
+                                                   Classes="Body"
+                                                   FontWeight="Bold"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0,0,12,0"/>
+
+                                        <DatePicker Grid.Column="1"
+                                                    SelectedDate="{Binding StartDate}"/>
+
+                                        <TextBlock Grid.Column="3"
+                                                   Text="Bis"
+                                                   Classes="Body"
+                                                   FontWeight="Bold"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0,0,12,0"/>
+
+                                        <DatePicker Grid.Column="4"
+                                                    SelectedDate="{Binding EndDate}"/>
+
+                                        <StackPanel Grid.Column="6" Orientation="Horizontal" Spacing="8">
+                                            <Button Content="Aktueller Monat"
+                                                    Classes="SecondaryAction"
+                                                    Command="{Binding SetDateRangeCurrentMonthCommand}"/>
+                                            <Button Content="Nächster Monat"
+                                                    Classes="SecondaryAction"
+                                                    Command="{Binding SetDateRangeNextMonthCommand}"/>
+                                            <Button Content="Aktuelles Quartal"
+                                                    Classes="SecondaryAction"
+                                                    Command="{Binding SetDateRangeCurrentQuarterCommand}"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <StackPanel IsVisible="{Binding UseCalendarWeeks}" Spacing="16">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="40"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0"
+                                                       Text="Jahr"
+                                                       Classes="Body"
+                                                       FontWeight="Bold"
+                                                       VerticalAlignment="Center"
+                                                       Margin="0,0,12,0"/>
+
+                                            <ComboBox Grid.Column="1"
+                                                      ItemsSource="{Binding AvailableYears}"
+                                                      SelectedItem="{Binding SelectedYear}"/>
+
+                                            <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="8">
+                                                <Button Content="Q1"
+                                                        Classes="SecondaryAction"
+                                                        Command="{Binding SelectQuarterCommand}"
+                                                        CommandParameter="1"/>
+                                                <Button Content="Q2"
+                                                        Classes="SecondaryAction"
+                                                        Command="{Binding SelectQuarterCommand}"
+                                                        CommandParameter="2"/>
+                                                <Button Content="Q3"
+                                                        Classes="SecondaryAction"
+                                                        Command="{Binding SelectQuarterCommand}"
+                                                        CommandParameter="3"/>
+                                                <Button Content="Q4"
+                                                        Classes="SecondaryAction"
+                                                        Command="{Binding SelectQuarterCommand}"
+                                                        CommandParameter="4"/>
+                                                <Button Content="Alle um/abwählen"
+                                                        Classes="SecondaryAction"
+                                                        Command="{Binding ToggleAllKWCommand}"/>
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <TextBlock Text="{Binding SelectedKWCount, StringFormat='{0} Kalenderwoche(n) ausgewählt'}"
+                                                   Classes="Body"
+                                                   FontWeight="Bold"/>
+
+                                        <Border BorderBrush="#F0F0F0"
+                                                BorderThickness="1"
+                                                CornerRadius="6"
+                                                MaxHeight="200">
+                                            <ScrollViewer>
+                                                <ItemsControl ItemsSource="{Binding Kalenderwochen}">
+                                                    <ItemsControl.ItemsPanel>
+                                                        <ItemsPanelTemplate>
+                                                            <WrapPanel Orientation="Horizontal"/>
+                                                        </ItemsPanelTemplate>
+                                                    </ItemsControl.ItemsPanel>
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <CheckBox IsChecked="{Binding IsSelected}"
+                                                                      Margin="8"
+                                                                      Width="100">
+                                                                <CheckBox.Content>
+                                                                    <StackPanel>
+                                                                        <TextBlock Text="{Binding DisplayText}"
+                                                                                   FontWeight="Bold"
+                                                                                   FontSize="13"/>
+                                                                        <TextBlock Text="{Binding DateRange}"
+                                                                                   FontSize="11"
+                                                                                   Foreground="{DynamicResource TextMutedBrush}"/>
+                                                                    </StackPanel>
+                                                                </CheckBox.Content>
+                                                            </CheckBox>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </ScrollViewer>
+                                        </Border>
+                                    </StackPanel>
+
+                                    <Separator Background="#F0F0F0" Height="1" Margin="0,8"/>
+
+                                    <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
                                         <TextBlock Grid.Column="0"
-                                                   Text="Bezirk:"
-                                                   VerticalAlignment="Center"
+                                                   Text="Ressource (Verantwortlich)"
+                                                   Classes="Body"
                                                    FontWeight="Bold"
-                                                   Margin="0,0,10,0"/>
+                                                   VerticalAlignment="Center"
+                                                   Margin="0,0,16,0"/>
 
                                         <ComboBox Grid.Column="1"
-                                                  ItemsSource="{Binding Bezirke}"
-                                                  SelectedItem="{Binding SelectedBezirk}"/>
+                                                  ItemsSource="{Binding Ressourcen}"
+                                                  SelectedItem="{Binding SelectedRessource}"
+                                                  MinWidth="300"
+                                                  HorizontalAlignment="Left"/>
                                     </Grid>
-
-                                    <!-- Suchfeld -->
-                                    <TextBox Grid.Row="2"
-                                             Text="{Binding GruppenSuchtext}"
-                                             Watermark="🔍 Gruppen suchen..."
-                                             Margin="0,0,0,10"/>
-
-                                    <!-- Gruppenliste -->
-                                    <ListBox Grid.Row="3"
-                                             ItemsSource="{Binding FilteredGruppen}"
-                                             SelectionMode="Multiple"
-                                             BorderThickness="1"
-                                             BorderBrush="{StaticResource YunexSteel}">
-                                        <ListBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Orientation="Horizontal" Spacing="10">
-                                                    <Button Content="+"
-                                                            Command="{Binding $parent[Grid].DataContext.AddGruppeCommand}"
-                                                            CommandParameter="{Binding}"
-                                                            Width="30"
-                                                            Height="30"
-                                                            Background="{DynamicResource AccentDeepBrush}"
-                                                            Foreground="White"
-                                                            CornerRadius="15"
-                                                            FontSize="14"
-                                                            Padding="0"/>
-                                                    <StackPanel>
-                                                        <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
-                                                        <TextBlock Text="{Binding Bezirk}"
-                                                                   FontSize="{StaticResource FontSizeSmall}"
-                                                                   Foreground="{StaticResource YunexGray}"/>
-                                                    </StackPanel>
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ListBox.ItemTemplate>
-                                    </ListBox>
-
-                                    <!-- Alle auswählen Button -->
-                                    <Button Grid.Row="4"
-                                            Content="Alle hinzufügen"
-                                            Command="{Binding SelectAllFilteredCommand}"
-                                            Background="{StaticResource YunexRoyalBlue}"
-                                            Foreground="White"
-                                            HorizontalAlignment="Stretch"
-                                            Height="35"
-                                            Margin="0,10,0,0"
-                                            CornerRadius="{StaticResource RadiusSmall}"/>
-                                </Grid>
+                                </StackPanel>
                             </Border>
 
-                            <!-- RIGHT: Selected Groups -->
-                            <Border Grid.Column="2"
-                                    BorderBrush="{StaticResource YunexSteel}"
-                                    BorderThickness="1"
-                                    CornerRadius="{StaticResource RadiusMedium}"
-                                    Padding="{StaticResource SpacingMd}">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-
-                                    <!-- Title -->
-                                    <TextBlock Grid.Row="0"
-                                               Text="✅ Ausgewählte Gruppen"
-                                               FontFamily="{StaticResource HeadlineFont}"
-                                               FontSize="{StaticResource FontSizeH4}"
-                                               Foreground="{StaticResource YunexGreen}"
-                                               Margin="0,0,0,10"/>
-
-                                    <!-- Selected List -->
-                                    <ListBox Grid.Row="1"
-                                             ItemsSource="{Binding SelectedGruppen}"
-                                             BorderThickness="1"
-                                             BorderBrush="{StaticResource YunexSteel}">
-                                        <ListBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Orientation="Horizontal" Spacing="10">
-                                                    <Button Content="-"
-                                                            Command="{Binding $parent[Grid].DataContext.RemoveGruppeCommand}"
-                                                            CommandParameter="{Binding}"
-                                                            Width="30"
-                                                            Height="30"
-                                                            Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource AccentDeepBrush}" BorderThickness="0,0,0,2"
-                                                            Foreground="White"
-                                                            CornerRadius="15"
-                                                            FontSize="14"
-                                                            Padding="0"/>
-                                                    <StackPanel>
-                                                        <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
-                                                        <TextBlock Text="{Binding Bezirk}"
-                                                                   FontSize="{StaticResource FontSizeSmall}"
-                                                                   Foreground="{StaticResource YunexGray}"/>
-                                                    </StackPanel>
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ListBox.ItemTemplate>
-                                    </ListBox>
-
-                                    <!-- Clear Button -->
-                                    <Button Grid.Row="2"
-                                            Content="Alle entfernen"
-                                            Command="{Binding ClearSelectionCommand}"
-                                            Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource AccentDeepBrush}" BorderThickness="0,0,0,2"
-                                            Foreground="White"
-                                            HorizontalAlignment="Stretch"
-                                            Height="35"
-                                            Margin="0,10,0,0"
-                                            CornerRadius="{StaticResource RadiusSmall}"/>
-                                </Grid>
-                            </Border>
-                        </Grid>
-
-                        <!-- Statistics und Generate Button -->
-                        <Border Grid.Row="3"
-                                BorderBrush="{StaticResource YunexSteel}"
-                                BorderThickness="1"
-                                CornerRadius="{StaticResource RadiusMedium}"
-                                Padding="{StaticResource SpacingMd}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <!-- Statistics -->
-                                <StackPanel Grid.Column="0" Spacing="5">
-                                    <TextBlock Text="{Binding StatisticsText}"
-                                               FontFamily="{StaticResource HeadlineFont}"
-                                               FontSize="{StaticResource FontSizeH4}"
-                                               Foreground="{Binding StatusColor}"/>
-                                    <TextBlock Text="{Binding StatusMessage}"
-                                               FontSize="{StaticResource FontSizeSmall}"
-                                               Foreground="{Binding StatusColor}"/>
-                                </StackPanel>
+                                <Border Grid.Column="0" Classes="BentoCard">
+                                    <StackPanel Spacing="16">
+                                        <TextBlock Text="VERFÜGBARE GRUPPEN" Classes="Label"/>
 
-                                <!-- Generate Button -->
-                                <Button Grid.Column="1"
-                                        Content="⚡ Generieren"
-                                        Command="{Binding GenerateCommand}"
-                                        Background="{StaticResource YunexCyan}"
-                                        Foreground="White"
-                                        Width="200"
-                                        Height="50"
-                                        FontSize="18"
-                                        FontFamily="{StaticResource HeadlineFont}"
-                                        CornerRadius="{StaticResource RadiusPill}"
-                                        IsEnabled="{Binding !IsGenerating}"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0"
+                                                       Text="Bezirk"
+                                                       Classes="Body"
+                                                       FontWeight="Bold"
+                                                       VerticalAlignment="Center"
+                                                       Margin="0,0,12,0"/>
+
+                                            <ComboBox Grid.Column="1"
+                                                      ItemsSource="{Binding Bezirke}"
+                                                      SelectedItem="{Binding SelectedBezirk}"/>
+                                        </Grid>
+
+                                        <TextBox Text="{Binding GruppenSuchtext}"
+                                                 Watermark="Gruppen suchen"/>
+
+                                        <ListBox ItemsSource="{Binding FilteredGruppen}"
+                                                 SelectionMode="Multiple"
+                                                 MinHeight="300">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                                                        <Button Content="+"
+                                                                Command="{Binding $parent[Grid].DataContext.AddGruppeCommand}"
+                                                                CommandParameter="{Binding}"
+                                                                Width="32"
+                                                                Height="32"
+                                                                Background="{DynamicResource AccentDeepBrush}"
+                                                                Foreground="White"
+                                                                CornerRadius="16"
+                                                                FontSize="16"
+                                                                FontWeight="Bold"
+                                                                Padding="0"/>
+                                                        <StackPanel>
+                                                            <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="14"/>
+                                                            <TextBlock Text="{Binding Bezirk}"
+                                                                       FontSize="12"
+                                                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+
+                                        <Button Content="Alle hinzufügen"
+                                                Classes="SecondaryAction"
+                                                HorizontalAlignment="Stretch"
+                                                Command="{Binding SelectAllFilteredCommand}"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Grid.Column="2" Classes="BentoCard">
+                                    <StackPanel Spacing="16">
+                                        <TextBlock Text="AUSGEWÄHLTE GRUPPEN" Classes="Label"/>
+
+                                        <ListBox ItemsSource="{Binding SelectedGruppen}"
+                                                 MinHeight="300">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                                                        <Button Content="-"
+                                                                Command="{Binding $parent[Grid].DataContext.RemoveGruppeCommand}"
+                                                                CommandParameter="{Binding}"
+                                                                Width="32"
+                                                                Height="32"
+                                                                Background="#E0E0E0"
+                                                                Foreground="{DynamicResource TextDarkBrush}"
+                                                                CornerRadius="16"
+                                                                FontSize="16"
+                                                                FontWeight="Bold"
+                                                                Padding="0"/>
+                                                        <StackPanel>
+                                                            <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="14"/>
+                                                            <TextBlock Text="{Binding Bezirk}"
+                                                                       FontSize="12"
+                                                                       Foreground="{DynamicResource TextMutedBrush}"/>
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+
+                                        <Button Content="Alle entfernen"
+                                                Classes="SecondaryAction"
+                                                HorizontalAlignment="Stretch"
+                                                Command="{Binding ClearSelectionCommand}"/>
+                                    </StackPanel>
+                                </Border>
                             </Grid>
-                        </Border>
-                    </Grid>
-                </ScrollViewer>
 
-                <!-- ============================================================================ -->
-                <!-- VIEW 4: PLANNING BOARD (SelectedNavIndex == 3) -->
-                <!-- ============================================================================ -->
-                <ContentControl Content="{Binding PlanningBoardView}"
-                                IsVisible="{Binding IsPlanningView}"/>
-
-                <!-- ============================================================================ -->
-                <!-- VIEW 5: EDITOR (SelectedNavIndex == 4) -->
-                <!-- ============================================================================ -->
-                <ScrollViewer IsVisible="{Binding IsEditorView}">
-                    <Grid Margin="10"
-                          DataContext="{Binding EditorVM}">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>  <!-- Info Banner -->
-                            <RowDefinition Height="Auto"/>  <!-- File Selection -->
-                            <RowDefinition Height="Auto"/>  <!-- Filter Options -->
-                            <RowDefinition Height="*"/>     <!-- Data Grid -->
-                            <RowDefinition Height="Auto"/>  <!-- Actions und Status -->
-                        </Grid.RowDefinitions>
-
-                        <!-- Info Banner -->
-                        <Border Grid.Row="0"
-                                Background="{StaticResource YunexPurple}"
-                                Padding="{StaticResource SpacingMd}"
-                                CornerRadius="{StaticResource RadiusMedium}"
-                                Margin="0,0,0,15">
-                            <TextBlock Text="✏️ Bereitschafts-Editor: Bestehende Dienste bearbeiten"
-                                       Foreground="White"
-                                       FontSize="{StaticResource FontSizeH3}"
-                                       FontFamily="{StaticResource HeadlineFont}"/>
-                        </Border>
-
-                        <!-- File Selection -->
-                        <Border Grid.Row="1"
-                                BorderBrush="{StaticResource YunexSteel}"
-                                BorderThickness="1"
-                                CornerRadius="{StaticResource RadiusMedium}"
-                                Padding="{StaticResource SpacingMd}"
-                                Margin="0,0,0,10">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-
-                                <!-- Title -->
-                                <TextBlock Grid.Row="0"
-                                           Text="📂 Excel-Datei laden"
-                                           FontFamily="{StaticResource HeadlineFont}"
-                                           FontSize="{StaticResource FontSizeH4}"
-                                           Foreground="{StaticResource YunexRoyalBlue}"
-                                           Margin="0,0,0,10"/>
-
-                                <!-- File Selection Row -->
-                                <Grid Grid.Row="1">
+                            <Border Classes="BentoCard">
+                                <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <TextBox Grid.Column="0"
-                                             Text="{Binding ExcelFilePath}"
-                                             IsReadOnly="True"
-                                             Watermark="Keine Datei ausgewählt..."
-                                             Margin="0,0,10,0"/>
+                                    <StackPanel Grid.Column="0" Spacing="8">
+                                        <TextBlock Text="{Binding StatisticsText}"
+                                                   Classes="H2"
+                                                   FontSize="18"
+                                                   Foreground="{Binding StatusColor}"/>
+                                        <TextBlock Text="{Binding StatusMessage}"
+                                                   Classes="Body"
+                                                   Foreground="{Binding StatusColor}"/>
+                                    </StackPanel>
 
                                     <Button Grid.Column="1"
-                                            Content="📁 Durchsuchen"
-                                            Command="{Binding BrowseFileCommand}"
-                                            Background="{StaticResource YunexRoyalBlue}"
-                                            Foreground="White"
-                                            Width="140"
-                                            Height="35"
-                                            Margin="0,0,10,0"
-                                            CornerRadius="{StaticResource RadiusSmall}"/>
-
-                                    <Button Grid.Column="2"
-                                            Content="📥 Laden"
-                                            Command="{Binding LoadExcelCommand}"
-                                            Background="{DynamicResource AccentDeepBrush}"
-                                            Foreground="White"
-                                            FontFamily="{StaticResource HeadlineFont}"
-                                            Width="140"
-                                            Height="35"
-                                            CornerRadius="{StaticResource RadiusSmall}"/>
+                                            Content="Generieren"
+                                            Classes="TrustAction"
+                                            Command="{Binding GenerateCommand}"
+                                            Width="200"
+                                            Height="50"
+                                            FontSize="18"
+                                            IsEnabled="{Binding !IsGenerating}"/>
                                 </Grid>
-                            </Grid>
-                        </Border>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
 
-                        <!-- Filter Options -->
-                        <Border Grid.Row="2"
-                                BorderBrush="{StaticResource YunexSteel}"
-                                BorderThickness="1"
-                                CornerRadius="{StaticResource RadiusMedium}"
-                                Padding="{StaticResource SpacingMd}"
-                                Margin="0,0,0,10"
-                                IsVisible="{Binding HasLoadedData}">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
+                    <!-- ====================================================================== -->
+                    <!-- VIEW 4: PLANNING BOARD -->
+                    <!-- ====================================================================== -->
+                    <ContentControl Content="{Binding PlanningBoardView}"
+                                    IsVisible="{Binding IsPlanningView}"/>
 
-                                <!-- Title -->
-                                <TextBlock Grid.Row="0"
-                                           Text="🔍 Filter-Optionen"
-                                           FontFamily="{StaticResource HeadlineFont}"
-                                           FontSize="{StaticResource FontSizeH4}"
-                                           Foreground="{StaticResource YunexRoyalBlue}"
-                                           Margin="0,0,0,10"/>
+                    <!-- ====================================================================== -->
+                    <!-- VIEW 5: EDITOR -->
+                    <!-- ====================================================================== -->
+                    <Grid IsVisible="{Binding IsEditorView}"
+                          DataContext="{Binding EditorVM}">
+                        <StackPanel Spacing="32">
+                            <TextBlock Text="Editor" Classes="H1"/>
+                            <TextBlock Text="BESTEHENDE DIENSTE BEARBEITEN" Classes="Label"/>
 
-                                <!-- Date Range und Dropdowns -->
-                                <Grid Grid.Row="1" Margin="0,0,0,10">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="180"/>
-                                        <ColumnDefinition Width="20"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="180"/>
-                                        <ColumnDefinition Width="30"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="200"/>
-                                        <ColumnDefinition Width="20"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="200"/>
-                                    </Grid.ColumnDefinitions>
+                            <Border Classes="BentoCard">
+                                <StackPanel Spacing="16">
+                                    <TextBlock Text="EXCEL-DATEI LADEN" Classes="Label"/>
 
-                                    <TextBlock Grid.Column="0"
-                                               Text="Von:"
-                                               VerticalAlignment="Center"
-                                               FontWeight="Bold"
-                                               Margin="0,0,10,0"/>
-                                    <DatePicker Grid.Column="1"
-                                                SelectedDate="{Binding FilterStartDate}"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="12"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="12"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
 
-                                    <TextBlock Grid.Column="3"
-                                               Text="Bis:"
-                                               VerticalAlignment="Center"
-                                               FontWeight="Bold"
-                                               Margin="0,0,10,0"/>
-                                    <DatePicker Grid.Column="4"
-                                                SelectedDate="{Binding FilterEndDate}"/>
+                                        <TextBox Grid.Column="0"
+                                                 Text="{Binding ExcelFilePath}"
+                                                 IsReadOnly="True"
+                                                 Watermark="Keine Datei ausgewählt"/>
 
-                                    <TextBlock Grid.Column="6"
-                                               Text="Gruppe:"
-                                               VerticalAlignment="Center"
-                                               FontWeight="Bold"
-                                               Margin="0,0,10,0"/>
-                                    <ComboBox Grid.Column="7"
-                                              ItemsSource="{Binding Gruppen}"
-                                              SelectedItem="{Binding SelectedGruppeFilter}"/>
+                                        <Button Grid.Column="2"
+                                                Content="Durchsuchen"
+                                                Classes="SecondaryAction"
+                                                Command="{Binding BrowseFileCommand}"/>
 
-                                    <TextBlock Grid.Column="9"
-                                               Text="Ressource:"
-                                               VerticalAlignment="Center"
-                                               FontWeight="Bold"
-                                               Margin="0,0,10,0"/>
-                                    <ComboBox Grid.Column="10"
-                                              ItemsSource="{Binding Ressourcen}"
-                                              SelectedItem="{Binding SelectedRessourceFilter}"/>
-                                </Grid>
+                                        <Button Grid.Column="4"
+                                                Content="Laden"
+                                                Classes="TrustAction"
+                                                Command="{Binding LoadExcelCommand}"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
 
-                                <!-- Search und Quick Actions -->
-                                <Grid Grid.Row="2">
+                            <Border Classes="BentoCard"
+                                    IsVisible="{Binding HasLoadedData}">
+                                <StackPanel Spacing="20">
+                                    <TextBlock Text="FILTER-OPTIONEN" Classes="Label"/>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="24"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="24"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="200"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Column="0"
+                                                   Text="Von"
+                                                   Classes="Body"
+                                                   FontWeight="Bold"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0,0,12,0"/>
+                                        <DatePicker Grid.Column="1"
+                                                    SelectedDate="{Binding FilterStartDate}"/>
+
+                                        <TextBlock Grid.Column="3"
+                                                   Text="Bis"
+                                                   Classes="Body"
+                                                   FontWeight="Bold"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0,0,12,0"/>
+                                        <DatePicker Grid.Column="4"
+                                                    SelectedDate="{Binding FilterEndDate}"/>
+
+                                        <TextBlock Grid.Column="6"
+                                                   Text="Gruppe"
+                                                   Classes="Body"
+                                                   FontWeight="Bold"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0,0,12,0"/>
+                                        <ComboBox Grid.Column="7"
+                                                  ItemsSource="{Binding Gruppen}"
+                                                  SelectedItem="{Binding SelectedGruppeFilter}"/>
+                                    </Grid>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="12"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBox Grid.Column="0"
+                                                 Text="{Binding SearchText}"
+                                                 Watermark="Suche nach Gruppe, Ressource, Typ"/>
+
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                                            <Button Content="Aktueller Monat"
+                                                    Classes="SecondaryAction"
+                                                    Command="{Binding SetFilterCurrentMonthCommand}"/>
+                                            <Button Content="Nächster Monat"
+                                                    Classes="SecondaryAction"
+                                                    Command="{Binding SetFilterNextMonthCommand}"/>
+                                            <Button Content="Filter zurücksetzen"
+                                                    Classes="SecondaryAction"
+                                                    Command="{Binding ClearAllFiltersCommand}"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Classes="BentoCard">
+                                <StackPanel Spacing="16">
+                                    <TextBlock Text="{Binding FilteredCount, StringFormat='BEREITSCHAFTSDIENSTE ({0} EINTRÄGE)'}"
+                                               Classes="Label"/>
+
+                                    <DataGrid ItemsSource="{Binding FilteredBereitschaften}"
+                                              SelectedItem="{Binding SelectedBereitschaft}"
+                                              AutoGenerateColumns="False"
+                                              IsReadOnly="False"
+                                              MinHeight="350">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" IsReadOnly="True"/>
+                                            <DataGridTextColumn Header="Datum" Binding="{Binding Datum, StringFormat='dd.MM.yyyy'}" Width="120"/>
+                                            <DataGridTextColumn Header="Gruppe" Binding="{Binding GruppeName}" Width="*"/>
+                                            <DataGridTextColumn Header="Ressource" Binding="{Binding RessourceName}" Width="*"/>
+                                            <DataGridTextColumn Header="Von" Binding="{Binding StartZeit}" Width="80"/>
+                                            <DataGridTextColumn Header="Bis" Binding="{Binding EndZeit}" Width="80"/>
+                                            <DataGridTextColumn Header="Typ" Binding="{Binding Typ}" Width="60"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+
+                                    <StackPanel HorizontalAlignment="Center"
+                                                Spacing="12"
+                                                IsVisible="{Binding !HasLoadedData}">
+                                        <TextBlock Text="Keine Datei geladen"
+                                                   Classes="H2"
+                                                   FontSize="20"
+                                                   Foreground="{DynamicResource TextMutedBrush}"
+                                                   HorizontalAlignment="Center"/>
+                                        <TextBlock Text="Bitte wähle eine Excel-Datei aus und lade sie"
+                                                   Classes="Body"
+                                                   Foreground="{DynamicResource TextMutedBrush}"
+                                                   HorizontalAlignment="Center"
+                                                   FontStyle="Italic"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Classes="BentoCard">
+                                <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <TextBox Grid.Column="0"
-                                             Text="{Binding SearchText}"
-                                             Watermark="🔍 Suche nach Gruppe, Ressource, Typ..."
-                                             Margin="0,0,10,0"/>
+                                    <StackPanel Grid.Column="0" Spacing="8">
+                                        <TextBlock Text="{Binding StatusMessage}"
+                                                   Classes="H2"
+                                                   FontSize="18"
+                                                   Foreground="{Binding StatusColor}"/>
+                                        <TextBlock Text="Änderungen nicht gespeichert"
+                                                   Classes="Body"
+                                                   Foreground="{DynamicResource ErrorBrush}"
+                                                   IsVisible="{Binding HasUnsavedChanges}"/>
+                                    </StackPanel>
 
-                                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="5">
-                                        <Button Content="Aktueller Monat"
-                                                Command="{Binding SetFilterCurrentMonthCommand}"
-                                                Background="{StaticResource YunexPurple}"
-                                                Foreground="White"
-                                                Height="28"
-                                                Padding="10,5"
-                                                FontSize="{StaticResource FontSizeSmall}"
-                                                CornerRadius="{StaticResource RadiusSmall}"/>
-                                        <Button Content="Nächster Monat"
-                                                Command="{Binding SetFilterNextMonthCommand}"
-                                                Background="{StaticResource YunexPurple}"
-                                                Foreground="White"
-                                                Height="28"
-                                                Padding="10,5"
-                                                FontSize="{StaticResource FontSizeSmall}"
-                                                CornerRadius="{StaticResource RadiusSmall}"/>
-                                        <Button Content="Filter zurücksetzen"
-                                                Command="{Binding ClearAllFiltersCommand}"
-                                                Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource AccentDeepBrush}" BorderThickness="0,0,0,2"
-                                                Foreground="White"
-                                                Height="28"
-                                                Padding="10,5"
-                                                FontSize="{StaticResource FontSizeSmall}"
-                                                CornerRadius="{StaticResource RadiusSmall}"/>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12">
+                                        <Button Content="Löschen"
+                                                Classes="SecondaryAction"
+                                                Command="{Binding DeleteSelectedCommand}"
+                                                IsEnabled="{Binding HasLoadedData}"/>
+
+                                        <Button Content="Duplizieren"
+                                                Classes="SecondaryAction"
+                                                Command="{Binding DuplicateSelectedCommand}"
+                                                IsEnabled="{Binding HasLoadedData}"/>
+
+                                        <Button Content="Speichern"
+                                                Classes="TrustAction"
+                                                Command="{Binding SaveExcelCommand}"
+                                                Width="160"
+                                                Height="40"
+                                                FontSize="16"
+                                                IsEnabled="{Binding HasUnsavedChanges}"/>
                                     </StackPanel>
                                 </Grid>
-                            </Grid>
-                        </Border>
-
-                        <!-- Data Grid -->
-                        <Border Grid.Row="3"
-                                BorderBrush="{StaticResource YunexSteel}"
-                                BorderThickness="1"
-                                CornerRadius="{StaticResource RadiusMedium}"
-                                Padding="{StaticResource SpacingSm}"
-                                Margin="0,0,0,10">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-
-                                <!-- Title -->
-                                <TextBlock Grid.Row="0"
-                                           Text="{Binding FilteredCount, StringFormat='📋 Bereitschaftsdienste ({0} Einträge)'}"
-                                           FontFamily="{StaticResource HeadlineFont}"
-                                           FontSize="{StaticResource FontSizeH4}"
-                                           Foreground="{StaticResource YunexRoyalBlue}"
-                                           Margin="0,0,0,10"/>
-
-                                <!-- DataGrid -->
-                                <DataGrid Grid.Row="1"
-                                          ItemsSource="{Binding FilteredBereitschaften}"
-                                          SelectedItem="{Binding SelectedBereitschaft}"
-                                          AutoGenerateColumns="False"
-                                          IsReadOnly="False"
-                                          GridLinesVisibility="All"
-                                          BorderThickness="1"
-                                          BorderBrush="{StaticResource YunexSteel}"
-                                          MinHeight="300">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" IsReadOnly="True"/>
-                                        <DataGridTextColumn Header="Datum" Binding="{Binding Datum, StringFormat='dd.MM.yyyy'}" Width="120"/>
-                                        <DataGridTextColumn Header="Gruppe" Binding="{Binding GruppeName}" Width="*"/>
-                                        <DataGridTextColumn Header="Ressource" Binding="{Binding RessourceName}" Width="*"/>
-                                        <DataGridTextColumn Header="Von" Binding="{Binding StartZeit}" Width="80"/>
-                                        <DataGridTextColumn Header="Bis" Binding="{Binding EndZeit}" Width="80"/>
-                                        <DataGridTextColumn Header="Typ" Binding="{Binding Typ}" Width="60"/>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-
-                                <!-- Placeholder when no data -->
-                                <StackPanel Grid.Row="1"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            Spacing="10"
-                                            IsVisible="{Binding !HasLoadedData}">
-                                    <TextBlock Text="📂"
-                                               FontSize="48"
-                                               HorizontalAlignment="Center"
-                                               Opacity="0.3"/>
-                                    <TextBlock Text="Keine Datei geladen"
-                                               FontSize="18"
-                                               FontFamily="{StaticResource HeadlineFont}"
-                                               Foreground="{StaticResource YunexGray}"
-                                               HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Bitte wähle eine Excel-Datei aus und lade sie"
-                                               FontSize="{StaticResource FontSizeSmall}"
-                                               Foreground="{StaticResource YunexGray}"
-                                               HorizontalAlignment="Center"
-                                               FontStyle="Italic"/>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
-
-                        <!-- Actions und Status -->
-                        <Border Grid.Row="4"
-                                BorderBrush="{StaticResource YunexSteel}"
-                                BorderThickness="1"
-                                CornerRadius="{StaticResource RadiusMedium}"
-                                Padding="{StaticResource SpacingMd}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-
-                                <!-- Status -->
-                                <StackPanel Grid.Column="0" Spacing="5">
-                                    <TextBlock Text="{Binding StatusMessage}"
-                                               FontFamily="{StaticResource HeadlineFont}"
-                                               FontSize="{StaticResource FontSizeH4}"
-                                               Foreground="{Binding StatusColor}"/>
-                                    <TextBlock Text="⚠️ Änderungen nicht gespeichert!"
-                                               FontSize="{StaticResource FontSizeSmall}"
-                                               Foreground="{StaticResource YunexOrange}"
-                                               IsVisible="{Binding HasUnsavedChanges}"/>
-                                </StackPanel>
-
-                                <!-- Action Buttons -->
-                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
-                                    <Button Content="🗑️ Löschen"
-                                            Command="{Binding DeleteSelectedCommand}"
-                                            Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource AccentDeepBrush}" BorderThickness="0,0,0,2"
-                                            Foreground="White"
-                                            Width="140"
-                                            Height="40"
-                                            FontFamily="{StaticResource HeadlineFont}"
-                                            CornerRadius="{StaticResource RadiusSmall}"
-                                            IsEnabled="{Binding HasLoadedData}"/>
-
-                                    <Button Content="📋 Duplizieren"
-                                            Command="{Binding DuplicateSelectedCommand}"
-                                            Background="{StaticResource YunexCyan}"
-                                            Foreground="White"
-                                            Width="140"
-                                            Height="40"
-                                            FontFamily="{StaticResource HeadlineFont}"
-                                            CornerRadius="{StaticResource RadiusSmall}"
-                                            IsEnabled="{Binding HasLoadedData}"/>
-
-                                    <Button Content="💾 Speichern"
-                                            Command="{Binding SaveExcelCommand}"
-                                            Background="{DynamicResource AccentDeepBrush}"
-                                            Foreground="White"
-                                            Width="160"
-                                            Height="40"
-                                            FontSize="16"
-                                            FontFamily="{StaticResource HeadlineFont}"
-                                            CornerRadius="{StaticResource RadiusPill}"
-                                            IsEnabled="{Binding HasUnsavedChanges}"/>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
+                            </Border>
+                        </StackPanel>
                     </Grid>
-                </ScrollViewer>
-            </Grid>
+
+                </Grid>
+            </ScrollViewer>
         </Grid>
     </Grid>
 </Window>
