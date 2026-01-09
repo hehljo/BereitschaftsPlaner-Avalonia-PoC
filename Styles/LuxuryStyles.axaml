@@ -150,25 +150,32 @@
         <Setter Property="FontSize" Value="14"/>
     </Style>
 
-    <!-- 7. NAV ITEMS -->
+    <!-- 7. NAV ITEMS (Sidebar Navigation Buttons) -->
     <Style Selector="Button.NavItem">
-        <Setter Property="Padding" Value="16,12"/>
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="Padding" Value="14,10"/>
+        <Setter Property="Background" Value="#FAFAFA"/>
+        <Setter Property="CornerRadius" Value="6"/>
         <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="#E8E8E8"/>
         <Setter Property="FontFamily" Value="{DynamicResource SansFont}"/>
         <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Medium"/>
         <Setter Property="Foreground" Value="{DynamicResource TextDarkBrush}"/>
+        <Setter Property="Margin" Value="0,0,0,6"/>
     </Style>
     <Style Selector="Button.NavItem:pointerover /template/ ContentPresenter">
-        <Setter Property="Background" Value="#FAFAFA"/>
+        <Setter Property="Background" Value="{DynamicResource CardBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentDeepBrush}"/>
+        <Setter Property="BorderThickness" Value="0,0,0,2"/>
     </Style>
     <Style Selector="Button.NavItemActive">
-        <Setter Property="Padding" Value="16,12"/>
+        <Setter Property="Padding" Value="14,10"/>
         <Setter Property="Background" Value="{DynamicResource CardBrush}"/>
-        <Setter Property="CornerRadius" Value="4"/>
-        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="BorderThickness" Value="0,0,0,2"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentDeepBrush}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
     </Style>
 
 </Styles>
