@@ -11,8 +11,21 @@ public partial class ImportPreviewViewModel : ViewModelBase
 {
     public event Action<bool>? DialogResultRequested;
 
-    [ObservableProperty]
     private ObservableCollection<object> _previewData = new();
+
+    public ObservableCollection<object> PreviewData
+    {
+        get
+        {
+            Serilog.Log.Debug($"ImportPreviewViewModel.PreviewData GET: Count={_previewData.Count}");
+            return _previewData;
+        }
+        set
+        {
+            Serilog.Log.Debug($"ImportPreviewViewModel.PreviewData SET: NewCount={value?.Count ?? 0}");
+            SetProperty(ref _previewData, value);
+        }
+    }
 
     [ObservableProperty]
     private string _statusMessage = string.Empty;
@@ -54,6 +67,10 @@ public partial class ImportPreviewViewModel : ViewModelBase
         }
 
         Serilog.Log.Debug($"ImportPreviewViewModel: PreviewData.Count = {PreviewData.Count}");
+
+        // Force property changed notification to ensure DataGrid refreshes
+        OnPropertyChanged(nameof(PreviewData));
+        Serilog.Log.Debug("ImportPreviewViewModel: PropertyChanged notification sent for PreviewData");
 
         // Set status based on validation
         if (validationResult != null)

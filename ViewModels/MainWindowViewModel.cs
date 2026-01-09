@@ -193,8 +193,14 @@ public partial class MainWindowViewModel : ViewModelBase
             }
 
             HasData = Ressourcen.Count > 0;
+
+            // Force property changed notifications
+            OnPropertyChanged(nameof(Ressourcen));
             OnPropertyChanged(nameof(DataGridTitle));
+            OnPropertyChanged(nameof(HasData));
+
             Serilog.Log.Debug($"ImportExcel: UI updated. HasData={HasData}, Ressourcen.Count={Ressourcen.Count}");
+            Serilog.Log.Debug("ImportExcel: PropertyChanged notifications sent for Ressourcen, DataGridTitle, HasData");
 
             // Update settings with last import path
             _settingsService.UpdateSetting<BereitschaftsPlaner.Avalonia.Models.AppSettings>(s =>
@@ -329,7 +335,13 @@ public partial class MainWindowViewModel : ViewModelBase
             }
 
             HasGruppenData = BereitschaftsGruppen.Count > 0;
+
+            // Force property changed notifications
+            OnPropertyChanged(nameof(BereitschaftsGruppen));
+            OnPropertyChanged(nameof(HasGruppenData));
+
             Serilog.Log.Debug($"ImportGruppen: UI updated. HasGruppenData={HasGruppenData}, BereitschaftsGruppen.Count={BereitschaftsGruppen.Count}");
+            Serilog.Log.Debug("ImportGruppen: PropertyChanged notifications sent for BereitschaftsGruppen, HasGruppenData");
 
             // Clear file path after successful import
             GruppenFilePath = string.Empty;

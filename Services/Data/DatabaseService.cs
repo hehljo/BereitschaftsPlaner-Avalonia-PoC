@@ -30,9 +30,18 @@ public class DatabaseService
 
     public List<Ressource> GetAllRessourcen()
     {
+        Serilog.Log.Debug("DatabaseService.GetAllRessourcen: Started");
         using var db = new LiteDatabase(_dbPath);
         var collection = db.GetCollection<Ressource>("ressourcen");
-        return collection.FindAll().ToList();
+        var result = collection.FindAll().ToList();
+        Serilog.Log.Debug($"DatabaseService.GetAllRessourcen: Returning {result.Count} items from database");
+
+        if (result.Count > 0)
+        {
+            Serilog.Log.Debug($"DatabaseService.GetAllRessourcen: First item - Id={result[0].Id}, Name={result[0].Name}, Bezirk={result[0].Bezirk}");
+        }
+
+        return result;
     }
 
     public Ressource? GetRessourceById(int id)
@@ -70,17 +79,30 @@ public class DatabaseService
 
     public void SaveRessourcen(List<Ressource> ressourcen)
     {
+        Serilog.Log.Debug($"DatabaseService.SaveRessourcen: Starting to save {ressourcen.Count} items");
         using var db = new LiteDatabase(_dbPath);
         var collection = db.GetCollection<Ressource>("ressourcen");
-        collection.DeleteAll();
 
+        var countBefore = collection.Count();
+        Serilog.Log.Debug($"DatabaseService.SaveRessourcen: Count before DeleteAll = {countBefore}");
+
+        collection.DeleteAll();
+        Serilog.Log.Debug("DatabaseService.SaveRessourcen: DeleteAll completed");
+
+        int insertedCount = 0;
         foreach (var ressource in ressourcen)
         {
             ressource.CreatedAt = DateTime.Now;
             ressource.UpdatedAt = DateTime.Now;
+            insertedCount++;
         }
 
+        Serilog.Log.Debug($"DatabaseService.SaveRessourcen: About to insert {insertedCount} items");
         collection.InsertBulk(ressourcen);
+
+        var countAfter = collection.Count();
+        Serilog.Log.Debug($"DatabaseService.SaveRessourcen: Count after insert = {countAfter}");
+        Serilog.Log.Information($"DatabaseService.SaveRessourcen: Successfully saved {countAfter} items to database");
     }
 
     #endregion
@@ -89,9 +111,18 @@ public class DatabaseService
 
     public List<BereitschaftsGruppe> GetAllBereitschaftsGruppen()
     {
+        Serilog.Log.Debug("DatabaseService.GetAllBereitschaftsGruppen: Started");
         using var db = new LiteDatabase(_dbPath);
         var collection = db.GetCollection<BereitschaftsGruppe>("bereitschaftsgruppen");
-        return collection.FindAll().ToList();
+        var result = collection.FindAll().ToList();
+        Serilog.Log.Debug($"DatabaseService.GetAllBereitschaftsGruppen: Returning {result.Count} items from database");
+
+        if (result.Count > 0)
+        {
+            Serilog.Log.Debug($"DatabaseService.GetAllBereitschaftsGruppen: First item - Id={result[0].Id}, Name={result[0].Name}, Bezirk={result[0].Bezirk}");
+        }
+
+        return result;
     }
 
     public BereitschaftsGruppe? GetBereitschaftsGruppeById(int id)
@@ -129,17 +160,30 @@ public class DatabaseService
 
     public void SaveBereitschaftsGruppen(List<BereitschaftsGruppe> gruppen)
     {
+        Serilog.Log.Debug($"DatabaseService.SaveBereitschaftsGruppen: Starting to save {gruppen.Count} items");
         using var db = new LiteDatabase(_dbPath);
         var collection = db.GetCollection<BereitschaftsGruppe>("bereitschaftsgruppen");
-        collection.DeleteAll();
 
+        var countBefore = collection.Count();
+        Serilog.Log.Debug($"DatabaseService.SaveBereitschaftsGruppen: Count before DeleteAll = {countBefore}");
+
+        collection.DeleteAll();
+        Serilog.Log.Debug("DatabaseService.SaveBereitschaftsGruppen: DeleteAll completed");
+
+        int insertedCount = 0;
         foreach (var gruppe in gruppen)
         {
             gruppe.CreatedAt = DateTime.Now;
             gruppe.UpdatedAt = DateTime.Now;
+            insertedCount++;
         }
 
+        Serilog.Log.Debug($"DatabaseService.SaveBereitschaftsGruppen: About to insert {insertedCount} items");
         collection.InsertBulk(gruppen);
+
+        var countAfter = collection.Count();
+        Serilog.Log.Debug($"DatabaseService.SaveBereitschaftsGruppen: Count after insert = {countAfter}");
+        Serilog.Log.Information($"DatabaseService.SaveBereitschaftsGruppen: Successfully saved {countAfter} items to database");
     }
 
     #endregion
