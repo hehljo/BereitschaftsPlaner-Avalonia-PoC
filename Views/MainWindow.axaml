@@ -70,7 +70,7 @@
                             Classes="NavItem"
                             HorizontalContentAlignment="Left"
                             HorizontalAlignment="Stretch">
-                        <TextBlock Text="Generator" Classes="Body" FontWeight="Medium"/>
+                        <TextBlock Text="Erstellung" Classes="Body" FontWeight="Medium"/>
                     </Button>
 
                     <Button Command="{Binding NavigateToPlanningCommand}"
@@ -580,8 +580,8 @@
                     <!-- ====================================================================== -->
                     <Grid IsVisible="{Binding IsGeneratorView}">
                         <StackPanel Spacing="32" DataContext="{Binding GeneratorVM}">
-                            <TextBlock Text="Generator" Classes="H1"/>
-                            <TextBlock Text="AUTOMATISCHE BEREITSCHAFTS-GENERIERUNG" Classes="Label"/>
+                            <TextBlock Text="Erstellung" Classes="H1"/>
+                            <TextBlock Text="AUTOMATISCHE DIENST-ERSTELLUNG" Classes="Label"/>
 
                             <Border Classes="BentoCard">
                                 <StackPanel Spacing="24">
