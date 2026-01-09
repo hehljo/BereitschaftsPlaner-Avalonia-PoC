@@ -52,25 +52,40 @@
 
                 <!-- Navigation Items -->
                 <StackPanel Grid.Row="1" Margin="16,0" Spacing="4">
-                    <Border Classes="NavItem" Tapped="{Binding NavigateToImportCommand}">
+                    <Button Command="{Binding NavigateToImportCommand}"
+                            Classes="NavItem"
+                            HorizontalContentAlignment="Left"
+                            HorizontalAlignment="Stretch">
                         <TextBlock Text="Import" Classes="Body" FontWeight="Medium"/>
-                    </Border>
+                    </Button>
 
-                    <Border Classes="NavItem" Tapped="{Binding NavigateToZeitprofileCommand}">
+                    <Button Command="{Binding NavigateToZeitprofileCommand}"
+                            Classes="NavItem"
+                            HorizontalContentAlignment="Left"
+                            HorizontalAlignment="Stretch">
                         <TextBlock Text="Zeitprofile" Classes="Body" FontWeight="Medium"/>
-                    </Border>
+                    </Button>
 
-                    <Border Classes="NavItem" Tapped="{Binding NavigateToGeneratorCommand}">
+                    <Button Command="{Binding NavigateToGeneratorCommand}"
+                            Classes="NavItem"
+                            HorizontalContentAlignment="Left"
+                            HorizontalAlignment="Stretch">
                         <TextBlock Text="Generator" Classes="Body" FontWeight="Medium"/>
-                    </Border>
+                    </Button>
 
-                    <Border Classes="NavItem" Tapped="{Binding NavigateToPlanningCommand}">
+                    <Button Command="{Binding NavigateToPlanningCommand}"
+                            Classes="NavItem"
+                            HorizontalContentAlignment="Left"
+                            HorizontalAlignment="Stretch">
                         <TextBlock Text="Planung" Classes="Body" FontWeight="Medium"/>
-                    </Border>
+                    </Button>
 
-                    <Border Classes="NavItem" Tapped="{Binding NavigateToEditorCommand}">
+                    <Button Command="{Binding NavigateToEditorCommand}"
+                            Classes="NavItem"
+                            HorizontalContentAlignment="Left"
+                            HorizontalAlignment="Stretch">
                         <TextBlock Text="Editor" Classes="Body" FontWeight="Medium"/>
-                    </Border>
+                    </Button>
                 </StackPanel>
 
                 <!-- Footer -->
@@ -673,7 +688,7 @@
                                             </StackPanel>
                                         </Grid>
 
-                                        <TextBlock Text="{Binding SelectedKWCount, StringFormat='{0} Kalenderwoche(n) ausgewählt'}"
+                                        <TextBlock Text="{Binding SelectedKWCount, StringFormat={}{0} Kalenderwoche(n) ausgewählt}"
                                                    Classes="Body"
                                                    FontWeight="Bold"/>
 
