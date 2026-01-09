@@ -53,10 +53,20 @@
                 <DataGrid ItemsSource="{Binding PreviewData}"
                           IsReadOnly="True"
                           BorderThickness="0"
-                          AutoGenerateColumns="True"
+                          AutoGenerateColumns="False"
                           CanUserResizeColumns="True"
                           CanUserSortColumns="True"
-                          MinHeight="300"/>
+                          MinHeight="300">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                        <DataGridTextColumn Header="Bezirk" Binding="{Binding Bezirk}" Width="*"/>
+                        <DataGridTextColumn Header="Verantwortlich" Binding="{Binding VerantwortlichePerson}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <TextBlock Text="{Binding PreviewData.Count, StringFormat={}{0} Einträge}"
+                           Classes="Body"
+                           Foreground="{DynamicResource TextMutedBrush}"
+                           FontStyle="Italic"/>
             </StackPanel>
         </Border>
 

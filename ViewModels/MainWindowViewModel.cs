@@ -86,10 +86,13 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         try
         {
+            Serilog.Log.Debug("BrowseFile: Opening file picker for Ressourcen");
+
             // Get main window storage provider
             var mainWindow = App.MainWindow;
             if (mainWindow?.StorageProvider == null)
             {
+                Serilog.Log.Error("BrowseFile: MainWindow StorageProvider is null");
                 SetStatus("Fehler: Hauptfenster nicht verfügbar", Brushes.Red);
                 return;
             }
@@ -108,11 +111,17 @@ public partial class MainWindowViewModel : ViewModelBase
             if (files.Count > 0)
             {
                 ExcelFilePath = files[0].Path.LocalPath;
+                Serilog.Log.Information($"BrowseFile: File selected - {ExcelFilePath}");
                 SetStatus($"Datei ausgewählt: {Path.GetFileName(ExcelFilePath)}", Brushes.Blue);
+            }
+            else
+            {
+                Serilog.Log.Debug("BrowseFile: No file selected (user cancelled)");
             }
         }
         catch (Exception ex)
         {
+            Serilog.Log.Error(ex, "BrowseFile: Failed to open file picker");
             SetStatus($"Fehler bei Dateiauswahl: {ex.Message}", Brushes.Red);
         }
     }
@@ -210,9 +219,12 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         try
         {
+            Serilog.Log.Debug("BrowseGruppenFile: Opening file picker for Gruppen");
+
             var mainWindow = App.MainWindow;
             if (mainWindow?.StorageProvider == null)
             {
+                Serilog.Log.Error("BrowseGruppenFile: MainWindow StorageProvider is null");
                 SetStatus("Fehler: Hauptfenster nicht verfügbar", Brushes.Red);
                 return;
             }
@@ -231,11 +243,17 @@ public partial class MainWindowViewModel : ViewModelBase
             if (files.Count > 0)
             {
                 GruppenFilePath = files[0].Path.LocalPath;
+                Serilog.Log.Information($"BrowseGruppenFile: File selected - {GruppenFilePath}");
                 SetStatus($"Gruppendatei ausgewählt: {Path.GetFileName(GruppenFilePath)}", Brushes.Blue);
+            }
+            else
+            {
+                Serilog.Log.Debug("BrowseGruppenFile: No file selected (user cancelled)");
             }
         }
         catch (Exception ex)
         {
+            Serilog.Log.Error(ex, "BrowseGruppenFile: Failed to open file picker");
             SetStatus($"Fehler bei Dateiauswahl: {ex.Message}", Brushes.Red);
         }
     }
@@ -245,29 +263,38 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         try
         {
+            Serilog.Log.Debug("ImportGruppen started");
+
             if (string.IsNullOrWhiteSpace(GruppenFilePath))
             {
+                Serilog.Log.Warning("ImportGruppen: No file path specified");
                 SetStatus("Bitte zuerst eine Excel-Datei für Gruppen auswählen", Brushes.Orange);
                 return;
             }
 
+            Serilog.Log.Information($"ImportGruppen: Importing from {GruppenFilePath}");
             SetStatus("Importiere Bereitschaftsgruppen...", Brushes.Blue);
 
             var result = _excelService.ImportBereitschaftsGruppen(GruppenFilePath);
+            Serilog.Log.Debug($"ImportGruppen: ExcelService returned Success={result.Success}, Count={result.Gruppen.Count}");
 
             if (!result.Success)
             {
+                Serilog.Log.Error($"ImportGruppen: Import failed - {result.Message}");
                 SetStatus(result.Message, Brushes.Red);
                 HasGruppenData = false;
                 return;
             }
 
             // Validate data
+            Serilog.Log.Debug("ImportGruppen: Validating data");
             var validator = new BereitschaftsPlaner.Avalonia.Services.DataValidator();
             var validationResult = validator.ValidateBereitschaftsGruppen(result.Gruppen);
+            Serilog.Log.Debug($"ImportGruppen: Validation complete - IsValid={validationResult.IsValid}, Errors={validationResult.Errors.Count}");
 
             // Clean data (remove duplicates, empty names)
             var cleanedData = validator.CleanBereitschaftsGruppen(result.Gruppen);
+            Serilog.Log.Debug($"ImportGruppen: Data cleaned - {cleanedData.Count} items after cleaning");
 
             // Show preview dialog
             var previewVM = new ImportPreviewViewModel(
@@ -279,18 +306,22 @@ public partial class MainWindowViewModel : ViewModelBase
             var previewWindow = new Views.ImportPreviewWindow(previewVM);
 
             // Show dialog and wait for user confirmation
+            Serilog.Log.Debug($"ImportGruppen: Showing preview dialog for {cleanedData.Count} items");
             var confirmed = await previewWindow.ShowDialog<bool>(App.MainWindow!);
 
             if (!confirmed)
             {
+                Serilog.Log.Information("ImportGruppen: User cancelled import");
                 SetStatus("Import abgebrochen", Brushes.Orange);
                 return;
             }
 
             // Save to database (only if user confirmed)
+            Serilog.Log.Information($"ImportGruppen: Saving {cleanedData.Count} Gruppen to database");
             _dbService.SaveBereitschaftsGruppen(cleanedData);
 
             // Update UI
+            Serilog.Log.Debug("ImportGruppen: Updating UI collections");
             BereitschaftsGruppen.Clear();
             foreach (var gruppe in cleanedData)
             {
@@ -298,14 +329,17 @@ public partial class MainWindowViewModel : ViewModelBase
             }
 
             HasGruppenData = BereitschaftsGruppen.Count > 0;
+            Serilog.Log.Debug($"ImportGruppen: UI updated. HasGruppenData={HasGruppenData}, BereitschaftsGruppen.Count={BereitschaftsGruppen.Count}");
 
             // Clear file path after successful import
             GruppenFilePath = string.Empty;
 
             SetStatus($"✅ {cleanedData.Count} Bereitschaftsgruppen importiert und gespeichert", Brushes.Green);
+            Serilog.Log.Information($"ImportGruppen completed successfully: {cleanedData.Count} items");
         }
         catch (Exception ex)
         {
+            Serilog.Log.Error(ex, "ImportGruppen failed");
             SetStatus($"Fehler beim Import: {ex.Message}", Brushes.Red);
             HasGruppenData = false;
         }
@@ -316,8 +350,11 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         try
         {
+            Serilog.Log.Debug("SaveJson started");
+
             if (Ressourcen.Count == 0)
             {
+                Serilog.Log.Warning("SaveJson: No data to save (Ressourcen.Count = 0)");
                 SetStatus("Keine Daten zum Speichern vorhanden", Brushes.Orange);
                 return;
             }
@@ -326,6 +363,7 @@ public partial class MainWindowViewModel : ViewModelBase
             var mainWindow = App.MainWindow;
             if (mainWindow?.StorageProvider == null)
             {
+                Serilog.Log.Error("SaveJson: MainWindow StorageProvider is null");
                 SetStatus("Fehler: Hauptfenster nicht verfügbar", Brushes.Red);
                 return;
             }
@@ -345,24 +383,35 @@ public partial class MainWindowViewModel : ViewModelBase
             if (file != null)
             {
                 var jsonPath = file.Path.LocalPath;
+                Serilog.Log.Information($"SaveJson: Saving to {jsonPath}");
                 SetStatus("Speichere JSON...", Brushes.Blue);
 
                 // Save from database (always current data)
                 var ressourcenFromDb = _dbService.GetAllRessourcen();
+                Serilog.Log.Debug($"SaveJson: Got {ressourcenFromDb.Count} Ressourcen from database");
+
                 var result = _excelService.SaveToJson(ressourcenFromDb, jsonPath);
+                Serilog.Log.Debug($"SaveJson: ExcelService returned Success={result.Success}");
 
                 if (result.Success)
                 {
+                    Serilog.Log.Information($"SaveJson: Successfully saved {ressourcenFromDb.Count} items to {jsonPath}");
                     SetStatus($"Erfolgreich gespeichert: {Path.GetFileName(jsonPath)}", Brushes.Green);
                 }
                 else
                 {
+                    Serilog.Log.Error($"SaveJson: Save failed - {result.Message}");
                     SetStatus(result.Message, Brushes.Red);
                 }
+            }
+            else
+            {
+                Serilog.Log.Debug("SaveJson: User cancelled file save dialog");
             }
         }
         catch (Exception ex)
         {
+            Serilog.Log.Error(ex, "SaveJson failed");
             SetStatus($"Fehler beim Speichern: {ex.Message}", Brushes.Red);
         }
     }
@@ -434,6 +483,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task ResetDatabase()
     {
+        Serilog.Log.Debug("ResetDatabase: Showing confirmation dialog");
+
         // Ask for confirmation
         var confirmWindow = new Views.ConfirmDialog(
             "Datenbank zurücksetzen",
@@ -446,30 +497,40 @@ public partial class MainWindowViewModel : ViewModelBase
 
         if (!confirmed)
         {
+            Serilog.Log.Information("ResetDatabase: User cancelled reset");
             return;
         }
 
         try
         {
+            Serilog.Log.Information("ResetDatabase: User confirmed - starting reset process");
             SetStatus("Erstelle Backup...", Brushes.Blue);
 
             // Create backup before reset
+            Serilog.Log.Debug("ResetDatabase: Creating backup");
             App.BackupService.CreateManualBackup();
+            Serilog.Log.Information("ResetDatabase: Backup created successfully");
 
             // Clear database
+            Serilog.Log.Debug("ResetDatabase: Clearing database");
             _dbService.ClearAllData();
+            Serilog.Log.Information("ResetDatabase: Database cleared");
 
             // Clear UI
+            Serilog.Log.Debug("ResetDatabase: Clearing UI collections");
             Ressourcen.Clear();
             BereitschaftsGruppen.Clear();
             HasData = false;
             HasGruppenData = false;
             OnPropertyChanged(nameof(DataGridTitle));
+            Serilog.Log.Debug("ResetDatabase: UI cleared");
 
             SetStatus("✅ Datenbank zurückgesetzt (Backup erstellt)", Brushes.Green);
+            Serilog.Log.Information("ResetDatabase completed successfully");
         }
         catch (Exception ex)
         {
+            Serilog.Log.Error(ex, "ResetDatabase failed");
             SetStatus($"Fehler beim Zurücksetzen: {ex.Message}", Brushes.Red);
         }
     }

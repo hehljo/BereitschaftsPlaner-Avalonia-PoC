@@ -44,11 +44,16 @@ public partial class ImportPreviewViewModel : ViewModelBase
     {
         Title = title;
 
+        Serilog.Log.Debug($"ImportPreviewViewModel: Creating with {data.Count} items, Title='{title}'");
+
         // Add data to collection
         foreach (var item in data)
         {
             PreviewData.Add(item);
+            Serilog.Log.Debug($"ImportPreviewViewModel: Added item of type {item.GetType().Name}");
         }
+
+        Serilog.Log.Debug($"ImportPreviewViewModel: PreviewData.Count = {PreviewData.Count}");
 
         // Set status based on validation
         if (validationResult != null)

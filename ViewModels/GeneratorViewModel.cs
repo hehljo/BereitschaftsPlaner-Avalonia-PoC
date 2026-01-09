@@ -242,8 +242,12 @@ public partial class GeneratorViewModel : ViewModelBase
     {
         try
         {
+            Serilog.Log.Debug("GeneratorViewModel.LoadDataFromDatabase: Started");
+
             // Load Gruppen
             var gruppenFromDb = _dbService.GetAllBereitschaftsGruppen();
+            Serilog.Log.Debug($"GeneratorViewModel.LoadDataFromDatabase: Got {gruppenFromDb.Count} Gruppen from database");
+
             AlleGruppen.Clear();
             foreach (var gruppe in gruppenFromDb)
             {
@@ -262,9 +266,12 @@ public partial class GeneratorViewModel : ViewModelBase
             {
                 Bezirke.Add(bezirk);
             }
+            Serilog.Log.Debug($"GeneratorViewModel.LoadDataFromDatabase: Extracted {Bezirke.Count - 1} unique Bezirke");
 
             // Load Ressourcen
             var ressourcenFromDb = _dbService.GetAllRessourcen();
+            Serilog.Log.Debug($"GeneratorViewModel.LoadDataFromDatabase: Got {ressourcenFromDb.Count} Ressourcen from database");
+
             Ressourcen.Clear();
             foreach (var ressource in ressourcenFromDb)
             {
@@ -275,15 +282,22 @@ public partial class GeneratorViewModel : ViewModelBase
             if (Ressourcen.Count > 0)
             {
                 SelectedRessource = Ressourcen[0];
+                Serilog.Log.Debug($"GeneratorViewModel.LoadDataFromDatabase: Auto-selected first resource - '{SelectedRessource.Name}'");
+            }
+            else
+            {
+                Serilog.Log.Warning("GeneratorViewModel.LoadDataFromDatabase: No resources found in database");
             }
 
             // Apply initial filter
             ApplyFilter();
 
             SetStatus($"{AlleGruppen.Count} Gruppen, {Ressourcen.Count} Ressourcen geladen", Brushes.Green);
+            Serilog.Log.Information($"GeneratorViewModel.LoadDataFromDatabase: Completed - {AlleGruppen.Count} Gruppen, {Ressourcen.Count} Ressourcen");
         }
         catch (Exception ex)
         {
+            Serilog.Log.Error(ex, "GeneratorViewModel.LoadDataFromDatabase: Failed");
             SetStatus($"Fehler beim Laden: {ex.Message}", Brushes.Red);
         }
     }
@@ -434,32 +448,41 @@ public partial class GeneratorViewModel : ViewModelBase
     [RelayCommand]
     private async Task Generate()
     {
+        Serilog.Log.Debug("Generate: Started");
+
         // Validation
         if (SelectedGruppen.Count == 0)
         {
+            Serilog.Log.Warning("Generate: No groups selected");
             SetStatus("❌ Bitte mindestens eine Gruppe auswählen!", Brushes.Orange);
             return;
         }
 
         if (SelectedRessource == null)
         {
+            Serilog.Log.Warning("Generate: No resource selected");
             SetStatus("❌ Bitte eine Ressource auswählen!", Brushes.Orange);
             return;
         }
 
+        Serilog.Log.Information($"Generate: Starting generation with {SelectedGruppen.Count} groups, Resource='{SelectedRessource.Name}'");
+
         // Determine date range based on mode
         DateTime actualStartDate;
         DateTime actualEndDate;
-        
+
         if (UseDateRange)
         {
             // Date range mode
+            Serilog.Log.Debug($"Generate: Using date range mode - StartDate={StartDate:yyyy-MM-dd}, EndDate={EndDate:yyyy-MM-dd}");
+
             if (EndDate < StartDate)
             {
+                Serilog.Log.Warning("Generate: Invalid date range (EndDate < StartDate)");
                 SetStatus("❌ Enddatum muss nach oder gleich Startdatum liegen!", Brushes.Orange);
                 return;
             }
-            
+
             actualStartDate = StartDate;
             actualEndDate = EndDate;
         }
@@ -467,21 +490,26 @@ public partial class GeneratorViewModel : ViewModelBase
         {
             // Calendar weeks mode
             var selectedKWs = Kalenderwochen.Where(kw => kw.IsSelected).OrderBy(kw => kw.Woche).ToList();
-            
+            Serilog.Log.Debug($"Generate: Using calendar week mode - {selectedKWs.Count} weeks selected");
+
             if (selectedKWs.Count == 0)
             {
+                Serilog.Log.Warning("Generate: No calendar weeks selected");
                 SetStatus("❌ Bitte mindestens eine Kalenderwoche auswählen!", Brushes.Orange);
                 return;
             }
-            
+
             actualStartDate = selectedKWs.First().StartDatum;
             actualEndDate = selectedKWs.Last().EndDatum;
+            Serilog.Log.Debug($"Generate: Calendar weeks - actualStartDate={actualStartDate:yyyy-MM-dd}, actualEndDate={actualEndDate:yyyy-MM-dd}");
         }
 
         // Get save location
+        Serilog.Log.Debug("Generate: Opening save file dialog");
         var mainWindow = App.MainWindow;
         if (mainWindow?.StorageProvider == null)
         {
+            Serilog.Log.Error("Generate: MainWindow StorageProvider is null");
             SetStatus("❌ Fehler: Hauptfenster nicht verfügbar", Brushes.Red);
             return;
         }
@@ -501,17 +529,21 @@ public partial class GeneratorViewModel : ViewModelBase
 
         if (file == null)
         {
+            Serilog.Log.Information("Generate: User cancelled file save dialog");
             SetStatus("Abgebrochen", Brushes.Gray);
             return;
         }
 
         var outputPath = file.Path.LocalPath;
+        Serilog.Log.Information($"Generate: Output file selected - {outputPath}");
 
         IsGenerating = true;
         SetStatus("⚡ Generierung gestartet...", Brushes.Blue);
 
         try
         {
+            Serilog.Log.Information($"Generate: Starting generation for {(actualEndDate - actualStartDate).Days + 1} days, {SelectedGruppen.Count} groups");
+
             var result = await Task.Run(() =>
             {
                 return _excelService.GenerateBereitschaften(
@@ -528,6 +560,7 @@ public partial class GeneratorViewModel : ViewModelBase
                         global::Avalonia.Threading.Dispatcher.UIThread.Post(() =>
                         {
                             var percentage = total > 0 ? (current * 100 / total) : 0;
+                            Serilog.Log.Debug($"Generate: Progress {current}/{total} - {message}");
                             SetStatus($"⚡ {message} ({percentage}%)", Brushes.Blue);
                         });
                     }
@@ -536,24 +569,28 @@ public partial class GeneratorViewModel : ViewModelBase
 
             if (result.Success)
             {
-                var modeInfo = UseDateRange 
+                var modeInfo = UseDateRange
                     ? $"Zeitraum: {actualStartDate:dd.MM.yyyy} - {actualEndDate:dd.MM.yyyy}"
                     : $"Kalenderwochen: {SelectedKWCount} KW ausgewählt";
-                    
+
+                Serilog.Log.Information($"Generate: SUCCESS - {result.Message}");
                 SetStatus($"✅ {result.Message}\n📄 {Path.GetFileName(outputPath)}\n📅 {modeInfo}", Brushes.Green);
             }
             else
             {
+                Serilog.Log.Error($"Generate: FAILED - {result.Message}");
                 SetStatus($"❌ {result.Message}", Brushes.Red);
             }
         }
         catch (Exception ex)
         {
+            Serilog.Log.Error(ex, "Generate: Exception during generation");
             SetStatus($"❌ Fehler bei Generierung: {ex.Message}", Brushes.Red);
         }
         finally
         {
             IsGenerating = false;
+            Serilog.Log.Debug("Generate: Completed (IsGenerating set to false)");
         }
     }
 
