@@ -578,9 +578,8 @@
                     <!-- ====================================================================== -->
                     <!-- VIEW 3: GENERATOR -->
                     <!-- ====================================================================== -->
-                    <Grid IsVisible="{Binding IsGeneratorView}"
-                          DataContext="{Binding GeneratorVM}">
-                        <StackPanel Spacing="32">
+                    <Grid IsVisible="{Binding IsGeneratorView}">
+                        <StackPanel Spacing="32" DataContext="{Binding GeneratorVM}">
                             <TextBlock Text="Generator" Classes="H1"/>
                             <TextBlock Text="AUTOMATISCHE BEREITSCHAFTS-GENERIERUNG" Classes="Label"/>
 
@@ -895,9 +894,8 @@
                     <!-- ====================================================================== -->
                     <!-- VIEW 5: EDITOR -->
                     <!-- ====================================================================== -->
-                    <Grid IsVisible="{Binding IsEditorView}"
-                          DataContext="{Binding EditorVM}">
-                        <StackPanel Spacing="32">
+                    <Grid IsVisible="{Binding IsEditorView}">
+                        <StackPanel Spacing="32" DataContext="{Binding EditorVM}">
                             <TextBlock Text="Editor" Classes="H1"/>
                             <TextBlock Text="BESTEHENDE DIENSTE BEARBEITEN" Classes="Label"/>
 
