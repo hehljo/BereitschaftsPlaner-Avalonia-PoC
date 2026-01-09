@@ -24,7 +24,7 @@ sealed class Program
             Directory.CreateDirectory(logsDirectory);
 
             Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Information()
+                .MinimumLevel.Debug()
                 .WriteTo.Console()
                 .WriteTo.File(
                     path: Path.Combine(logsDirectory, "app-.log"),

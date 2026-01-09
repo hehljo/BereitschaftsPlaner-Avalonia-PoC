@@ -7,108 +7,92 @@
         Width="900" Height="600"
         MinWidth="700" MinHeight="500"
         WindowStartupLocation="CenterOwner"
-        Background="{DynamicResource BackgroundBrush}">
+        Background="{DynamicResource SurfaceBrush}"
+        FontFamily="{DynamicResource SansFont}"
+        FontSize="14">
 
     <Design.DataContext>
         <vm:ImportPreviewViewModel/>
     </Design.DataContext>
 
-    <Grid Margin="20">
+    <Grid Margin="40">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+        <!-- Title -->
+        <TextBlock Grid.Row="0"
+                   Text="Import-Vorschau"
+                   Classes="H1"
+                   Margin="0,0,0,8"/>
+
         <!-- Info Header -->
-        <Border Grid.Row="0"
-                Padding="15"
-                CornerRadius="8"
-                Margin="0,0,0,15">
-            <Border.Background>
-                <SolidColorBrush Color="{Binding StatusColor}"/>
-            </Border.Background>
-            <TextBlock Text="{Binding StatusMessage}"
-                       FontSize="14"
-                       FontWeight="Bold"
-                       Foreground="White"/>
+        <Border Grid.Row="1"
+                Classes="BentoCard"
+                Background="#FAFAFA"
+                Margin="0,0,0,24">
+            <StackPanel Spacing="8">
+                <TextBlock Text="STATUS" Classes="Label"/>
+                <TextBlock Text="{Binding StatusMessage}"
+                           Classes="H2"
+                           FontSize="18"
+                           Foreground="{Binding StatusColor}"/>
+            </StackPanel>
         </Border>
 
         <!-- Data Preview (DataGrid) -->
-        <Border Grid.Row="1"
-                BorderBrush="#DDDDDD"
-                BorderThickness="1"
-                CornerRadius="8"
-                Margin="0,0,0,15">
-            <DataGrid ItemsSource="{Binding PreviewData}"
-                      IsReadOnly="True"
-                      GridLinesVisibility="All"
-                      BorderThickness="0"
-                      AutoGenerateColumns="True"
-                      CanUserResizeColumns="True"
-                      CanUserSortColumns="True">
-                <DataGrid.Styles>
-                    <Style Selector="DataGridRow">
-                        <Setter Property="Background" Value="White"/>
-                    </Style>
-                    <Style Selector="DataGridRow:nth-child(2n)">
-                        <Setter Property="Background" Value="#F9F9F9"/>
-                    </Style>
-                    <Style Selector="DataGridColumnHeader">
-                        <Setter Property="Background" Value="#F0F0F0"/>
-                        <Setter Property="FontWeight" Value="Bold"/>
-                        <Setter Property="Padding" Value="8"/>
-                    </Style>
-                </DataGrid.Styles>
-            </DataGrid>
+        <Border Grid.Row="2"
+                Classes="BentoCard"
+                Margin="0,0,0,24">
+            <StackPanel Spacing="16">
+                <TextBlock Text="DATENVORSCHAU" Classes="Label"/>
+                <DataGrid ItemsSource="{Binding PreviewData}"
+                          IsReadOnly="True"
+                          BorderThickness="0"
+                          AutoGenerateColumns="True"
+                          CanUserResizeColumns="True"
+                          CanUserSortColumns="True"
+                          MinHeight="300"/>
+            </StackPanel>
         </Border>
 
         <!-- Error Details (if any) -->
-        <Border Grid.Row="2"
+        <Border Grid.Row="3"
+                Classes="BentoCard"
                 IsVisible="{Binding HasErrors}"
                 Background="#FFF9E6"
-                BorderBrush="#FFB800"
-                BorderThickness="1"
-                CornerRadius="8"
-                Padding="15"
-                Margin="0,0,0,15">
-            <StackPanel>
-                <TextBlock Text="⚠ Fehler-Details:"
-                           FontWeight="Bold"
-                           FontSize="12"
-                           Foreground="#CC6600"
-                           Margin="0,0,0,10"/>
+                BorderBrush="#E8B931"
+                BorderThickness="0,0,0,2"
+                Margin="0,0,0,24">
+            <StackPanel Spacing="12">
+                <TextBlock Text="WARNUNGEN" Classes="Label" Foreground="#B8860B"/>
                 <TextBox Text="{Binding ErrorDetails}"
                          IsReadOnly="True"
                          TextWrapping="Wrap"
                          MaxHeight="100"
                          BorderThickness="0"
                          Background="Transparent"
-                         Foreground="#CC6600"/>
+                         Foreground="{DynamicResource TextDarkBrush}"
+                         Classes="Body"/>
             </StackPanel>
         </Border>
 
         <!-- Buttons -->
-        <StackPanel Grid.Row="3"
+        <StackPanel Grid.Row="4"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right"
-                    Spacing="10">
+                    Spacing="12">
             <Button Content="Abbrechen"
+                    Classes="SecondaryAction"
                     Width="140"
-                    Height="35"
-                    Background="#FF6B6B"
-                    Foreground="White"
-                    FontWeight="SemiBold"
-                    CornerRadius="8"
                     Command="{Binding CancelCommand}"/>
             <Button Content="Importieren"
-                    Width="140"
-                    Height="35"
-                    Background="{StaticResource YunexGreen}"
-                    Foreground="White"
-                    FontWeight="SemiBold"
-                    CornerRadius="8"
+                    Classes="TrustAction"
+                    Width="160"
                     IsEnabled="{Binding CanImport}"
                     Command="{Binding ConfirmCommand}"/>
         </StackPanel>

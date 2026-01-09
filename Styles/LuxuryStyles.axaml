@@ -55,6 +55,7 @@
     </Style>
     <Style Selector="Button.TrustAction:pointerover /template/ ContentPresenter">
         <Setter Property="Background" Value="#1A2530"/>
+        <Setter Property="TextElement.Foreground" Value="White"/>
     </Style>
 
     <!-- Secondary Button -->
@@ -71,6 +72,7 @@
     </Style>
     <Style Selector="Button.SecondaryAction:pointerover /template/ ContentPresenter">
         <Setter Property="Background" Value="#FAFAFA"/>
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource TextDarkBrush}"/>
     </Style>
 
     <!-- 4. LUXURY SCROLLBARS -->
@@ -168,6 +170,7 @@
         <Setter Property="Background" Value="{DynamicResource CardBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource AccentDeepBrush}"/>
         <Setter Property="BorderThickness" Value="0,0,0,2"/>
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource TextDarkBrush}"/>
     </Style>
     <Style Selector="Button.NavItemActive">
         <Setter Property="Padding" Value="14,10"/>

@@ -122,15 +122,20 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         try
         {
+            Serilog.Log.Debug("ImportExcel started");
+
             if (string.IsNullOrWhiteSpace(ExcelFilePath))
             {
+                Serilog.Log.Warning("ImportExcel: No file path specified");
                 SetStatus("Bitte zuerst eine Excel-Datei auswählen", Brushes.Orange);
                 return;
             }
 
+            Serilog.Log.Information($"ImportExcel: Importing from {ExcelFilePath}");
             SetStatus("Importiere Excel...", Brushes.Blue);
 
             var result = _excelService.ImportRessourcen(ExcelFilePath);
+            Serilog.Log.Debug($"ImportExcel: ExcelService returned Success={result.Success}, Count={result.Ressourcen.Count}");
 
             if (!result.Success)
             {
@@ -155,19 +160,23 @@ public partial class MainWindowViewModel : ViewModelBase
 
             var previewWindow = new Views.ImportPreviewWindow(previewVM);
 
-            // Show dialog and wait for user confirmation
+            // Show dialog
+            Serilog.Log.Debug($"ImportExcel: Showing preview dialog for {cleanedData.Count} items");
             var confirmed = await previewWindow.ShowDialog<bool>(App.MainWindow!);
 
             if (!confirmed)
             {
+                Serilog.Log.Information("ImportExcel: User cancelled import");
                 SetStatus("Import abgebrochen", Brushes.Orange);
                 return;
             }
 
             // Save to database (only if user confirmed)
+            Serilog.Log.Information($"ImportExcel: Saving {cleanedData.Count} Ressourcen to database");
             _dbService.SaveRessourcen(cleanedData);
 
             // Update UI
+            Serilog.Log.Debug("ImportExcel: Updating UI collections");
             Ressourcen.Clear();
             foreach (var ressource in cleanedData)
             {
@@ -176,6 +185,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
             HasData = Ressourcen.Count > 0;
             OnPropertyChanged(nameof(DataGridTitle));
+            Serilog.Log.Debug($"ImportExcel: UI updated. HasData={HasData}, Ressourcen.Count={Ressourcen.Count}");
 
             // Update settings with last import path
             _settingsService.UpdateSetting<BereitschaftsPlaner.Avalonia.Models.AppSettings>(s =>
@@ -186,6 +196,7 @@ public partial class MainWindowViewModel : ViewModelBase
             ExcelFilePath = string.Empty;
 
             SetStatus($"✅ {cleanedData.Count} Ressourcen importiert und gespeichert", Brushes.Green);
+            Serilog.Log.Information($"ImportExcel completed successfully: {cleanedData.Count} items");
         }
         catch (Exception ex)
         {
@@ -363,8 +374,12 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         try
         {
+            Serilog.Log.Debug("LoadDataFromDatabase started");
+
             // Load Ressourcen
             var ressourcenFromDb = _dbService.GetAllRessourcen();
+            Serilog.Log.Debug($"LoadDataFromDatabase: Got {ressourcenFromDb.Count} Ressourcen from database");
+
             if (ressourcenFromDb.Count > 0)
             {
                 Ressourcen.Clear();
@@ -374,10 +389,17 @@ public partial class MainWindowViewModel : ViewModelBase
                 }
                 HasData = true;
                 OnPropertyChanged(nameof(DataGridTitle));
+                Serilog.Log.Information($"LoadDataFromDatabase: Loaded {Ressourcen.Count} Ressourcen into UI");
+            }
+            else
+            {
+                Serilog.Log.Information("LoadDataFromDatabase: No Ressourcen found in database");
             }
 
             // Load Bereitschaftsgruppen
             var gruppenFromDb = _dbService.GetAllBereitschaftsGruppen();
+            Serilog.Log.Debug($"LoadDataFromDatabase: Got {gruppenFromDb.Count} Gruppen from database");
+
             if (gruppenFromDb.Count > 0)
             {
                 BereitschaftsGruppen.Clear();
@@ -386,6 +408,11 @@ public partial class MainWindowViewModel : ViewModelBase
                     BereitschaftsGruppen.Add(gruppe);
                 }
                 HasGruppenData = true;
+                Serilog.Log.Information($"LoadDataFromDatabase: Loaded {BereitschaftsGruppen.Count} Gruppen into UI");
+            }
+            else
+            {
+                Serilog.Log.Information("LoadDataFromDatabase: No Gruppen found in database");
             }
 
             // Status message

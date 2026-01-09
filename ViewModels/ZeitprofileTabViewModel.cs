@@ -216,6 +216,8 @@ public partial class ZeitprofilViewModel : ViewModelBase
     [ObservableProperty]
     private string _name = string.Empty;
 
+    public override string ToString() => Name;
+
     [ObservableProperty]
     private ObservableCollection<DienstTagViewModel> _bereitschaftsTage = new();
 

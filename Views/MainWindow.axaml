@@ -121,7 +121,6 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Grid.Column="0"
@@ -151,6 +150,7 @@
                         </ComboBox>
                     </StackPanel>
 
+                    <!-- Dark Mode Toggle - Temporarily disabled (only Light Mode)
                     <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="12">
                         <TextBlock Text="Theme"
                                    Classes="Label"
@@ -161,6 +161,7 @@
                                       OnContent="Dark"
                                       FontSize="13"/>
                     </StackPanel>
+                    -->
                 </Grid>
             </Border>
 
@@ -210,16 +211,9 @@
                                                     Command="{Binding BrowseFileCommand}"/>
                                         </Grid>
 
-                                        <StackPanel Orientation="Horizontal" Spacing="12">
-                                            <Button Content="Excel importieren"
-                                                    Classes="TrustAction"
-                                                    Command="{Binding ImportExcelCommand}"/>
-
-                                            <Button Content="JSON speichern"
-                                                    Classes="SecondaryAction"
-                                                    Command="{Binding SaveJsonCommand}"
-                                                    IsEnabled="{Binding HasData}"/>
-                                        </StackPanel>
+                                        <Button Content="Excel importieren"
+                                                Classes="TrustAction"
+                                                Command="{Binding ImportExcelCommand}"/>
                                     </StackPanel>
                                 </Border>
 
