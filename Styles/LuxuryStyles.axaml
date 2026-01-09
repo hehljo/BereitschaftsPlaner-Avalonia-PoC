@@ -7,16 +7,9 @@
         <Setter Property="CornerRadius" Value="6"/>
         <Setter Property="Padding" Value="24"/>
         <Setter Property="BoxShadow" Value="0 10 40 0 #09000000"/>
-        <Setter Property="Transitions">
-            <Transitions>
-                <BoxShadowTransition Property="BoxShadow" Duration="0:0:0.3"/>
-                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.3"/>
-            </Transitions>
-        </Setter>
     </Style>
     <Style Selector="Border.BentoCard:pointerover">
         <Setter Property="BoxShadow" Value="0 15 50 0 #12000000"/>
-        <Setter Property="RenderTransform" Value="translateY(-2px)"/>
     </Style>
 
     <!-- 2. TYPOGRAPHY -->
@@ -40,7 +33,6 @@
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}"/>
         <Setter Property="LetterSpacing" Value="1.5"/>
-        <Setter Property="TextTransform" Value="Uppercase"/>
     </Style>
 
     <Style Selector="TextBlock.Body">
@@ -134,7 +126,7 @@
 
     <!-- 6. INPUT CONTROLS -->
     <Style Selector="TextBox">
-        <Setter Property="Background" Value="White"/>
+        <Setter Property="Background" Value="{DynamicResource CardBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource TextDarkBrush}"/>
         <Setter Property="BorderBrush" Value="#E0E0E0"/>
         <Setter Property="BorderThickness" Value="1"/>
@@ -148,7 +140,7 @@
     </Style>
 
     <Style Selector="ComboBox">
-        <Setter Property="Background" Value="White"/>
+        <Setter Property="Background" Value="{DynamicResource CardBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource TextDarkBrush}"/>
         <Setter Property="BorderBrush" Value="#E0E0E0"/>
         <Setter Property="BorderThickness" Value="1"/>
