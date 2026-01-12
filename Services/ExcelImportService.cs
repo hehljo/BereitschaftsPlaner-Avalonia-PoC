@@ -25,7 +25,7 @@ public class ExcelImportService
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
     }
 
-    public ExcelImportService(AppSettingsService settingsService)
+    public ExcelImportService(SettingsService settingsService)
     {
         _settingsService = settingsService;
     }
