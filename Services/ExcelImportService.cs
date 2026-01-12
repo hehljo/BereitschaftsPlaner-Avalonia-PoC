@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using BereitschaftsPlaner.Avalonia.Models;
+using BereitschaftsPlaner.Avalonia.Services.Data;
 using ExcelDataReader;
 
 namespace BereitschaftsPlaner.Avalonia.Services;
@@ -16,7 +17,7 @@ namespace BereitschaftsPlaner.Avalonia.Services;
 /// </summary>
 public class ExcelImportService
 {
-    private readonly AppSettingsService _settingsService;
+    private readonly SettingsService _settingsService;
 
     static ExcelImportService()
     {

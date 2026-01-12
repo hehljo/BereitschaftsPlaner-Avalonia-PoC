@@ -731,17 +731,13 @@ public partial class MainWindowViewModel : ViewModelBase
         SelectedNavIndex = 4;
     }
 
+    /// <summary>
+    /// Open Excel Import Settings Window (Column Mapping Configuration)
+    /// </summary>
     [RelayCommand]
-    private async Task OpenSettings()
+    private async Task OpenExcelImportSettings()
     {
         var settingsWindow = new Views.ExcelImportSettingsWindow();
         await settingsWindow.ShowDialog(App.MainWindow!);
-    }
-
-    [RelayCommand]
-    private async Task OpenBackupManagement()
-    {
-        // TODO: Implement Backup Management Window
-        await Task.CompletedTask;
     }
 }
