@@ -6,8 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using BereitschaftsPlaner.Avalonia.Models;
-using BereitschaftsPlaner.Avalonia.Services.Data;
 using ExcelDataReader;
+using DataSettingsService = BereitschaftsPlaner.Avalonia.Services.Data.SettingsService;
 
 namespace BereitschaftsPlaner.Avalonia.Services;
 
@@ -17,7 +17,7 @@ namespace BereitschaftsPlaner.Avalonia.Services;
 /// </summary>
 public class ExcelImportService
 {
-    private readonly SettingsService _settingsService;
+    private readonly DataSettingsService _settingsService;
 
     static ExcelImportService()
     {
@@ -25,7 +25,7 @@ public class ExcelImportService
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
     }
 
-    public ExcelImportService(SettingsService settingsService)
+    public ExcelImportService(DataSettingsService settingsService)
     {
         _settingsService = settingsService;
     }
@@ -292,9 +292,9 @@ public class ExcelImportService
             var columnName = table.Columns[i].ColumnName;
             bool isMatch = matchType switch
             {
-                MatchType.Contains => columnName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase),
-                MatchType.StartsWith => columnName.StartsWith(searchTerm, StringComparison.OrdinalIgnoreCase),
-                MatchType.Exact => columnName.Equals(searchTerm, StringComparison.OrdinalIgnoreCase),
+                Models.MatchType.Contains => columnName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase),
+                Models.MatchType.StartsWith => columnName.StartsWith(searchTerm, StringComparison.OrdinalIgnoreCase),
+                Models.MatchType.Exact => columnName.Equals(searchTerm, StringComparison.OrdinalIgnoreCase),
                 _ => false
             };
 

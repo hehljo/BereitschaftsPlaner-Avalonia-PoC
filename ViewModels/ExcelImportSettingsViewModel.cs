@@ -5,6 +5,7 @@ using BereitschaftsPlaner.Avalonia.Models;
 using BereitschaftsPlaner.Avalonia.Services.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using AvaloniaThreading = Avalonia.Threading;
 
 namespace BereitschaftsPlaner.Avalonia.ViewModels;
 
@@ -129,7 +130,7 @@ public partial class ExcelImportSettingsViewModel : ViewModelBase
             // Close dialog after 1 second
             System.Threading.Tasks.Task.Delay(1000).ContinueWith(_ =>
             {
-                Avalonia.Threading.Dispatcher.UIThread.Post(() => CloseRequested?.Invoke());
+                AvaloniaThreading.Dispatcher.UIThread.Post(() => CloseRequested?.Invoke());
             });
         }
         catch (Exception ex)
