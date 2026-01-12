@@ -730,4 +730,18 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         SelectedNavIndex = 4;
     }
+
+    [RelayCommand]
+    private async Task OpenSettings()
+    {
+        var settingsWindow = new Views.ExcelImportSettingsWindow();
+        await settingsWindow.ShowDialog(App.MainWindow!);
+    }
+
+    [RelayCommand]
+    private async Task OpenBackupManagement()
+    {
+        // TODO: Implement Backup Management Window
+        await Task.CompletedTask;
+    }
 }

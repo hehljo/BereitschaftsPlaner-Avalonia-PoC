@@ -1,0 +1,218 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:BereitschaftsPlaner.Avalonia.ViewModels"
+        x:Class="BereitschaftsPlaner.Avalonia.Views.ExcelImportSettingsWindow"
+        x:DataType="vm:ExcelImportSettingsViewModel"
+        Title="Excel Import Einstellungen"
+        Width="700" Height="750"
+        MinWidth="600" MinHeight="650"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource SurfaceBrush}"
+        FontFamily="{DynamicResource SansFont}"
+        FontSize="14">
+
+    <Design.DataContext>
+        <vm:ExcelImportSettingsViewModel/>
+    </Design.DataContext>
+
+    <Grid Margin="32">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,24">
+            <TextBlock Text="Excel Import Einstellungen" Classes="H1"/>
+            <TextBlock Text="Anpassen der Spalten-Zuordnung für D365-Exporte"
+                       Classes="Body"
+                       Foreground="{DynamicResource TextMutedBrush}"
+                       Margin="0,8,0,0"/>
+        </StackPanel>
+
+        <!-- Settings Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="24">
+
+                <!-- Allgemein -->
+                <Border Classes="BentoCard">
+                    <StackPanel Spacing="16">
+                        <TextBlock Text="ALLGEMEIN" Classes="Label"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                                       Text="Erste Spalten überspringen"
+                                       Classes="Body"
+                                       FontWeight="Medium"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,16,0"/>
+
+                            <NumericUpDown Grid.Column="1"
+                                           Value="{Binding SkipFirstColumns}"
+                                           Minimum="0"
+                                           Maximum="10"
+                                           Width="120"
+                                           HorizontalAlignment="Left"/>
+                        </Grid>
+
+                        <TextBlock Text="Anzahl der D365-Metadaten-Spalten (A, B, C, ...), die übersprungen werden sollen"
+                                   Classes="Body"
+                                   Foreground="{DynamicResource TextMutedBrush}"
+                                   FontSize="12"
+                                   FontStyle="Italic"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Ressourcen -->
+                <Border Classes="BentoCard">
+                    <StackPanel Spacing="20">
+                        <TextBlock Text="RESSOURCEN" Classes="Label"/>
+
+                        <!-- Ressourcenname -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Spalte: Ressourcenname" Classes="Body" FontWeight="Medium"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="12"/>
+                                    <ColumnDefinition Width="220"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBox Grid.Column="0"
+                                         Text="{Binding RessourcenNameSearchTerm}"
+                                         Watermark="Suchbegriff (z.B. 'Ressourcenname')"/>
+
+                                <ComboBox Grid.Column="2"
+                                          ItemsSource="{Binding MatchTypes}"
+                                          SelectedIndex="{Binding RessourcenNameMatchType}"/>
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- Ressourcen Bezirk -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Spalte: Bezirk" Classes="Body" FontWeight="Medium"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="12"/>
+                                    <ColumnDefinition Width="220"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBox Grid.Column="0"
+                                         Text="{Binding RessourcenBezirkSearchTerm}"
+                                         Watermark="Suchbegriff (z.B. 'Bezirk')"/>
+
+                                <ComboBox Grid.Column="2"
+                                          ItemsSource="{Binding MatchTypes}"
+                                          SelectedIndex="{Binding RessourcenBezirkMatchType}"/>
+                            </Grid>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Bereitschaftsgruppen -->
+                <Border Classes="BentoCard">
+                    <StackPanel Spacing="20">
+                        <TextBlock Text="BEREITSCHAFTSGRUPPEN" Classes="Label"/>
+
+                        <!-- Gruppenname -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Spalte: Name" Classes="Body" FontWeight="Medium"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="12"/>
+                                    <ColumnDefinition Width="220"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBox Grid.Column="0"
+                                         Text="{Binding GruppenNameSearchTerm}"
+                                         Watermark="Suchbegriff (z.B. 'Name')"/>
+
+                                <ComboBox Grid.Column="2"
+                                          ItemsSource="{Binding MatchTypes}"
+                                          SelectedIndex="{Binding GruppenNameMatchType}"/>
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- Gruppen Bezirk -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Spalte: Bezirk" Classes="Body" FontWeight="Medium"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="12"/>
+                                    <ColumnDefinition Width="220"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBox Grid.Column="0"
+                                         Text="{Binding GruppenBezirkSearchTerm}"
+                                         Watermark="Suchbegriff (z.B. 'Bezirk')"/>
+
+                                <ComboBox Grid.Column="2"
+                                          ItemsSource="{Binding MatchTypes}"
+                                          SelectedIndex="{Binding GruppenBezirkMatchType}"/>
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- Verantwortliche Person -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Spalte: Verantwortliche Person" Classes="Body" FontWeight="Medium"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="12"/>
+                                    <ColumnDefinition Width="220"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBox Grid.Column="0"
+                                         Text="{Binding GruppenVerantwortlichSearchTerm}"
+                                         Watermark="Suchbegriff (z.B. 'Verantwortliche Person')"/>
+
+                                <ComboBox Grid.Column="2"
+                                          ItemsSource="{Binding MatchTypes}"
+                                          SelectedIndex="{Binding GruppenVerantwortlichMatchType}"/>
+                            </Grid>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Status Message -->
+        <Border Grid.Row="2" Margin="0,16,0,0" IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+            <TextBlock Text="{Binding StatusMessage}"
+                       Foreground="{Binding StatusColor}"
+                       Classes="Body"
+                       FontWeight="Medium"
+                       TextAlignment="Center"/>
+        </Border>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="3"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="12"
+                    Margin="0,16,0,0">
+            <Button Content="Auf Standard zurücksetzen"
+                    Classes="SecondaryAction"
+                    Width="220"
+                    Command="{Binding ResetToDefaultsCommand}"/>
+            <Button Content="Abbrechen"
+                    Classes="SecondaryAction"
+                    Width="120"
+                    Command="{Binding CancelCommand}"/>
+            <Button Content="Speichern"
+                    Classes="TrustAction"
+                    Width="140"
+                    Command="{Binding SaveCommand}"/>
+        </StackPanel>
+    </Grid>
+</Window>
