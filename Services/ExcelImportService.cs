@@ -268,10 +268,14 @@ public class ExcelImportService
 
     /// <summary>
     /// Finds column index by flexible name matching
+    /// IMPORTANT: Skips first 3 columns (A, B, C) - these are Dynamics 365 metadata/validation values
     /// </summary>
     private int FindColumn(DataTable table, params string[] possibleNames)
     {
-        for (int i = 0; i < table.Columns.Count; i++)
+        // Skip first 3 columns (A, B, C) - Dynamics 365 metadata
+        const int SKIP_D365_COLUMNS = 3;
+
+        for (int i = SKIP_D365_COLUMNS; i < table.Columns.Count; i++)
         {
             var columnName = table.Columns[i].ColumnName;
 
@@ -279,11 +283,13 @@ public class ExcelImportService
             {
                 if (columnName.Contains(possibleName, StringComparison.OrdinalIgnoreCase))
                 {
+                    Serilog.Log.Debug($"FindColumn: Found '{possibleName}' in column {i} ('{columnName}')");
                     return i;
                 }
             }
         }
 
+        Serilog.Log.Warning($"FindColumn: No match found for {string.Join(", ", possibleNames)}");
         return -1;
     }
 }
