@@ -63,9 +63,9 @@ public class ExcelImportService
                 Serilog.Log.Debug($"  Column {i}: '{availableColumns[i]}'");
             }
 
-            // Find columns (flexible matching like PowerShell version)
-            int colName = FindColumn(table, "Ressourcenname", "Name", "Ressource");
-            int colBezirk = FindColumn(table, "Bezirk", "Organisationsdaten", "District");
+            // Find columns - precise matching
+            int colName = FindColumnContains(table, "Ressourcenname");
+            int colBezirk = FindColumnStartsWith(table, "Bezirk");
 
             // Log which columns were found
             Serilog.Log.Debug($"ExcelImportService.ImportRessourcen: colName={colName}, colBezirk={colBezirk}");
@@ -161,10 +161,10 @@ public class ExcelImportService
                 Serilog.Log.Debug($"  Column {i}: '{availableColumns[i]}'");
             }
 
-            // Find columns
-            int colName = FindColumn(table, "Name", "Bereitschaftsgruppe", "Gruppe");
-            int colBezirk = FindColumn(table, "Bezirk", "Organisationsdaten", "District");
-            int colVerantwortlich = FindColumn(table, "Verantwortliche Person", "Verantwortlich", "Owner");
+            // Find columns - precise matching
+            int colName = FindColumnContains(table, "Name");
+            int colBezirk = FindColumnStartsWith(table, "Bezirk");
+            int colVerantwortlich = FindColumnContains(table, "Verantwortliche Person");
 
             // Log which columns were found
             Serilog.Log.Debug($"ExcelImportService.ImportBereitschaftsGruppen: colName={colName}, colBezirk={colBezirk}, colVerantwortlich={colVerantwortlich}");
@@ -267,10 +267,10 @@ public class ExcelImportService
     }
 
     /// <summary>
-    /// Finds column index by flexible name matching
+    /// Finds column where name CONTAINS the search term
     /// IMPORTANT: Skips first 3 columns (A, B, C) - these are Dynamics 365 metadata/validation values
     /// </summary>
-    private int FindColumn(DataTable table, params string[] possibleNames)
+    private int FindColumnContains(DataTable table, string searchTerm)
     {
         // Skip first 3 columns (A, B, C) - Dynamics 365 metadata
         const int SKIP_D365_COLUMNS = 3;
@@ -279,17 +279,38 @@ public class ExcelImportService
         {
             var columnName = table.Columns[i].ColumnName;
 
-            foreach (var possibleName in possibleNames)
+            if (columnName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
             {
-                if (columnName.Contains(possibleName, StringComparison.OrdinalIgnoreCase))
-                {
-                    Serilog.Log.Debug($"FindColumn: Found '{possibleName}' in column {i} ('{columnName}')");
-                    return i;
-                }
+                Serilog.Log.Debug($"FindColumnContains: Found '{searchTerm}' in column {i} ('{columnName}')");
+                return i;
             }
         }
 
-        Serilog.Log.Warning($"FindColumn: No match found for {string.Join(", ", possibleNames)}");
+        Serilog.Log.Warning($"FindColumnContains: No match found for '{searchTerm}'");
+        return -1;
+    }
+
+    /// <summary>
+    /// Finds column where name STARTS WITH the search term
+    /// IMPORTANT: Skips first 3 columns (A, B, C) - these are Dynamics 365 metadata/validation values
+    /// </summary>
+    private int FindColumnStartsWith(DataTable table, string searchTerm)
+    {
+        // Skip first 3 columns (A, B, C) - Dynamics 365 metadata
+        const int SKIP_D365_COLUMNS = 3;
+
+        for (int i = SKIP_D365_COLUMNS; i < table.Columns.Count; i++)
+        {
+            var columnName = table.Columns[i].ColumnName;
+
+            if (columnName.StartsWith(searchTerm, StringComparison.OrdinalIgnoreCase))
+            {
+                Serilog.Log.Debug($"FindColumnStartsWith: Found column starting with '{searchTerm}' at index {i} ('{columnName}')");
+                return i;
+            }
+        }
+
+        Serilog.Log.Warning($"FindColumnStartsWith: No column starts with '{searchTerm}'");
         return -1;
     }
 }
