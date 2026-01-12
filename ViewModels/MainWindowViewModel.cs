@@ -17,6 +17,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly BereitschaftsPlaner.Avalonia.Services.ExcelImportService _excelService;
     private readonly DatabaseService _dbService;
     private readonly SettingsService _settingsService;
+    private SBPUrlService? _sbpUrlService;
 
     // Navigation
     [ObservableProperty]
@@ -27,6 +28,7 @@ public partial class MainWindowViewModel : ViewModelBase
         _dbService = App.DatabaseService;
         _settingsService = App.SettingsService;
         _excelService = new BereitschaftsPlaner.Avalonia.Services.ExcelImportService(_settingsService);
+        UpdateSBPUrlService();
 
         // Subscribe to collection changes for debugging
         _ressourcen.CollectionChanged += (s, e) =>
@@ -619,6 +621,7 @@ public partial class MainWindowViewModel : ViewModelBase
     partial void OnEnvironmentIndexChanged(int value)
     {
         SaveEnvironmentSettings();
+        UpdateSBPUrlService(); // Update SBP URLs for new environment
     }
 
     /// <summary>
@@ -739,5 +742,97 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         var settingsWindow = new Views.ExcelImportSettingsWindow();
         await settingsWindow.ShowDialog(App.MainWindow!);
+    }
+
+    // ============================================================================
+    // SBP URL ACTIONS
+    // ============================================================================
+
+    /// <summary>
+    /// Update SBPUrlService when environment changes
+    /// </summary>
+    private void UpdateSBPUrlService()
+    {
+        _sbpUrlService = new SBPUrlService(_settingsService, Environment);
+    }
+
+    /// <summary>
+    /// Open SBP URL in browser - Bookable Resources (for Excel Export)
+    /// </summary>
+    [RelayCommand]
+    private void OpenSBPBookableResources()
+    {
+        if (_sbpUrlService == null) return;
+        var url = _sbpUrlService.GetBookableResourcesUrl();
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+        {
+            FileName = url,
+            UseShellExecute = true
+        });
+        Serilog.Log.Information($"Opened SBP URL: Bookable Resources ({Environment})");
+    }
+
+    /// <summary>
+    /// Open SBP URL in browser - On-Call Groups (for Excel Export)
+    /// </summary>
+    [RelayCommand]
+    private void OpenSBPOnCallGroups()
+    {
+        if (_sbpUrlService == null) return;
+        var url = _sbpUrlService.GetOnCallGroupsUrl();
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+        {
+            FileName = url,
+            UseShellExecute = true
+        });
+        Serilog.Log.Information($"Opened SBP URL: On-Call Groups ({Environment})");
+    }
+
+    /// <summary>
+    /// Open SBP URL in browser - My Imports (Import Status)
+    /// </summary>
+    [RelayCommand]
+    private void OpenSBPMyImports()
+    {
+        if (_sbpUrlService == null) return;
+        var url = _sbpUrlService.GetMyImportsUrl();
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+        {
+            FileName = url,
+            UseShellExecute = true
+        });
+        Serilog.Log.Information($"Opened SBP URL: My Imports ({Environment})");
+    }
+
+    /// <summary>
+    /// Open SBP URL in browser - On-Call Duties (Verification)
+    /// </summary>
+    [RelayCommand]
+    private void OpenSBPOnCallDuties()
+    {
+        if (_sbpUrlService == null) return;
+        var url = _sbpUrlService.GetOnCallDutiesUrl();
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+        {
+            FileName = url,
+            UseShellExecute = true
+        });
+        Serilog.Log.Information($"Opened SBP URL: On-Call Duties ({Environment})");
+    }
+
+    /// <summary>
+    /// Open SBP URL in browser - Import Overview
+    /// </summary>
+    [RelayCommand]
+    private void OpenSBPImportOverview()
+    {
+        if (_sbpUrlService == null) return;
+        var url = _sbpUrlService.GetImportOverviewUrl();
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+        {
+            FileName = url,
+            UseShellExecute = true
+        });
+        Serilog.Log.Information($"Opened SBP URL: Import Overview ({Environment})");
     }
 }

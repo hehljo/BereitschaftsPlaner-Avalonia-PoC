@@ -232,6 +232,17 @@
                                     </StackPanel>
                                 </Border>
 
+                                <Border Classes="BentoCard">
+                                    <StackPanel Spacing="16">
+                                        <TextBlock Text="SBP LINK" Classes="Label"/>
+                                        <Button Content="📋 Ressourcen in SBP öffnen"
+                                                Classes="SecondaryAction"
+                                                HorizontalContentAlignment="Center"
+                                                Command="{Binding OpenSBPBookableResourcesCommand}"
+                                                ToolTip.Tip="Excel-Export für Ressourcen-Import"/>
+                                    </StackPanel>
+                                </Border>
+
                                 <Border Classes="BentoCard" ClipToBounds="True">
                                     <StackPanel Spacing="16">
                                         <TextBlock Text="{Binding DataGridTitle}" Classes="H2" FontSize="18"/>
@@ -294,6 +305,17 @@
                                         <Button Content="Excel importieren"
                                                 Classes="TrustAction"
                                                 Command="{Binding ImportGruppenCommand}"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Classes="BentoCard">
+                                    <StackPanel Spacing="16">
+                                        <TextBlock Text="SBP LINK" Classes="Label"/>
+                                        <Button Content="📋 Gruppen in SBP öffnen"
+                                                Classes="SecondaryAction"
+                                                HorizontalContentAlignment="Center"
+                                                Command="{Binding OpenSBPOnCallGroupsCommand}"
+                                                ToolTip.Tip="Excel-Export für Gruppen-Import"/>
                                     </StackPanel>
                                 </Border>
 
