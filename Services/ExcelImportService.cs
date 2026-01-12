@@ -55,22 +55,47 @@ public class ExcelImportService
             var table = dataSet.Tables[0];
             var ressourcen = new List<Ressource>();
 
+            // Log all available columns
+            var availableColumns = table.Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToList();
+            Serilog.Log.Debug($"ExcelImportService.ImportRessourcen: Excel has {availableColumns.Count} columns");
+            for (int i = 0; i < availableColumns.Count; i++)
+            {
+                Serilog.Log.Debug($"  Column {i}: '{availableColumns[i]}'");
+            }
+
             // Find columns (flexible matching like PowerShell version)
             int colName = FindColumn(table, "Ressourcenname", "Name", "Ressource");
             int colBezirk = FindColumn(table, "Bezirk", "Organisationsdaten", "District");
 
+            // Log which columns were found
+            Serilog.Log.Debug($"ExcelImportService.ImportRessourcen: colName={colName}, colBezirk={colBezirk}");
+            if (colName != -1)
+            {
+                Serilog.Log.Debug($"  Name column: '{table.Columns[colName].ColumnName}'");
+            }
+            if (colBezirk != -1)
+            {
+                Serilog.Log.Debug($"  Bezirk column: '{table.Columns[colBezirk].ColumnName}'");
+            }
+
             if (colName == -1 || colBezirk == -1)
             {
-                var availableColumns = string.Join(", ", table.Columns.Cast<DataColumn>().Select(c => c.ColumnName));
+                var availableColumnsStr = string.Join(", ", availableColumns);
                 return (false, new List<Ressource>(),
-                    $"Erforderliche Spalten nicht gefunden.\n\nBenötigt: 'Ressourcenname', 'Bezirk'\nGefunden: {availableColumns}");
+                    $"Erforderliche Spalten nicht gefunden.\n\nBenötigt: 'Ressourcenname', 'Bezirk'\nGefunden: {availableColumnsStr}");
             }
 
             // Read data rows
+            int rowIndex = 0;
             foreach (DataRow row in table.Rows)
             {
                 var name = row[colName]?.ToString()?.Trim() ?? string.Empty;
                 var bezirk = row[colBezirk]?.ToString()?.Trim() ?? string.Empty;
+
+                if (rowIndex < 3) // Log first 3 rows for debugging
+                {
+                    Serilog.Log.Debug($"ExcelImportService.ImportRessourcen: Row {rowIndex} - Name='{name}', Bezirk='{bezirk}'");
+                }
 
                 if (!string.IsNullOrWhiteSpace(name))
                 {
@@ -80,6 +105,13 @@ public class ExcelImportService
                         Bezirk = bezirk
                     });
                 }
+                rowIndex++;
+            }
+
+            Serilog.Log.Information($"ExcelImportService.ImportRessourcen: Read {ressourcen.Count} Ressourcen from {rowIndex} rows");
+            if (ressourcen.Count > 0)
+            {
+                Serilog.Log.Debug($"ExcelImportService.ImportRessourcen: First item - Name='{ressourcen[0].Name}', Bezirk='{ressourcen[0].Bezirk}'");
             }
 
             return (true, ressourcen, $"{ressourcen.Count} Ressourcen erfolgreich gelesen");
@@ -121,24 +153,53 @@ public class ExcelImportService
             var table = dataSet.Tables[0];
             var gruppen = new List<BereitschaftsGruppe>();
 
+            // Log all available columns
+            var availableColumns = table.Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToList();
+            Serilog.Log.Debug($"ExcelImportService.ImportBereitschaftsGruppen: Excel has {availableColumns.Count} columns");
+            for (int i = 0; i < availableColumns.Count; i++)
+            {
+                Serilog.Log.Debug($"  Column {i}: '{availableColumns[i]}'");
+            }
+
             // Find columns
             int colName = FindColumn(table, "Name", "Bereitschaftsgruppe", "Gruppe");
             int colBezirk = FindColumn(table, "Bezirk", "Organisationsdaten", "District");
             int colVerantwortlich = FindColumn(table, "Verantwortliche Person", "Verantwortlich", "Owner");
 
+            // Log which columns were found
+            Serilog.Log.Debug($"ExcelImportService.ImportBereitschaftsGruppen: colName={colName}, colBezirk={colBezirk}, colVerantwortlich={colVerantwortlich}");
+            if (colName != -1)
+            {
+                Serilog.Log.Debug($"  Name column: '{table.Columns[colName].ColumnName}'");
+            }
+            if (colBezirk != -1)
+            {
+                Serilog.Log.Debug($"  Bezirk column: '{table.Columns[colBezirk].ColumnName}'");
+            }
+            if (colVerantwortlich != -1)
+            {
+                Serilog.Log.Debug($"  Verantwortlich column: '{table.Columns[colVerantwortlich].ColumnName}'");
+            }
+
             if (colName == -1)
             {
-                var availableColumns = string.Join(", ", table.Columns.Cast<DataColumn>().Select(c => c.ColumnName));
+                var availableColumnsStr = string.Join(", ", availableColumns);
                 return (false, new List<BereitschaftsGruppe>(),
-                    $"Spalte 'Name' nicht gefunden.\n\nGefunden: {availableColumns}");
+                    $"Spalte 'Name' nicht gefunden.\n\nGefunden: {availableColumnsStr}");
             }
 
             // Read data rows
+            int rowIndex = 0;
             foreach (DataRow row in table.Rows)
             {
                 var name = row[colName]?.ToString()?.Trim() ?? string.Empty;
                 var bezirk = colBezirk != -1 ? (row[colBezirk]?.ToString()?.Trim() ?? string.Empty) : string.Empty;
                 var verantwortlich = colVerantwortlich != -1 ? (row[colVerantwortlich]?.ToString()?.Trim() ?? string.Empty) : string.Empty;
+
+                if (rowIndex < 3) // Log first 3 rows for debugging
+                {
+                    Serilog.Log.Debug($"ExcelImportService.ImportBereitschaftsGruppen: Row {rowIndex} - Name='{name}', Bezirk='{bezirk}', Verantwortlich='{verantwortlich}'");
+                }
 
                 if (!string.IsNullOrWhiteSpace(name))
                 {
@@ -149,6 +210,13 @@ public class ExcelImportService
                         VerantwortlichePerson = verantwortlich
                     });
                 }
+                rowIndex++;
+            }
+
+            Serilog.Log.Information($"ExcelImportService.ImportBereitschaftsGruppen: Read {gruppen.Count} Gruppen from {rowIndex} rows");
+            if (gruppen.Count > 0)
+            {
+                Serilog.Log.Debug($"ExcelImportService.ImportBereitschaftsGruppen: First item - Name='{gruppen[0].Name}', Bezirk='{gruppen[0].Bezirk}'");
             }
 
             return (true, gruppen, $"{gruppen.Count} Bereitschaftsgruppen erfolgreich gelesen");
