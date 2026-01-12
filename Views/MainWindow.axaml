@@ -978,23 +978,22 @@
                                 </StackPanel>
                             </Border>
 
-                            <Border Classes="BentoCard">
+                            <!-- TODO: SBP Links - Needs proper command implementation in EditorViewModel -->
+                            <!--<Border Classes="BentoCard">
                                 <StackPanel Spacing="16">
                                     <TextBlock Text="SBP LINKS" Classes="Label"/>
                                     <StackPanel Orientation="Horizontal" Spacing="12">
                                         <Button Content="📋 Bereitschaftsdienste"
                                                 Classes="SecondaryAction"
                                                 HorizontalContentAlignment="Center"
-                                                Command="{Binding DataContext.OpenSBPOnCallDutiesCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                                 ToolTip.Tip="Dienste in SBP überprüfen"/>
                                         <Button Content="🌐 Import Status"
                                                 Classes="SecondaryAction"
                                                 HorizontalContentAlignment="Center"
-                                                Command="{Binding DataContext.OpenSBPMyImportsCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                                 ToolTip.Tip="Import-Status überwachen"/>
                                     </StackPanel>
                                 </StackPanel>
-                            </Border>
+                            </Border>-->
 
                             <Border Classes="BentoCard"
                                     IsVisible="{Binding HasLoadedData}">

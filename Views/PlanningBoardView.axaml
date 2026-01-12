@@ -80,19 +80,18 @@
                         Width="90"
                         Command="{Binding ExportToExcelCommand}"/>
 
-                <Button Content="🌐 Import Status"
+                <!-- TODO: SBP Links - Needs proper command implementation in PlanningBoardViewModel -->
+                <!--<Button Content="🌐 Import Status"
                         Classes="SecondaryAction"
                         Width="130"
                         HorizontalContentAlignment="Center"
-                        Command="{Binding DataContext.OpenSBPMyImportsCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                         ToolTip.Tip="Import-Status in SBP überwachen"/>
 
                 <Button Content="📋 Bereitschaftsdienste"
                         Classes="SecondaryAction"
                         Width="160"
                         HorizontalContentAlignment="Center"
-                        Command="{Binding DataContext.OpenSBPOnCallDutiesCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                        ToolTip.Tip="Bereitschaftsdienste in SBP prüfen"/>
+                        ToolTip.Tip="Bereitschaftsdienste in SBP prüfen"/>-->
 
                 <Button Content="Löschen"
                         Classes="SecondaryAction"
