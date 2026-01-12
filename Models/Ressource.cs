@@ -13,5 +13,5 @@ public class Ressource
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-    public override string ToString() => $"{Name} ({Bezirk})";
+    public override string ToString() => $"{Name} - Bezirk: {Bezirk}";
 }

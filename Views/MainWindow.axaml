@@ -217,14 +217,28 @@
                                     </StackPanel>
                                 </Border>
 
-                                <Border Classes="BentoCard">
+                                <Border Classes="BentoCard" ClipToBounds="True">
                                     <StackPanel Spacing="16">
                                         <TextBlock Text="{Binding DataGridTitle}" Classes="H2" FontSize="18"/>
 
-                                        <DataGrid ItemsSource="{Binding Ressourcen}"
-                                                  AutoGenerateColumns="True"
-                                                  IsReadOnly="True"
-                                                  Height="250"/>
+                                        <ScrollViewer Height="250"
+                                                      VerticalScrollBarVisibility="Auto"
+                                                      HorizontalScrollBarVisibility="Disabled">
+                                            <ItemsControl ItemsSource="{Binding Ressourcen}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border BorderBrush="{DynamicResource BorderBrush}"
+                                                                BorderThickness="0,0,0,1"
+                                                                Padding="12,8">
+                                                            <TextBlock Text="{Binding}"
+                                                                       Classes="Body"
+                                                                       TextWrapping="Wrap"
+                                                                       MaxWidth="800"/>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </ScrollViewer>
 
                                         <TextBlock Text="Keine Daten vorhanden"
                                                    Classes="Body"
@@ -268,14 +282,28 @@
                                     </StackPanel>
                                 </Border>
 
-                                <Border Classes="BentoCard">
+                                <Border Classes="BentoCard" ClipToBounds="True">
                                     <StackPanel Spacing="16">
                                         <TextBlock Text="Importierte Gruppen" Classes="H2" FontSize="18"/>
 
-                                        <DataGrid ItemsSource="{Binding BereitschaftsGruppen}"
-                                                  AutoGenerateColumns="True"
-                                                  IsReadOnly="True"
-                                                  Height="250"/>
+                                        <ScrollViewer Height="250"
+                                                      VerticalScrollBarVisibility="Auto"
+                                                      HorizontalScrollBarVisibility="Disabled">
+                                            <ItemsControl ItemsSource="{Binding BereitschaftsGruppen}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border BorderBrush="{DynamicResource BorderBrush}"
+                                                                BorderThickness="0,0,0,1"
+                                                                Padding="12,8">
+                                                            <TextBlock Text="{Binding}"
+                                                                       Classes="Body"
+                                                                       TextWrapping="Wrap"
+                                                                       MaxWidth="800"/>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </ScrollViewer>
 
                                         <TextBlock Text="Keine Daten vorhanden"
                                                    Classes="Body"

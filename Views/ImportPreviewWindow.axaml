@@ -44,13 +44,16 @@
             </StackPanel>
         </Border>
 
-        <!-- Data Preview (DataGrid) -->
+        <!-- Data Preview (ItemsControl) -->
         <Border Grid.Row="2"
                 Classes="BentoCard"
-                Margin="0,0,0,24">
+                Margin="0,0,0,24"
+                ClipToBounds="True">
             <StackPanel Spacing="16">
                 <TextBlock Text="DATENVORSCHAU" Classes="Label"/>
-                <ScrollViewer MaxHeight="300" VerticalScrollBarVisibility="Auto">
+                <ScrollViewer MaxHeight="300"
+                              VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled">
                     <ItemsControl ItemsSource="{Binding PreviewData}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
@@ -59,7 +62,8 @@
                                         Padding="12,8">
                                     <TextBlock Text="{Binding}"
                                                Classes="Body"
-                                               TextWrapping="Wrap"/>
+                                               TextWrapping="Wrap"
+                                               MaxWidth="800"/>
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
