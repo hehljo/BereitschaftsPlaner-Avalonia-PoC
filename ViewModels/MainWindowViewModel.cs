@@ -755,7 +755,8 @@ public partial class MainWindowViewModel : ViewModelBase
     /// </summary>
     private void UpdateSBPUrlService()
     {
-        _sbpUrlService = new SBPUrlService(_settingsService, this.Environment);
+        var environment = EnvironmentIndex == 1 ? "QA" : "Production";
+        _sbpUrlService = new SBPUrlService(_settingsService, environment);
     }
 
     /// <summary>
@@ -766,12 +767,13 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         if (_sbpUrlService == null) return;
         var url = _sbpUrlService.GetBookableResourcesUrl();
+        var environment = EnvironmentIndex == 1 ? "QA" : "Production";
         System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
         {
             FileName = url,
             UseShellExecute = true
         });
-        Serilog.Log.Information($"Opened SBP URL: Bookable Resources ({this.Environment})");
+        Serilog.Log.Information($"Opened SBP URL: Bookable Resources ({environment})");
     }
 
     /// <summary>
@@ -782,12 +784,13 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         if (_sbpUrlService == null) return;
         var url = _sbpUrlService.GetOnCallGroupsUrl();
+        var environment = EnvironmentIndex == 1 ? "QA" : "Production";
         System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
         {
             FileName = url,
             UseShellExecute = true
         });
-        Serilog.Log.Information($"Opened SBP URL: On-Call Groups ({this.Environment})");
+        Serilog.Log.Information($"Opened SBP URL: On-Call Groups ({environment})");
     }
 
     /// <summary>
@@ -798,12 +801,13 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         if (_sbpUrlService == null) return;
         var url = _sbpUrlService.GetMyImportsUrl();
+        var environment = EnvironmentIndex == 1 ? "QA" : "Production";
         System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
         {
             FileName = url,
             UseShellExecute = true
         });
-        Serilog.Log.Information($"Opened SBP URL: My Imports ({this.Environment})");
+        Serilog.Log.Information($"Opened SBP URL: My Imports ({environment})");
     }
 
     /// <summary>
@@ -814,12 +818,13 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         if (_sbpUrlService == null) return;
         var url = _sbpUrlService.GetOnCallDutiesUrl();
+        var environment = EnvironmentIndex == 1 ? "QA" : "Production";
         System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
         {
             FileName = url,
             UseShellExecute = true
         });
-        Serilog.Log.Information($"Opened SBP URL: On-Call Duties ({this.Environment})");
+        Serilog.Log.Information($"Opened SBP URL: On-Call Duties ({environment})");
     }
 
     /// <summary>
@@ -830,11 +835,12 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         if (_sbpUrlService == null) return;
         var url = _sbpUrlService.GetImportOverviewUrl();
+        var environment = EnvironmentIndex == 1 ? "QA" : "Production";
         System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
         {
             FileName = url,
             UseShellExecute = true
         });
-        Serilog.Log.Information($"Opened SBP URL: Import Overview ({this.Environment})");
+        Serilog.Log.Information($"Opened SBP URL: Import Overview ({environment})");
     }
 }
