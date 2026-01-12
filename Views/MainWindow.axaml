@@ -130,10 +130,12 @@
                     <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" Margin="0,0,24,0">
                         <Button Command="{Binding OpenSettingsCommand}"
                                 Classes="SecondaryAction"
+                                HorizontalContentAlignment="Center"
                                 Content="Features"/>
 
                         <Button Command="{Binding OpenBackupManagementCommand}"
                                 Classes="SecondaryAction"
+                                HorizontalContentAlignment="Center"
                                 Content="Backup"/>
                     </StackPanel>
 
@@ -186,6 +188,7 @@
                                     Command="{Binding OpenExcelImportSettingsCommand}"
                                     Classes="SecondaryAction"
                                     HorizontalAlignment="Right"
+                                    HorizontalContentAlignment="Center"
                                     Height="32"
                                     Padding="12,0"/>
                         </Grid>

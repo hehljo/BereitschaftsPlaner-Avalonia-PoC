@@ -28,6 +28,9 @@ public class AppSettings
     // Excel Import Configuration
     public ExcelImportSettings ExcelImport { get; set; } = new();
 
+    // SBP URL Configuration
+    public SBPUrlSettings SBPUrls { get; set; } = new();
+
     // Feature Flags (enable/disable advanced features)
     public FeatureFlags Features { get; set; } = new();
 }
@@ -139,4 +142,37 @@ public enum MatchType
     /// Column name must exactly match the search term (case-insensitive)
     /// </summary>
     Exact
+}
+
+/// <summary>
+/// SBP (Service Business Platform) URL configuration
+/// Environment-specific URLs for QA and Production
+/// </summary>
+public class SBPUrlSettings
+{
+    // Base URLs per environment
+    public string QABaseUrl { get; set; } = "https://yunexpower-qa.crm4.dynamics.com";
+    public string ProductionBaseUrl { get; set; } = "https://yunex.crm4.dynamics.com";
+
+    // App IDs per environment
+    public string QAAppId { get; set; } = "a2be708c-0806-eb11-a812-000d3a490c9a";
+    public string ProductionAppId { get; set; } = "e02f0b70-8749-eb11-bb23-000d3ab4f5da";
+
+    // View IDs (same for both environments, but user can override)
+    public string OnCallDutyViewId { get; set; } = "604e61e1-8ef2-4248-a6ef-ae5e8c518c71";
+    public string ImportFileViewId { get; set; } = "a2927069-e4dc-4e8f-8fb1-d2f6c40c427e";
+    public string BookableResourceViewId { get; set; } = "662706ca-6ec0-4c0e-a281-521161be48fa";
+    public string OnCallGroupViewId { get; set; } = "54989526-bb8e-ea11-a811-000d3a4aa1c2";
+
+    /// <summary>
+    /// Get base URL for specified environment
+    /// </summary>
+    public string GetBaseUrl(string environment) =>
+        environment == "QA" ? QABaseUrl : ProductionBaseUrl;
+
+    /// <summary>
+    /// Get app ID for specified environment
+    /// </summary>
+    public string GetAppId(string environment) =>
+        environment == "QA" ? QAAppId : ProductionAppId;
 }
