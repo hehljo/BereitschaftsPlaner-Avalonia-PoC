@@ -591,7 +591,7 @@ public partial class PlanningBoardViewModel : ViewModelBase
     /// Save current planning as template
     /// </summary>
     [RelayCommand]
-    private async void SaveTemplate()
+    private async Task SaveTemplate()
     {
         if (!Assignments.Any())
         {
@@ -718,7 +718,7 @@ public partial class PlanningBoardViewModel : ViewModelBase
     /// Load template and apply to current month
     /// </summary>
     [RelayCommand]
-    private async void LoadTemplate()
+    private async Task LoadTemplate()
     {
         var templateWindow = new Views.TemplateLibraryWindow(async (selectedTemplate) =>
         {

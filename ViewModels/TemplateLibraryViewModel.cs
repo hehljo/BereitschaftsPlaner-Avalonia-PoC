@@ -98,7 +98,7 @@ public partial class TemplateLibraryViewModel : ViewModelBase
     /// Delete selected template
     /// </summary>
     [RelayCommand]
-    private async void DeleteTemplate()
+    private async Task DeleteTemplate()
     {
         if (SelectedTemplate == null)
         {
@@ -155,7 +155,7 @@ public partial class TemplateLibraryViewModel : ViewModelBase
     /// Rename selected template
     /// </summary>
     [RelayCommand]
-    private async void RenameTemplate()
+    private async Task RenameTemplate()
     {
         if (SelectedTemplate == null)
         {
@@ -251,7 +251,7 @@ public partial class TemplateLibraryViewModel : ViewModelBase
     /// Show template preview
     /// </summary>
     [RelayCommand]
-    private async void ShowPreview()
+    private async Task ShowPreview()
     {
         if (SelectedTemplate == null)
         {

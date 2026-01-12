@@ -240,6 +240,11 @@
                                                 HorizontalContentAlignment="Center"
                                                 Command="{Binding OpenSBPBookableResourcesCommand}"
                                                 ToolTip.Tip="Excel-Export für Ressourcen-Import"/>
+                                        <Button Content="💡 Hinweis: Benötigte Spalten"
+                                                Classes="SecondaryAction"
+                                                HorizontalContentAlignment="Center"
+                                                Command="{Binding ShowRessourcenHintCommand}"
+                                                ToolTip.Tip="Zeigt welche Spalten für den Import benötigt werden"/>
                                     </StackPanel>
                                 </Border>
 
@@ -316,6 +321,11 @@
                                                 HorizontalContentAlignment="Center"
                                                 Command="{Binding OpenSBPOnCallGroupsCommand}"
                                                 ToolTip.Tip="Excel-Export für Gruppen-Import"/>
+                                        <Button Content="💡 Hinweis: Benötigte Spalten"
+                                                Classes="SecondaryAction"
+                                                HorizontalContentAlignment="Center"
+                                                Command="{Binding ShowGruppenHintCommand}"
+                                                ToolTip.Tip="Zeigt welche Spalten für den Import benötigt werden"/>
                                     </StackPanel>
                                 </Border>
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Avalonia.Media;
+using BereitschaftsPlaner.Avalonia.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -17,13 +18,15 @@ public partial class ImportPreviewViewModel : ViewModelBase
     {
         get
         {
-            Serilog.Log.Debug($"ImportPreviewViewModel.PreviewData GET: Count={_previewData.Count}");
+            if (DebugConfig.IsEnabled(DebugConfig.ImportPreview))
+                Serilog.Log.Debug($"[IMPORT PREVIEW] ImportPreviewViewModel.PreviewData GET: Count={_previewData.Count}");
             return _previewData;
         }
         set
         {
-            Serilog.Log.Debug($"ImportPreviewViewModel.PreviewData SET: NewCount={value?.Count ?? 0}");
-            SetProperty(ref _previewData, value);
+            if (DebugConfig.IsEnabled(DebugConfig.ImportPreview))
+                Serilog.Log.Debug($"[IMPORT PREVIEW] ImportPreviewViewModel.PreviewData SET: NewCount={value?.Count ?? 0}");
+            SetProperty(ref _previewData, value ?? new());
         }
     }
 

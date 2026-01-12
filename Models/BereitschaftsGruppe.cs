@@ -14,5 +14,5 @@ public class BereitschaftsGruppe
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-    public override string ToString() => $"{Name} - Bezirk: {Bezirk}";
+    public override string ToString() => Name;
 }

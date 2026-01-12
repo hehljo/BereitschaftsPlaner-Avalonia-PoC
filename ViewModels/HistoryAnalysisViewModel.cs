@@ -72,7 +72,7 @@ public partial class HistoryAnalysisViewModel : ViewModelBase
     /// Show detailed report as text
     /// </summary>
     [RelayCommand]
-    private async void ShowDetailedReport()
+    private async Task ShowDetailedReport()
     {
         if (CurrentReport == null)
         {
@@ -132,7 +132,7 @@ public partial class HistoryAnalysisViewModel : ViewModelBase
     /// Export report to CSV (simple implementation)
     /// </summary>
     [RelayCommand]
-    private async void ExportToCSV()
+    private async Task ExportToCSV()
     {
         if (CurrentReport == null)
         {

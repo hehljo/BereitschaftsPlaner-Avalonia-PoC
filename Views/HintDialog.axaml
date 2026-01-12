@@ -1,0 +1,49 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="BereitschaftsPlaner.Avalonia.Views.HintDialog"
+        Title="Hinweis"
+        Width="700"
+        MinWidth="600"
+        MaxWidth="900"
+        SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource SurfaceBrush}"
+        FontFamily="{DynamicResource SansFont}"
+        CanResize="false">
+
+    <Border Classes="BentoCard" Margin="32">
+        <StackPanel Spacing="24">
+            <!-- Title -->
+            <TextBlock x:Name="TitleText"
+                       Classes="H2"
+                       TextWrapping="Wrap"/>
+
+            <!-- Message -->
+            <TextBlock x:Name="MessageText"
+                       Classes="Body"
+                       TextWrapping="Wrap"
+                       Foreground="{DynamicResource TextMutedBrush}"/>
+
+            <!-- Screenshot (optional) -->
+            <Border x:Name="ScreenshotBorder"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    ClipToBounds="True"
+                    IsVisible="False">
+                <Image x:Name="ScreenshotImage"
+                       Stretch="Uniform"
+                       MaxHeight="500"/>
+            </Border>
+
+            <!-- OK Button -->
+            <Button Content="OK"
+                    Classes="TrustAction"
+                    HorizontalAlignment="Center"
+                    Width="120"
+                    Height="40"
+                    HorizontalContentAlignment="Center"
+                    Click="OnOkClick"/>
+        </StackPanel>
+    </Border>
+</Window>

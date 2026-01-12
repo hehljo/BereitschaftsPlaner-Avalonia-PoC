@@ -75,13 +75,15 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         get
         {
-            Serilog.Log.Debug($"MainWindowViewModel.Ressourcen GET: Count={_ressourcen.Count}");
+            if (DebugConfig.IsEnabled(DebugConfig.Import))
+                Serilog.Log.Debug($"[IMPORT] MainWindowViewModel.Ressourcen GET: Count={_ressourcen.Count}");
             return _ressourcen;
         }
         set
         {
-            Serilog.Log.Debug($"MainWindowViewModel.Ressourcen SET: NewCount={value?.Count ?? 0}");
-            SetProperty(ref _ressourcen, value);
+            if (DebugConfig.IsEnabled(DebugConfig.Import))
+                Serilog.Log.Debug($"[IMPORT] MainWindowViewModel.Ressourcen SET: NewCount={value?.Count ?? 0}");
+            SetProperty(ref _ressourcen, value ?? new());
         }
     }
 
@@ -91,13 +93,15 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         get
         {
-            Serilog.Log.Debug($"MainWindowViewModel.BereitschaftsGruppen GET: Count={_bereitschaftsGruppen.Count}");
+            if (DebugConfig.IsEnabled(DebugConfig.Import))
+                Serilog.Log.Debug($"[IMPORT] MainWindowViewModel.BereitschaftsGruppen GET: Count={_bereitschaftsGruppen.Count}");
             return _bereitschaftsGruppen;
         }
         set
         {
-            Serilog.Log.Debug($"MainWindowViewModel.BereitschaftsGruppen SET: NewCount={value?.Count ?? 0}");
-            SetProperty(ref _bereitschaftsGruppen, value);
+            if (DebugConfig.IsEnabled(DebugConfig.Import))
+                Serilog.Log.Debug($"[IMPORT] MainWindowViewModel.BereitschaftsGruppen SET: NewCount={value?.Count ?? 0}");
+            SetProperty(ref _bereitschaftsGruppen, value ?? new());
         }
     }
 
@@ -842,5 +846,51 @@ public partial class MainWindowViewModel : ViewModelBase
             UseShellExecute = true
         });
         Serilog.Log.Information($"Opened SBP URL: Import Overview ({environment})");
+    }
+
+    // ============================================================================
+    // HINT DIALOGS
+    // ============================================================================
+
+    /// <summary>
+    /// Show hint for Ressourcen Excel Export (required columns + how to add Bezirk column)
+    /// </summary>
+    [RelayCommand]
+    private async Task ShowRessourcenHint()
+    {
+        var hint = new Views.HintDialog(
+            title: "Ressourcen Excel-Export Hinweise",
+            message: "Für den Ressourcen-Import werden folgende Spalten benötigt:\n\n" +
+                     "• Ressourcenname (z.B. 'Ressourcenname', 'Resource Name')\n" +
+                     "• Bezirk (z.B. 'Bezirk', 'District')\n\n" +
+                     "⚠️ WICHTIG: Die Spalte 'Bezirk' muss manuell zur Ansicht hinzugefügt werden!\n\n" +
+                     "So fügen Sie die Bezirk-Spalte hinzu:\n" +
+                     "1. Öffnen Sie die Ressourcen-Liste in SBP\n" +
+                     "2. Klicken Sie auf 'Spalten bearbeiten' (siehe Screenshot)\n" +
+                     "3. Fügen Sie die Spalte 'Bezirk' hinzu\n" +
+                     "4. Exportieren Sie die Liste mit 'Zur Neuimportierung verfügbar machen'",
+            screenshotPath: "Assets/SBPressourcen.png"
+        );
+        await hint.ShowDialog(App.MainWindow!);
+        Serilog.Log.Debug("Showed Ressourcen hint dialog");
+    }
+
+    /// <summary>
+    /// Show hint for Bereitschaftsgruppen Excel Export (required columns)
+    /// </summary>
+    [RelayCommand]
+    private async Task ShowGruppenHint()
+    {
+        var hint = new Views.HintDialog(
+            title: "Bereitschaftsgruppen Excel-Export Hinweise",
+            message: "Für den Bereitschaftsgruppen-Import werden folgende Spalten benötigt:\n\n" +
+                     "• Name (z.B. 'Name', 'Group Name')\n" +
+                     "• Bezirk (z.B. 'Bezirk', 'District')\n" +
+                     "• Verantwortliche Person (z.B. 'Verantwortliche Person', 'Responsible Person')\n\n" +
+                     "ℹ️ Die Standard-Ansicht enthält normalerweise alle benötigten Spalten.\n\n" +
+                     "Exportieren Sie die Liste mit 'Zur Neuimportierung verfügbar machen'."
+        );
+        await hint.ShowDialog(App.MainWindow!);
+        Serilog.Log.Debug("Showed Gruppen hint dialog");
     }
 }
