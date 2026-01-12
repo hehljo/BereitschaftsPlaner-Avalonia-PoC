@@ -7,9 +7,10 @@ using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using BereitschaftsPlaner.Avalonia.Models;
 using BereitschaftsPlaner.Avalonia.Services;
-using BereitschaftsPlaner.Avalonia.Services.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SettingsService = BereitschaftsPlaner.Avalonia.Services.Data.SettingsService;
+using DatabaseService = BereitschaftsPlaner.Avalonia.Services.Data.DatabaseService;
 
 namespace BereitschaftsPlaner.Avalonia.ViewModels;
 
