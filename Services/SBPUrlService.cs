@@ -1,6 +1,6 @@
 using System;
 using BereitschaftsPlaner.Avalonia.Models;
-using BereitschaftsPlaner.Avalonia.Services.Data;
+using DataSettingsService = BereitschaftsPlaner.Avalonia.Services.Data.SettingsService;
 
 namespace BereitschaftsPlaner.Avalonia.Services;
 
@@ -11,10 +11,10 @@ namespace BereitschaftsPlaner.Avalonia.Services;
 /// </summary>
 public class SBPUrlService
 {
-    private readonly SettingsService _settingsService;
+    private readonly DataSettingsService _settingsService;
     private readonly string _environment;
 
-    public SBPUrlService(SettingsService settingsService, string environment)
+    public SBPUrlService(DataSettingsService settingsService, string environment)
     {
         _settingsService = settingsService;
         _environment = environment;

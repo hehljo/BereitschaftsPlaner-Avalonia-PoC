@@ -755,7 +755,7 @@ public partial class MainWindowViewModel : ViewModelBase
     /// </summary>
     private void UpdateSBPUrlService()
     {
-        _sbpUrlService = new SBPUrlService(_settingsService, Environment);
+        _sbpUrlService = new SBPUrlService(_settingsService, this.Environment);
     }
 
     /// <summary>
@@ -771,7 +771,7 @@ public partial class MainWindowViewModel : ViewModelBase
             FileName = url,
             UseShellExecute = true
         });
-        Serilog.Log.Information($"Opened SBP URL: Bookable Resources ({Environment})");
+        Serilog.Log.Information($"Opened SBP URL: Bookable Resources ({this.Environment})");
     }
 
     /// <summary>
@@ -787,7 +787,7 @@ public partial class MainWindowViewModel : ViewModelBase
             FileName = url,
             UseShellExecute = true
         });
-        Serilog.Log.Information($"Opened SBP URL: On-Call Groups ({Environment})");
+        Serilog.Log.Information($"Opened SBP URL: On-Call Groups ({this.Environment})");
     }
 
     /// <summary>
@@ -803,7 +803,7 @@ public partial class MainWindowViewModel : ViewModelBase
             FileName = url,
             UseShellExecute = true
         });
-        Serilog.Log.Information($"Opened SBP URL: My Imports ({Environment})");
+        Serilog.Log.Information($"Opened SBP URL: My Imports ({this.Environment})");
     }
 
     /// <summary>
@@ -819,7 +819,7 @@ public partial class MainWindowViewModel : ViewModelBase
             FileName = url,
             UseShellExecute = true
         });
-        Serilog.Log.Information($"Opened SBP URL: On-Call Duties ({Environment})");
+        Serilog.Log.Information($"Opened SBP URL: On-Call Duties ({this.Environment})");
     }
 
     /// <summary>
@@ -835,6 +835,6 @@ public partial class MainWindowViewModel : ViewModelBase
             FileName = url,
             UseShellExecute = true
         });
-        Serilog.Log.Information($"Opened SBP URL: Import Overview ({Environment})");
+        Serilog.Log.Information($"Opened SBP URL: Import Overview ({this.Environment})");
     }
 }
