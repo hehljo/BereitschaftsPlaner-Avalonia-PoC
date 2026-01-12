@@ -176,7 +176,19 @@
                     <!-- ====================================================================== -->
                     <StackPanel IsVisible="{Binding IsImportView}" Spacing="32">
                         <TextBlock Text="Setup" Classes="H1"/>
-                        <TextBlock Text="IMPORT VON RESSOURCEN UND BEREITSCHAFTSGRUPPEN" Classes="Label"/>
+
+                        <Grid>
+                            <TextBlock Text="IMPORT VON RESSOURCEN UND BEREITSCHAFTSGRUPPEN"
+                                       Classes="Label"
+                                       VerticalAlignment="Center"/>
+
+                            <Button Content="⚙️ Spalten-Zuordnung"
+                                    Command="{Binding OpenExcelImportSettingsCommand}"
+                                    Classes="SecondaryAction"
+                                    HorizontalAlignment="Right"
+                                    Height="32"
+                                    Padding="12,0"/>
+                        </Grid>
 
                         <Grid>
                             <Grid.ColumnDefinitions>
