@@ -13,6 +13,7 @@ namespace BereitschaftsPlaner.Avalonia.Services.Data;
 public class SettingsService
 {
     private readonly string _settingsPath;
+    private AppSettings? _cachedSettings;
 
     public SettingsService()
     {
@@ -20,6 +21,18 @@ public class SettingsService
         var appFolder = Path.Combine(appData, "BereitschaftsPlaner");
         Directory.CreateDirectory(appFolder);
         _settingsPath = Path.Combine(appFolder, "settings.json");
+    }
+
+    /// <summary>
+    /// Get application settings (cached)
+    /// </summary>
+    public AppSettings GetSettings()
+    {
+        if (_cachedSettings == null)
+        {
+            _cachedSettings = LoadSettings();
+        }
+        return _cachedSettings;
     }
 
     /// <summary>

@@ -25,6 +25,9 @@ public class AppSettings
     // Zeitprofile Configuration
     public ZeitprofileSettings Zeitprofile { get; set; } = new();
 
+    // Excel Import Configuration
+    public ExcelImportSettings ExcelImport { get; set; } = new();
+
     // Feature Flags (enable/disable advanced features)
     public FeatureFlags Features { get; set; } = new();
 }
@@ -70,4 +73,70 @@ public class FeatureFlags
     // Tier 5: Advanced Intelligence
     public bool FairnessRulesEnabled { get; set; } = true;
     public bool WhatIfScenariosEnabled { get; set; } = true;
+}
+
+/// <summary>
+/// Excel import column mapping configuration
+/// Allows flexible column matching for different D365 export formats
+/// </summary>
+public class ExcelImportSettings
+{
+    /// <summary>
+    /// Number of columns to skip at the beginning (D365 metadata columns A, B, C)
+    /// </summary>
+    public int SkipFirstColumns { get; set; } = 3;
+
+    // Ressourcen column mappings
+    public ColumnMapping RessourceName { get; set; } = new("Ressourcenname", MatchType.Contains);
+    public ColumnMapping RessourceBezirk { get; set; } = new("Bezirk", MatchType.StartsWith);
+
+    // Bereitschaftsgruppen column mappings
+    public ColumnMapping GruppenName { get; set; } = new("Name", MatchType.Contains);
+    public ColumnMapping GruppenBezirk { get; set; } = new("Bezirk", MatchType.StartsWith);
+    public ColumnMapping GruppenVerantwortlich { get; set; } = new("Verantwortliche Person", MatchType.Contains);
+}
+
+/// <summary>
+/// Column mapping configuration for a single field
+/// </summary>
+public class ColumnMapping
+{
+    /// <summary>
+    /// Search term to find the column
+    /// </summary>
+    public string SearchTerm { get; set; }
+
+    /// <summary>
+    /// How to match the column name
+    /// </summary>
+    public MatchType MatchType { get; set; }
+
+    public ColumnMapping() : this(string.Empty, MatchType.Contains) { }
+
+    public ColumnMapping(string searchTerm, MatchType matchType)
+    {
+        SearchTerm = searchTerm;
+        MatchType = matchType;
+    }
+}
+
+/// <summary>
+/// Column name matching strategy
+/// </summary>
+public enum MatchType
+{
+    /// <summary>
+    /// Column name must contain the search term (case-insensitive)
+    /// </summary>
+    Contains,
+
+    /// <summary>
+    /// Column name must start with the search term (case-insensitive)
+    /// </summary>
+    StartsWith,
+
+    /// <summary>
+    /// Column name must exactly match the search term (case-insensitive)
+    /// </summary>
+    Exact
 }

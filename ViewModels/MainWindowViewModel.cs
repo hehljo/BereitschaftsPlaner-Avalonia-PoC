@@ -14,7 +14,7 @@ namespace BereitschaftsPlaner.Avalonia.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    private readonly BereitschaftsPlaner.Avalonia.Services.ExcelImportService _excelService = new();
+    private readonly BereitschaftsPlaner.Avalonia.Services.ExcelImportService _excelService;
     private readonly DatabaseService _dbService;
     private readonly SettingsService _settingsService;
 
@@ -26,6 +26,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         _dbService = App.DatabaseService;
         _settingsService = App.SettingsService;
+        _excelService = new BereitschaftsPlaner.Avalonia.Services.ExcelImportService(_settingsService);
 
         // Subscribe to collection changes for debugging
         _ressourcen.CollectionChanged += (s, e) =>

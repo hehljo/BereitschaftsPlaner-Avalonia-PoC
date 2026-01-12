@@ -16,10 +16,17 @@ namespace BereitschaftsPlaner.Avalonia.Services;
 /// </summary>
 public class ExcelImportService
 {
+    private readonly AppSettingsService _settingsService;
+
     static ExcelImportService()
     {
         // Required for ExcelDataReader to work with different encodings
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+    }
+
+    public ExcelImportService(AppSettingsService settingsService)
+    {
+        _settingsService = settingsService;
     }
 
     /// <summary>
@@ -63,9 +70,10 @@ public class ExcelImportService
                 Serilog.Log.Debug($"  Column {i}: '{availableColumns[i]}'");
             }
 
-            // Find columns - precise matching
-            int colName = FindColumnContains(table, "Ressourcenname");
-            int colBezirk = FindColumnStartsWith(table, "Bezirk");
+            // Find columns using settings
+            var settings = _settingsService.GetSettings().ExcelImport;
+            int colName = FindColumn(table, settings.RessourceName);
+            int colBezirk = FindColumn(table, settings.RessourceBezirk);
 
             // Log which columns were found
             Serilog.Log.Debug($"ExcelImportService.ImportRessourcen: colName={colName}, colBezirk={colBezirk}");
@@ -161,10 +169,11 @@ public class ExcelImportService
                 Serilog.Log.Debug($"  Column {i}: '{availableColumns[i]}'");
             }
 
-            // Find columns - precise matching
-            int colName = FindColumnContains(table, "Name");
-            int colBezirk = FindColumnStartsWith(table, "Bezirk");
-            int colVerantwortlich = FindColumnContains(table, "Verantwortliche Person");
+            // Find columns using settings
+            var settings = _settingsService.GetSettings().ExcelImport;
+            int colName = FindColumn(table, settings.GruppenName);
+            int colBezirk = FindColumn(table, settings.GruppenBezirk);
+            int colVerantwortlich = FindColumn(table, settings.GruppenVerantwortlich);
 
             // Log which columns were found
             Serilog.Log.Debug($"ExcelImportService.ImportBereitschaftsGruppen: colName={colName}, colBezirk={colBezirk}, colVerantwortlich={colVerantwortlich}");
@@ -267,50 +276,35 @@ public class ExcelImportService
     }
 
     /// <summary>
-    /// Finds column where name CONTAINS the search term
-    /// IMPORTANT: Skips first 3 columns (A, B, C) - these are Dynamics 365 metadata/validation values
+    /// Finds column using flexible mapping configuration
+    /// IMPORTANT: Skips first N columns (D365 metadata) based on settings
     /// </summary>
-    private int FindColumnContains(DataTable table, string searchTerm)
+    private int FindColumn(DataTable table, ColumnMapping mapping)
     {
-        // Skip first 3 columns (A, B, C) - Dynamics 365 metadata
-        const int SKIP_D365_COLUMNS = 3;
+        var settings = _settingsService.GetSettings().ExcelImport;
+        var skipColumns = settings.SkipFirstColumns;
+        var searchTerm = mapping.SearchTerm;
+        var matchType = mapping.MatchType;
 
-        for (int i = SKIP_D365_COLUMNS; i < table.Columns.Count; i++)
+        for (int i = skipColumns; i < table.Columns.Count; i++)
         {
             var columnName = table.Columns[i].ColumnName;
-
-            if (columnName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+            bool isMatch = matchType switch
             {
-                Serilog.Log.Debug($"FindColumnContains: Found '{searchTerm}' in column {i} ('{columnName}')");
+                MatchType.Contains => columnName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase),
+                MatchType.StartsWith => columnName.StartsWith(searchTerm, StringComparison.OrdinalIgnoreCase),
+                MatchType.Exact => columnName.Equals(searchTerm, StringComparison.OrdinalIgnoreCase),
+                _ => false
+            };
+
+            if (isMatch)
+            {
+                Serilog.Log.Debug($"FindColumn: Found '{searchTerm}' (MatchType={matchType}) in column {i} ('{columnName}')");
                 return i;
             }
         }
 
-        Serilog.Log.Warning($"FindColumnContains: No match found for '{searchTerm}'");
-        return -1;
-    }
-
-    /// <summary>
-    /// Finds column where name STARTS WITH the search term
-    /// IMPORTANT: Skips first 3 columns (A, B, C) - these are Dynamics 365 metadata/validation values
-    /// </summary>
-    private int FindColumnStartsWith(DataTable table, string searchTerm)
-    {
-        // Skip first 3 columns (A, B, C) - Dynamics 365 metadata
-        const int SKIP_D365_COLUMNS = 3;
-
-        for (int i = SKIP_D365_COLUMNS; i < table.Columns.Count; i++)
-        {
-            var columnName = table.Columns[i].ColumnName;
-
-            if (columnName.StartsWith(searchTerm, StringComparison.OrdinalIgnoreCase))
-            {
-                Serilog.Log.Debug($"FindColumnStartsWith: Found column starting with '{searchTerm}' at index {i} ('{columnName}')");
-                return i;
-            }
-        }
-
-        Serilog.Log.Warning($"FindColumnStartsWith: No column starts with '{searchTerm}'");
+        Serilog.Log.Warning($"FindColumn: No match found for '{searchTerm}' (MatchType={matchType})");
         return -1;
     }
 }

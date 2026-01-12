@@ -51,24 +51,29 @@
                 ClipToBounds="True">
             <StackPanel Spacing="16">
                 <TextBlock Text="DATENVORSCHAU" Classes="Label"/>
-                <ScrollViewer MaxHeight="300"
-                              VerticalScrollBarVisibility="Auto"
-                              HorizontalScrollBarVisibility="Disabled">
-                    <ItemsControl ItemsSource="{Binding PreviewData}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Border BorderBrush="{DynamicResource BorderBrush}"
-                                        BorderThickness="0,0,0,1"
-                                        Padding="12,8">
-                                    <TextBlock Text="{Binding}"
-                                               Classes="Body"
-                                               TextWrapping="Wrap"
-                                               MaxWidth="800"/>
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
+                <Border BorderBrush="{DynamicResource BorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="6"
+                        MaxHeight="350"
+                        ClipToBounds="True">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled">
+                        <ItemsControl ItemsSource="{Binding PreviewData}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="{DynamicResource BorderBrush}"
+                                            BorderThickness="0,0,0,1"
+                                            Padding="12,8">
+                                        <TextBlock Text="{Binding}"
+                                                   Classes="Body"
+                                                   TextWrapping="Wrap"
+                                                   MaxWidth="800"/>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Border>
                 <TextBlock Text="{Binding PreviewData.Count, StringFormat={}{0} Einträge}"
                            Classes="Body"
                            Foreground="{DynamicResource TextMutedBrush}"
