@@ -40,7 +40,7 @@ public partial class HintDialog : Window
             // Try loading from Assets first (embedded resource)
             if (path.StartsWith("Assets/", StringComparison.OrdinalIgnoreCase))
             {
-                var uri = new Uri($"avares://BereitschaftsPlaner.Avalonia/{path}");
+                var uri = new Uri($"avares://BereitschaftsPlaner/{path}");
                 var bitmap = new Bitmap(AssetLoader.Open(uri));
                 _screenshotImage.Source = bitmap;
                 _screenshotBorder.IsVisible = true;

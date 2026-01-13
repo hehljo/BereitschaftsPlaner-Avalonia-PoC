@@ -6,7 +6,7 @@
         mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
         x:Class="BereitschaftsPlaner.Avalonia.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/logo.ico"
         Title="Bereitschafts-Planer | Yunex Traffic"
         Width="1200" Height="800"
         Background="{DynamicResource SurfaceBrush}"
@@ -402,6 +402,7 @@
                                     <ComboBox Grid.Column="1"
                                               ItemsSource="{Binding ZeitprofileVM.Zeitprofile}"
                                               SelectedItem="{Binding ZeitprofileVM.SelectedZeitprofil}"
+                                              DisplayMemberPath="Name"
                                               MinWidth="300"/>
 
                                     <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="8">
@@ -558,23 +559,23 @@
                                                Margin="0,0,12,0"/>
 
                                     <ComboBox Grid.Column="1"
-                                              SelectedValue="{Binding ZeitprofileVM.SelectedZeitprofil.Bundesland}">
-                                        <ComboBoxItem Content="BY - Bayern"/>
-                                        <ComboBoxItem Content="BW - Baden-Württemberg"/>
-                                        <ComboBoxItem Content="BE - Berlin"/>
-                                        <ComboBoxItem Content="BB - Brandenburg"/>
-                                        <ComboBoxItem Content="HB - Bremen"/>
-                                        <ComboBoxItem Content="HH - Hamburg"/>
-                                        <ComboBoxItem Content="HE - Hessen"/>
-                                        <ComboBoxItem Content="MV - Mecklenburg-Vorpommern"/>
-                                        <ComboBoxItem Content="NI - Niedersachsen"/>
-                                        <ComboBoxItem Content="NW - Nordrhein-Westfalen"/>
-                                        <ComboBoxItem Content="RP - Rheinland-Pfalz"/>
-                                        <ComboBoxItem Content="SL - Saarland"/>
-                                        <ComboBoxItem Content="SN - Sachsen"/>
-                                        <ComboBoxItem Content="ST - Sachsen-Anhalt"/>
-                                        <ComboBoxItem Content="SH - Schleswig-Holstein"/>
-                                        <ComboBoxItem Content="TH - Thüringen"/>
+                                              SelectedItem="{Binding ZeitprofileVM.SelectedZeitprofil.Bundesland}">
+                                        <x:String>BY</x:String>
+                                        <x:String>BW</x:String>
+                                        <x:String>BE</x:String>
+                                        <x:String>BB</x:String>
+                                        <x:String>HB</x:String>
+                                        <x:String>HH</x:String>
+                                        <x:String>HE</x:String>
+                                        <x:String>MV</x:String>
+                                        <x:String>NI</x:String>
+                                        <x:String>NW</x:String>
+                                        <x:String>RP</x:String>
+                                        <x:String>SL</x:String>
+                                        <x:String>SN</x:String>
+                                        <x:String>ST</x:String>
+                                        <x:String>SH</x:String>
+                                        <x:String>TH</x:String>
                                     </ComboBox>
 
                                     <TextBlock Grid.Column="3"
@@ -596,9 +597,9 @@
                                                Margin="0,0,12,0"/>
 
                                     <ComboBox Grid.Column="7"
-                                              SelectedValue="{Binding ZeitprofileVM.SelectedZeitprofil.BehandelnWie}">
-                                        <ComboBoxItem Content="Sonntag"/>
-                                        <ComboBoxItem Content="Samstag"/>
+                                              SelectedItem="{Binding ZeitprofileVM.SelectedZeitprofil.BehandelnWie}">
+                                        <x:String>Sonntag</x:String>
+                                        <x:String>Samstag</x:String>
                                     </ComboBox>
                                 </Grid>
 

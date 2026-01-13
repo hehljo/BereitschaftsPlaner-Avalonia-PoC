@@ -48,21 +48,36 @@ public partial class ZeitprofileTabViewModel : ViewModelBase
     {
         try
         {
+            if (DebugConfig.IsEnabled(DebugConfig.Zeitprofile))
+                Serilog.Log.Debug($"[ZEITPROFILE] Loading all Zeitprofile...");
+
             var profile = _zeitprofilService.GetAlleZeitprofile();
             Zeitprofile.Clear();
 
+            if (DebugConfig.IsEnabled(DebugConfig.Zeitprofile))
+                Serilog.Log.Debug($"[ZEITPROFILE] Found {profile.Count} profiles in database");
+
             foreach (var kvp in profile.OrderBy(p => p.Key))
             {
-                Zeitprofile.Add(new ZeitprofilViewModel(kvp.Value, _zeitprofilService, _dbService));
+                var vm = new ZeitprofilViewModel(kvp.Value, _zeitprofilService, _dbService);
+                Zeitprofile.Add(vm);
+
+                if (DebugConfig.IsEnabled(DebugConfig.Zeitprofile))
+                    Serilog.Log.Debug($"[ZEITPROFILE] Loaded profile: {kvp.Key} - {kvp.Value.Name}, BD: {vm.BereitschaftsTage.Count}, TD: {vm.Tagesdienste.Count}, Groups: {vm.GruppenZuweisungen.Count}");
             }
 
             // Select Standard profile by default
             SelectedZeitprofil = Zeitprofile.FirstOrDefault(p => p.ProfilID == "Standard");
 
+            if (DebugConfig.IsEnabled(DebugConfig.Zeitprofile))
+                Serilog.Log.Debug($"[ZEITPROFILE] Selected default profile: {SelectedZeitprofil?.Name ?? "null"}");
+
             SetStatus($"{Zeitprofile.Count} Zeitprofile geladen", Brushes.Green);
         }
         catch (Exception ex)
         {
+            if (DebugConfig.IsEnabled(DebugConfig.Zeitprofile))
+                Serilog.Log.Error(ex, $"[ZEITPROFILE] Error loading profiles: {ex.Message}");
             SetStatus($"Fehler beim Laden: {ex.Message}", Brushes.Red);
         }
     }
@@ -82,16 +97,27 @@ public partial class ZeitprofileTabViewModel : ViewModelBase
         try
         {
             var profilID = NewProfilName.Replace(" ", "_");
+            if (DebugConfig.IsEnabled(DebugConfig.Zeitprofile))
+                Serilog.Log.Debug($"[ZEITPROFILE] Creating new profile: Name='{NewProfilName}', ProfilID='{profilID}'");
+
             var neuesProfil = _zeitprofilService.CreateZeitprofil(profilID, NewProfilName);
+
+            if (DebugConfig.IsEnabled(DebugConfig.Zeitprofile))
+                Serilog.Log.Debug($"[ZEITPROFILE] Profile created successfully. BD entries: {neuesProfil.BereitschaftsTage.Count}, TD entries: {neuesProfil.Tagesdienste.Count}");
 
             LoadZeitprofile();
             SelectedZeitprofil = Zeitprofile.FirstOrDefault(p => p.ProfilID == profilID);
+
+            if (DebugConfig.IsEnabled(DebugConfig.Zeitprofile))
+                Serilog.Log.Debug($"[ZEITPROFILE] Profile selected. Total profiles: {Zeitprofile.Count}, Selected: {SelectedZeitprofil?.Name ?? "null"}");
 
             NewProfilName = string.Empty;
             SetStatus($"Profil '{neuesProfil.Name}' erstellt", Brushes.Green);
         }
         catch (Exception ex)
         {
+            if (DebugConfig.IsEnabled(DebugConfig.Zeitprofile))
+                Serilog.Log.Error(ex, $"[ZEITPROFILE] Error creating profile: {ex.Message}");
             SetStatus($"Fehler: {ex.Message}", Brushes.Red);
         }
     }
@@ -173,11 +199,20 @@ public partial class ZeitprofileTabViewModel : ViewModelBase
 
         try
         {
+            if (DebugConfig.IsEnabled(DebugConfig.Zeitprofile))
+                Serilog.Log.Debug($"[ZEITPROFILE] Saving profile: {SelectedZeitprofil.ProfilID} - {SelectedZeitprofil.Name}, BD: {SelectedZeitprofil.BereitschaftsTage.Count}, TD: {SelectedZeitprofil.Tagesdienste.Count}");
+
             SelectedZeitprofil.Save();
+
+            if (DebugConfig.IsEnabled(DebugConfig.Zeitprofile))
+                Serilog.Log.Debug($"[ZEITPROFILE] Profile saved successfully");
+
             SetStatus($"Profil '{SelectedZeitprofil.Name}' gespeichert", Brushes.Green);
         }
         catch (Exception ex)
         {
+            if (DebugConfig.IsEnabled(DebugConfig.Zeitprofile))
+                Serilog.Log.Error(ex, $"[ZEITPROFILE] Error saving profile: {ex.Message}");
             SetStatus($"Fehler: {ex.Message}", Brushes.Red);
         }
     }
