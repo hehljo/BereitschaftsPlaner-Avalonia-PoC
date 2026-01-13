@@ -705,7 +705,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
             // Open folder picker
             Serilog.Log.Debug("ExportBackup: Opening folder picker");
-            var folders = await mainWindow.StorageProvider.OpenFolderPickerAsync(new Avalonia.Platform.Storage.FolderPickerOpenOptions
+            var folders = await mainWindow.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
             {
                 Title = "Backup-Zielordner auswählen",
                 AllowMultiple = false
