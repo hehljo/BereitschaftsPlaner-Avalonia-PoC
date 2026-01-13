@@ -225,10 +225,6 @@
                                                     Classes="SecondaryAction"
                                                     Command="{Binding BrowseFileCommand}"/>
                                         </Grid>
-
-                                        <Button Content="Excel importieren"
-                                                Classes="TrustAction"
-                                                Command="{Binding ImportExcelCommand}"/>
                                     </StackPanel>
                                 </Border>
 
@@ -306,10 +302,6 @@
                                                     Classes="SecondaryAction"
                                                     Command="{Binding BrowseGruppenFileCommand}"/>
                                         </Grid>
-
-                                        <Button Content="Excel importieren"
-                                                Classes="TrustAction"
-                                                Command="{Binding ImportGruppenCommand}"/>
                                     </StackPanel>
                                 </Border>
 

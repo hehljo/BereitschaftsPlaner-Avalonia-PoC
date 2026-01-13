@@ -158,7 +158,9 @@ public partial class MainWindowViewModel : ViewModelBase
             {
                 ExcelFilePath = files[0].Path.LocalPath;
                 Serilog.Log.Information($"BrowseFile: File selected - {ExcelFilePath}");
-                SetStatus($"Datei ausgewählt: {Path.GetFileName(ExcelFilePath)}", Brushes.Blue);
+
+                // Auto-trigger import after file selection
+                await ImportExcel();
             }
             else
             {
@@ -296,7 +298,9 @@ public partial class MainWindowViewModel : ViewModelBase
             {
                 GruppenFilePath = files[0].Path.LocalPath;
                 Serilog.Log.Information($"BrowseGruppenFile: File selected - {GruppenFilePath}");
-                SetStatus($"Gruppendatei ausgewählt: {Path.GetFileName(GruppenFilePath)}", Brushes.Blue);
+
+                // Auto-trigger import after file selection
+                await ImportGruppen();
             }
             else
             {
