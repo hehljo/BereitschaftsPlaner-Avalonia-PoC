@@ -505,14 +505,10 @@
                                         <TextBlock Text="Bereitschaftsdienst" Classes="H2" FontSize="18"/>
 
                                         <DataGrid ItemsSource="{Binding ZeitprofileVM.SelectedZeitprofil.BereitschaftsTage}"
-                                                  AutoGenerateColumns="False"
+                                                  AutoGenerateColumns="True"
                                                   Height="220"
-                                                  x:CompileBindings="False">
-                                            <DataGrid.Columns>
-                                                <DataGridTextColumn Header="Tag" Binding="{Binding Tag}" Width="*" IsReadOnly="True"/>
-                                                <DataGridTextColumn Header="Von" Binding="{Binding Von}" Width="80"/>
-                                                <DataGridTextColumn Header="Bis" Binding="{Binding Bis}" Width="80"/>
-                                            </DataGrid.Columns>
+                                                  CanUserResizeColumns="True"
+                                                  IsReadOnly="False">
                                         </DataGrid>
 
                                         <TextBlock Text="Standard: Mo-So 16:00-07:30"
@@ -526,14 +522,10 @@
                                         <TextBlock Text="Tagesdienst" Classes="H2" FontSize="18"/>
 
                                         <DataGrid ItemsSource="{Binding ZeitprofileVM.SelectedZeitprofil.Tagesdienste}"
-                                                  AutoGenerateColumns="False"
+                                                  AutoGenerateColumns="True"
                                                   Height="220"
-                                                  x:CompileBindings="False">
-                                            <DataGrid.Columns>
-                                                <DataGridTextColumn Header="Tag" Binding="{Binding Tag}" Width="*" IsReadOnly="True"/>
-                                                <DataGridTextColumn Header="Von" Binding="{Binding Von}" Width="80"/>
-                                                <DataGridTextColumn Header="Bis" Binding="{Binding Bis}" Width="80"/>
-                                            </DataGrid.Columns>
+                                                  CanUserResizeColumns="True"
+                                                  IsReadOnly="False">
                                         </DataGrid>
 
                                         <TextBlock Text="Standard: Mo-Do 07:30-16:00, Fr 07:30-12:30"
