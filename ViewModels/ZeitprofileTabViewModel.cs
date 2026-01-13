@@ -275,19 +275,37 @@ public partial class ZeitprofilViewModel : ViewModelBase
     {
         Name = _zeitprofil.Name;
         BereitschaftsTage.Clear();
+
+        if (DebugConfig.IsEnabled(DebugConfig.Zeitprofile))
+            Serilog.Log.Debug($"[ZEITPROFILE] LoadBereitschaftsTage for '{Name}': Source has {_zeitprofil.BereitschaftsTage.Count} entries");
+
         foreach (var tag in _zeitprofil.BereitschaftsTage)
         {
             BereitschaftsTage.Add(new DienstTagViewModel(tag));
+            if (DebugConfig.IsEnabled(DebugConfig.Zeitprofile))
+                Serilog.Log.Debug($"[ZEITPROFILE]   Added BD: {tag.Tag} {tag.Von}-{tag.Bis}");
         }
+
+        if (DebugConfig.IsEnabled(DebugConfig.Zeitprofile))
+            Serilog.Log.Debug($"[ZEITPROFILE] LoadBereitschaftsTage completed: ObservableCollection has {BereitschaftsTage.Count} entries");
     }
 
     private void LoadTagesdienste()
     {
         Tagesdienste.Clear();
+
+        if (DebugConfig.IsEnabled(DebugConfig.Zeitprofile))
+            Serilog.Log.Debug($"[ZEITPROFILE] LoadTagesdienste for '{Name}': Source has {_zeitprofil.Tagesdienste.Count} entries");
+
         foreach (var tag in _zeitprofil.Tagesdienste)
         {
             Tagesdienste.Add(new DienstTagViewModel(tag));
+            if (DebugConfig.IsEnabled(DebugConfig.Zeitprofile))
+                Serilog.Log.Debug($"[ZEITPROFILE]   Added TD: {tag.Tag} {tag.Von}-{tag.Bis}");
         }
+
+        if (DebugConfig.IsEnabled(DebugConfig.Zeitprofile))
+            Serilog.Log.Debug($"[ZEITPROFILE] LoadTagesdienste completed: ObservableCollection has {Tagesdienste.Count} entries");
     }
 
     private void LoadFeiertagsKonfiguration()

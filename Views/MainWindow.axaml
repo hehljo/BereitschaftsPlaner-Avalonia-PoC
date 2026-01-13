@@ -501,7 +501,9 @@
 
                                         <DataGrid ItemsSource="{Binding ZeitprofileVM.SelectedZeitprofil.BereitschaftsTage}"
                                                   AutoGenerateColumns="False"
-                                                  Height="220">
+                                                  Height="220"
+                                                  x:DataType="vm:MainWindowViewModel"
+                                                  x:CompileBindings="False">
                                             <DataGrid.Columns>
                                                 <DataGridTextColumn Header="Tag" Binding="{Binding Tag}" Width="*" IsReadOnly="True"/>
                                                 <DataGridTextColumn Header="Von" Binding="{Binding Von}" Width="80"/>
@@ -521,7 +523,9 @@
 
                                         <DataGrid ItemsSource="{Binding ZeitprofileVM.SelectedZeitprofil.Tagesdienste}"
                                                   AutoGenerateColumns="False"
-                                                  Height="220">
+                                                  Height="220"
+                                                  x:DataType="vm:MainWindowViewModel"
+                                                  x:CompileBindings="False">
                                             <DataGrid.Columns>
                                                 <DataGridTextColumn Header="Tag" Binding="{Binding Tag}" Width="*" IsReadOnly="True"/>
                                                 <DataGridTextColumn Header="Von" Binding="{Binding Von}" Width="80"/>
@@ -624,7 +628,9 @@
                                 <DataGrid ItemsSource="{Binding ZeitprofileVM.SelectedZeitprofil.GruppenZuweisungen}"
                                           AutoGenerateColumns="False"
                                           IsReadOnly="True"
-                                          Height="150">
+                                          Height="150"
+                                          x:DataType="vm:MainWindowViewModel"
+                                          x:CompileBindings="False">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="Gruppenname" Binding="{Binding GruppenName}" Width="*"/>
                                     </DataGrid.Columns>
