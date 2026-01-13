@@ -682,6 +682,134 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     /// <summary>
+    /// Create a new manual backup
+    /// </summary>
+    [RelayCommand]
+    private void CreateNewBackup()
+    {
+        try
+        {
+            Serilog.Log.Information("CreateNewBackup: Creating manual backup");
+            var backupPath = App.BackupService.CreateManualBackup();
+
+            if (backupPath != null)
+            {
+                Serilog.Log.Information($"CreateNewBackup: Backup created at {backupPath}");
+                SetStatus($"✅ Backup erstellt: {System.IO.Path.GetFileName(backupPath)}", Brushes.Green);
+            }
+            else
+            {
+                Serilog.Log.Warning("CreateNewBackup: No database to backup");
+                SetStatus("⚠️ Keine Datenbank vorhanden zum Sichern", Brushes.Orange);
+            }
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Error(ex, "CreateNewBackup: Failed to create backup");
+            SetStatus($"❌ Backup-Fehler: {ex.Message}", Brushes.Red);
+        }
+    }
+
+    /// <summary>
+    /// Import (restore) a backup from file picker
+    /// </summary>
+    [RelayCommand]
+    private async Task ImportBackup()
+    {
+        try
+        {
+            Serilog.Log.Debug("ImportBackup: Opening file picker");
+
+            var mainWindow = App.MainWindow;
+            if (mainWindow?.StorageProvider == null)
+            {
+                Serilog.Log.Error("ImportBackup: MainWindow StorageProvider is null");
+                SetStatus("Fehler: Hauptfenster nicht verfügbar", Brushes.Red);
+                return;
+            }
+
+            var files = await mainWindow.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                Title = "Backup-Datei auswählen",
+                AllowMultiple = false,
+                FileTypeFilter = new[]
+                {
+                    new FilePickerFileType("Datenbank Dateien") { Patterns = new[] { "*.db" } },
+                    new FilePickerFileType("Alle Dateien") { Patterns = new[] { "*.*" } }
+                }
+            });
+
+            if (files.Count == 0)
+            {
+                Serilog.Log.Debug("ImportBackup: No file selected");
+                return;
+            }
+
+            var backupFilePath = files[0].Path.LocalPath;
+            Serilog.Log.Information($"ImportBackup: Selected backup file - {backupFilePath}");
+
+            // Confirm with user
+            var confirmDialog = new Views.ConfirmDialog(
+                "Backup wiederherstellen",
+                $"Möchten Sie wirklich dieses Backup wiederherstellen?\n\n" +
+                $"Datei: {System.IO.Path.GetFileName(backupFilePath)}\n\n" +
+                "Die aktuelle Datenbank wird überschrieben!\n" +
+                "Ein Sicherheits-Backup der aktuellen Datenbank wird automatisch erstellt.",
+                "Wiederherstellen",
+                "Abbrechen"
+            );
+
+            var confirmed = await confirmDialog.ShowDialog<bool>(mainWindow);
+
+            if (!confirmed)
+            {
+                Serilog.Log.Information("ImportBackup: User cancelled");
+                return;
+            }
+
+            SetStatus("Stelle Backup wieder her...", Brushes.Blue);
+
+            var success = App.BackupService.RestoreFromBackup(backupFilePath);
+
+            if (success)
+            {
+                Serilog.Log.Information($"ImportBackup: Successfully restored from {backupFilePath}");
+
+                // Show restart dialog
+                var restartDialog = new Views.ConfirmDialog(
+                    "Neustart erforderlich",
+                    "Das Backup wurde erfolgreich wiederhergestellt.\n\n" +
+                    "Die Anwendung muss jetzt neu gestartet werden, um die Änderungen zu übernehmen.\n\n" +
+                    "Anwendung jetzt beenden?",
+                    "Beenden",
+                    "Später"
+                );
+
+                var shouldExit = await restartDialog.ShowDialog<bool>(mainWindow);
+
+                if (shouldExit)
+                {
+                    System.Environment.Exit(0);
+                }
+                else
+                {
+                    SetStatus("✅ Backup wiederhergestellt - Bitte App neu starten!", Brushes.Green);
+                }
+            }
+            else
+            {
+                Serilog.Log.Error($"ImportBackup: Failed to restore from {backupFilePath}");
+                SetStatus("❌ Wiederherstellung fehlgeschlagen", Brushes.Red);
+            }
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Error(ex, "ImportBackup: Exception during backup import");
+            SetStatus($"❌ Fehler beim Importieren: {ex.Message}", Brushes.Red);
+        }
+    }
+
+    /// <summary>
     /// Open Settings Window
     /// </summary>
     [RelayCommand]

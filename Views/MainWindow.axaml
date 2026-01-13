@@ -127,16 +127,29 @@
                                Text=""
                                VerticalAlignment="Center"/>
 
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" Margin="0,0,24,0">
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" Margin="0,0,24,0">
                         <Button Command="{Binding OpenSettingsCommand}"
                                 Classes="SecondaryAction"
                                 HorizontalContentAlignment="Center"
                                 Content="Features"/>
 
+                        <Button Command="{Binding CreateNewBackupCommand}"
+                                Classes="SecondaryAction"
+                                HorizontalContentAlignment="Center"
+                                Content="Neues Backup"
+                                ToolTip.Tip="Erstellt ein manuelles Backup der Datenbank"/>
+
+                        <Button Command="{Binding ImportBackupCommand}"
+                                Classes="SecondaryAction"
+                                HorizontalContentAlignment="Center"
+                                Content="Backup importieren"
+                                ToolTip.Tip="Lädt ein Backup von einer Datei"/>
+
                         <Button Command="{Binding OpenBackupManagementCommand}"
                                 Classes="SecondaryAction"
                                 HorizontalContentAlignment="Center"
-                                Content="Backup"/>
+                                Content="Backups verwalten"
+                                ToolTip.Tip="Zeigt alle Backups und Verwaltungsoptionen"/>
                     </StackPanel>
 
                     <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="12" Margin="0,0,24,0">
