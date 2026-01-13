@@ -133,23 +133,17 @@
                                 HorizontalContentAlignment="Center"
                                 Content="Features"/>
 
-                        <Button Command="{Binding CreateNewBackupCommand}"
+                        <Button Command="{Binding ExportBackupCommand}"
                                 Classes="SecondaryAction"
                                 HorizontalContentAlignment="Center"
-                                Content="Neues Backup"
-                                ToolTip.Tip="Erstellt ein manuelles Backup der Datenbank"/>
+                                Content="Backup exportieren"
+                                ToolTip.Tip="Exportiert die Datenbank in einen ausgewählten Ordner"/>
 
                         <Button Command="{Binding ImportBackupCommand}"
                                 Classes="SecondaryAction"
                                 HorizontalContentAlignment="Center"
                                 Content="Backup importieren"
                                 ToolTip.Tip="Lädt ein Backup von einer Datei"/>
-
-                        <Button Command="{Binding OpenBackupManagementCommand}"
-                                Classes="SecondaryAction"
-                                HorizontalContentAlignment="Center"
-                                Content="Backups verwalten"
-                                ToolTip.Tip="Zeigt alle Backups und Verwaltungsoptionen"/>
                     </StackPanel>
 
                     <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="12" Margin="0,0,24,0">
@@ -505,10 +499,15 @@
                                         <TextBlock Text="Bereitschaftsdienst" Classes="H2" FontSize="18"/>
 
                                         <DataGrid ItemsSource="{Binding ZeitprofileVM.SelectedZeitprofil.BereitschaftsTage}"
-                                                  AutoGenerateColumns="True"
+                                                  AutoGenerateColumns="False"
                                                   Height="220"
                                                   CanUserResizeColumns="True"
                                                   IsReadOnly="False">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Tag" Binding="{Binding Tag}" Width="*" IsReadOnly="True"/>
+                                                <DataGridTextColumn Header="Von" Binding="{Binding Von}" Width="80"/>
+                                                <DataGridTextColumn Header="Bis" Binding="{Binding Bis}" Width="80"/>
+                                            </DataGrid.Columns>
                                         </DataGrid>
 
                                         <TextBlock Text="Standard: Mo-So 16:00-07:30"
@@ -522,10 +521,15 @@
                                         <TextBlock Text="Tagesdienst" Classes="H2" FontSize="18"/>
 
                                         <DataGrid ItemsSource="{Binding ZeitprofileVM.SelectedZeitprofil.Tagesdienste}"
-                                                  AutoGenerateColumns="True"
+                                                  AutoGenerateColumns="False"
                                                   Height="220"
                                                   CanUserResizeColumns="True"
                                                   IsReadOnly="False">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Tag" Binding="{Binding Tag}" Width="*" IsReadOnly="True"/>
+                                                <DataGridTextColumn Header="Von" Binding="{Binding Von}" Width="80"/>
+                                                <DataGridTextColumn Header="Bis" Binding="{Binding Bis}" Width="80"/>
+                                            </DataGrid.Columns>
                                         </DataGrid>
 
                                         <TextBlock Text="Standard: Mo-Do 07:30-16:00, Fr 07:30-12:30"
@@ -546,61 +550,31 @@
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="350"/>
                                         <ColumnDefinition Width="24"/>
                                         <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="200"/>
-                                        <ColumnDefinition Width="24"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="150"/>
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock Grid.Column="0"
-                                               Text="Bundesland"
+                                               Text="Feiertags-Region"
                                                Classes="Body"
                                                FontWeight="Bold"
                                                VerticalAlignment="Center"
                                                Margin="0,0,12,0"/>
 
                                     <ComboBox Grid.Column="1"
-                                              SelectedItem="{Binding ZeitprofileVM.SelectedZeitprofil.Bundesland}">
-                                        <x:String>BY</x:String>
-                                        <x:String>BW</x:String>
-                                        <x:String>BE</x:String>
-                                        <x:String>BB</x:String>
-                                        <x:String>HB</x:String>
-                                        <x:String>HH</x:String>
-                                        <x:String>HE</x:String>
-                                        <x:String>MV</x:String>
-                                        <x:String>NI</x:String>
-                                        <x:String>NW</x:String>
-                                        <x:String>RP</x:String>
-                                        <x:String>SL</x:String>
-                                        <x:String>SN</x:String>
-                                        <x:String>ST</x:String>
-                                        <x:String>SH</x:String>
-                                        <x:String>TH</x:String>
-                                    </ComboBox>
+                                              ItemsSource="{Binding ZeitprofileVM.SelectedZeitprofil.AvailableFeiertagsRegions}"
+                                              SelectedItem="{Binding ZeitprofileVM.SelectedZeitprofil.SelectedFeiertagsRegion}"/>
 
                                     <TextBlock Grid.Column="3"
-                                               Text="Region"
-                                               Classes="Body"
-                                               FontWeight="Bold"
-                                               VerticalAlignment="Center"
-                                               Margin="0,0,12,0"/>
-
-                                    <TextBox Grid.Column="4"
-                                             Text="{Binding ZeitprofileVM.SelectedZeitprofil.Region}"
-                                             Watermark="z.B. Augsburg (optional)"/>
-
-                                    <TextBlock Grid.Column="6"
                                                Text="Behandeln wie"
                                                Classes="Body"
                                                FontWeight="Bold"
                                                VerticalAlignment="Center"
                                                Margin="0,0,12,0"/>
 
-                                    <ComboBox Grid.Column="7"
+                                    <ComboBox Grid.Column="4"
                                               SelectedItem="{Binding ZeitprofileVM.SelectedZeitprofil.BehandelnWie}">
                                         <x:String>Sonntag</x:String>
                                         <x:String>Samstag</x:String>
@@ -624,7 +598,7 @@
                                           AutoGenerateColumns="False"
                                           IsReadOnly="True"
                                           Height="150"
-                                          x:CompileBindings="False">
+                                          CanUserResizeColumns="True">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="Gruppenname" Binding="{Binding GruppenName}" Width="*"/>
                                     </DataGrid.Columns>

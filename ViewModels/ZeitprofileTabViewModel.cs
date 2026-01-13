@@ -271,6 +271,51 @@ public partial class ZeitprofilViewModel : ViewModelBase
     [ObservableProperty]
     private ObservableCollection<GruppenZuweisungViewModel> _gruppenZuweisungen = new();
 
+    // Combined Feiertags Region for UI
+    public ObservableCollection<string> AvailableFeiertagsRegions { get; } = new()
+    {
+        "BY - Bayern",
+        "BY - Bayern + Augsburg",
+        "BY - Bayern + Überwiegend katholisch",
+        "BW - Baden-Württemberg",
+        "BE - Berlin",
+        "BB - Brandenburg",
+        "HB - Bremen",
+        "HH - Hamburg",
+        "HE - Hessen",
+        "MV - Mecklenburg-Vorpommern",
+        "NI - Niedersachsen",
+        "NW - Nordrhein-Westfalen",
+        "RP - Rheinland-Pfalz",
+        "SH - Schleswig-Holstein",
+        "SL - Saarland",
+        "SN - Sachsen",
+        "SN - Sachsen + Landkreis Bautzen",
+        "SN - Sachsen + Landkreis Hoyerswerda",
+        "ST - Sachsen-Anhalt",
+        "TH - Thüringen"
+    };
+
+    [ObservableProperty]
+    private string _selectedFeiertagsRegion = "BY - Bayern";
+
+    partial void OnSelectedFeiertagsRegionChanged(string value)
+    {
+        // Parse combined string to Bundesland + Region
+        if (string.IsNullOrWhiteSpace(value))
+            return;
+
+        var parts = value.Split(" + ");
+        var bundeslandPart = parts[0]; // "BY - Bayern"
+        var bundeslandCode = bundeslandPart.Split(" - ")[0]; // "BY"
+
+        Bundesland = bundeslandCode;
+        Region = parts.Length > 1 ? parts[1] : string.Empty;
+
+        if (DebugConfig.IsEnabled(DebugConfig.Zeitprofile))
+            Serilog.Log.Debug($"[ZEITPROFILE] FeiertagsRegion changed: '{value}' → Bundesland='{Bundesland}', Region='{Region}'");
+    }
+
     private void LoadBereitschaftsTage()
     {
         Name = _zeitprofil.Name;
@@ -313,6 +358,51 @@ public partial class ZeitprofilViewModel : ViewModelBase
         Bundesland = _zeitprofil.Feiertage.Bundesland;
         Region = _zeitprofil.Feiertage.Region;
         BehandelnWie = _zeitprofil.Feiertage.BehandelnWie;
+
+        // Build combined FeiertagsRegion for UI
+        var bundeslandName = Bundesland switch
+        {
+            "BY" => "Bayern",
+            "BW" => "Baden-Württemberg",
+            "BE" => "Berlin",
+            "BB" => "Brandenburg",
+            "HB" => "Bremen",
+            "HH" => "Hamburg",
+            "HE" => "Hessen",
+            "MV" => "Mecklenburg-Vorpommern",
+            "NI" => "Niedersachsen",
+            "NW" => "Nordrhein-Westfalen",
+            "RP" => "Rheinland-Pfalz",
+            "SH" => "Schleswig-Holstein",
+            "SL" => "Saarland",
+            "SN" => "Sachsen",
+            "ST" => "Sachsen-Anhalt",
+            "TH" => "Thüringen",
+            _ => "Bayern"
+        };
+
+        var combined = $"{Bundesland} - {bundeslandName}";
+        if (!string.IsNullOrWhiteSpace(Region))
+        {
+            combined += $" + {Region}";
+        }
+
+        // Find matching entry in available list
+        if (AvailableFeiertagsRegions.Contains(combined))
+        {
+            SelectedFeiertagsRegion = combined;
+        }
+        else
+        {
+            // Default to base Bundesland if exact match not found
+            var baseEntry = $"{Bundesland} - {bundeslandName}";
+            SelectedFeiertagsRegion = AvailableFeiertagsRegions.Contains(baseEntry)
+                ? baseEntry
+                : AvailableFeiertagsRegions.First();
+        }
+
+        if (DebugConfig.IsEnabled(DebugConfig.Zeitprofile))
+            Serilog.Log.Debug($"[ZEITPROFILE] LoadFeiertagsKonfiguration: Bundesland='{Bundesland}', Region='{Region}' → SelectedFeiertagsRegion='{SelectedFeiertagsRegion}'");
     }
 
     private void LoadGruppenZuweisungen()

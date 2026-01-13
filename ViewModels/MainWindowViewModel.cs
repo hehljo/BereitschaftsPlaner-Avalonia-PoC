@@ -672,17 +672,76 @@ public partial class MainWindowViewModel : ViewModelBase
     // ============================================================================
 
     /// <summary>
-    /// Open Backup Management Window
+    /// Export backup to user-selected folder
     /// </summary>
     [RelayCommand]
-    private async Task OpenBackupManagement()
+    private async Task ExportBackup()
     {
-        var backupWindow = new Views.BackupManagementWindow();
-        await backupWindow.ShowDialog(App.MainWindow!);
+        try
+        {
+            Serilog.Log.Debug("ExportBackup: Starting backup export");
+
+            // Check if database exists
+            var appDataPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "BereitschaftsPlaner"
+            );
+            var dbPath = Path.Combine(appDataPath, "bereitschaftsplaner.db");
+
+            if (!File.Exists(dbPath))
+            {
+                Serilog.Log.Warning("ExportBackup: No database to backup");
+                SetStatus("⚠️ Keine Datenbank vorhanden zum Exportieren", Brushes.Orange);
+                return;
+            }
+
+            var mainWindow = App.MainWindow;
+            if (mainWindow?.StorageProvider == null)
+            {
+                Serilog.Log.Error("ExportBackup: MainWindow StorageProvider is null");
+                SetStatus("Fehler: Hauptfenster nicht verfügbar", Brushes.Red);
+                return;
+            }
+
+            // Open folder picker
+            Serilog.Log.Debug("ExportBackup: Opening folder picker");
+            var folders = await mainWindow.StorageProvider.OpenFolderPickerAsync(new Avalonia.Platform.Storage.FolderPickerOpenOptions
+            {
+                Title = "Backup-Zielordner auswählen",
+                AllowMultiple = false
+            });
+
+            if (folders.Count == 0)
+            {
+                Serilog.Log.Debug("ExportBackup: No folder selected (user cancelled)");
+                return;
+            }
+
+            var targetFolder = folders[0].Path.LocalPath;
+            Serilog.Log.Information($"ExportBackup: Selected folder - {targetFolder}");
+
+            SetStatus("Exportiere Backup...", Brushes.Blue);
+
+            // Create backup filename with timestamp
+            var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+            var backupFileName = $"bereitschaftsplaner_backup_{timestamp}.db";
+            var targetPath = Path.Combine(targetFolder, backupFileName);
+
+            // Copy database to target folder
+            File.Copy(dbPath, targetPath, overwrite: false);
+
+            Serilog.Log.Information($"ExportBackup: Backup exported to {targetPath}");
+            SetStatus($"✅ Backup exportiert: {backupFileName}", Brushes.Green);
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Error(ex, "ExportBackup: Failed to export backup");
+            SetStatus($"❌ Export-Fehler: {ex.Message}", Brushes.Red);
+        }
     }
 
     /// <summary>
-    /// Create a new manual backup
+    /// Create a new manual backup (internal, for automatic backups)
     /// </summary>
     [RelayCommand]
     private void CreateNewBackup()
